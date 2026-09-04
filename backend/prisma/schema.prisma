@@ -1,0 +1,204 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      Role     @default(CUSTOMER)
+  addresses Address[]
+  orders    Order[]
+  reviews   Review[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+model Address {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String   // e.g., Home, Work
+  street    String
+  city      String
+  state     String
+  country   String
+  zipCode   String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id          String     @id @default(uuid())
+  name        String
+  slug        String     @unique
+  description String?
+  isActive    Boolean    @default(true)
+  parentId    String?
+  parent      Category?  @relation("SubCategories", fields: [parentId], references: [id])
+  children    Category[] @relation("SubCategories")
+  products    Product[]
+  images      Media[]    @relation("CategoryMedia")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Product {
+  id               String            @id @default(uuid())
+  name             String
+  slug             String            @unique
+  description      String?
+  shortDescription String?
+  categoryId       String
+  category         Category          @relation(fields: [categoryId], references: [id])
+  brand            String?
+  basePrice        Decimal           @db.Decimal(10, 2)
+  salePrice        Decimal?          @db.Decimal(10, 2)
+  isFeatured       Boolean           @default(false)
+  isNewArrival     Boolean           @default(false)
+  isBestseller     Boolean           @default(false)
+  status           ProductStatus     @default(ACTIVE)
+  images           Media[]           @relation("ProductMedia")
+  attributes       ProductAttribute[]
+  variants         Variant[]
+  reviews          Review[]
+  orderItems       OrderItem[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+  DRAFT
+}
+
+model Attribute {
+  id               String             @id @default(uuid())
+  name             String             // e.g., Color, Size, Material
+  productAttributes ProductAttribute[]
+  variantValues    VariantValue[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+}
+
+model ProductAttribute {
+  id          String    @id @default(uuid())
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  attributeId String
+  attribute   Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+  value       String    // e.g., Red, Cotton
+  
+  @@unique([productId, attributeId, value])
+}
+
+model Variant {
+  id        String         @id @default(uuid())
+  productId String
+  product   Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku       String         @unique
+  price     Decimal        @db.Decimal(10, 2)
+  salePrice Decimal?       @db.Decimal(10, 2)
+  stock     Int            @default(0)
+  images    Media[]        @relation("VariantMedia")
+  values    VariantValue[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model VariantValue {
+  id          String    @id @default(uuid())
+  variantId   String
+  variant     Variant   @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  attributeId String
+  attribute   Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+  value       String    // e.g., Red, L
+
+  @@unique([variantId, attributeId])
+}
+
+model Media {
+  id         String    @id @default(uuid())
+  url        String
+  alt        String?
+  type       MediaType @default(IMAGE)
+  
+  categoryId String?
+  category   Category? @relation("CategoryMedia", fields: [categoryId], references: [id], onDelete: SetNull)
+  
+  productId  String?
+  product    Product?  @relation("ProductMedia", fields: [productId], references: [id], onDelete: SetNull)
+  
+  variantId  String?
+  variant    Variant?  @relation("VariantMedia", fields: [variantId], references: [id], onDelete: SetNull)
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+model Order {
+  id            String      @id @default(uuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  status        OrderStatus @default(PENDING)
+  totalAmount   Decimal     @db.Decimal(10, 2)
+  shippingTotal Decimal     @default(0) @db.Decimal(10, 2)
+  items         OrderItem[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURNED
+  REFUNDED
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  variantId String?
+  quantity  Int
+  price     Decimal  @db.Decimal(10, 2)
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
