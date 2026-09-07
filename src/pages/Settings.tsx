@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { PageHeader } from '../components/ui/PageHeader';
 import { Button } from '../components/ui/Button';
 import { Tabs } from '../components/ui/Tabs';
@@ -18,26 +18,25 @@ import {
   Sliders,
   Check,
   ShieldCheck,
-  UserPlus,
   Key,
-  Shield,
+  Lock,
 } from 'lucide-react';
 
 export const Settings: React.FC = () => {
   const { settings, updateSettings } = useAdmin();
-  const { user, registeredAccounts, createShopkeeperAccount } = useAuth();
+  const { adminCredentials, updateAdminCredentials } = useAuth();
   const { showToast } = useToast();
 
   const [activeTab, setActiveTab] = useState('store');
   const [formData, setFormData] = useState({ ...settings });
 
-  // Form state for creating a new shopkeeper account
-  const [newShopkeeper, setNewShopkeeper] = useState({
-    name: '',
-    username: '',
-    email: '',
-    password: '',
-    storeName: '',
+  // Security / Admin credentials state
+  const [securityForm, setSecurityForm] = useState({
+    username: adminCredentials.username,
+    email: adminCredentials.email,
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
   });
 
   const handleSave = (e: React.FormEvent) => {
@@ -46,31 +45,42 @@ export const Settings: React.FC = () => {
     showToast('Store settings saved successfully', 'success');
   };
 
-  const handleCreateShopkeeper = (e: React.FormEvent) => {
+  const handleUpdateSecurity = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newShopkeeper.username || !newShopkeeper.password || !newShopkeeper.email) {
-      showToast('Please fill all required fields', 'error');
+
+    if (!securityForm.currentPassword) {
+      showToast('Please enter your current password to confirm changes', 'error');
       return;
     }
 
-    const res = createShopkeeperAccount(newShopkeeper);
+    if (securityForm.newPassword && securityForm.newPassword !== securityForm.confirmPassword) {
+      showToast('New password and confirm password do not match', 'error');
+      return;
+    }
+
+    const res = updateAdminCredentials({
+      username: securityForm.username,
+      email: securityForm.email,
+      currentPassword: securityForm.currentPassword,
+      newPassword: securityForm.newPassword || undefined,
+    });
+
     if (res.success) {
-      showToast(`Shopkeeper account for ${newShopkeeper.name} created successfully!`, 'success');
-      setNewShopkeeper({
-        name: '',
-        username: '',
-        email: '',
-        password: '',
-        storeName: '',
-      });
+      showToast('Admin credentials updated successfully!', 'success');
+      setSecurityForm((prev) => ({
+        ...prev,
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+      }));
     } else {
-      showToast(res.message || 'Failed to create shopkeeper account', 'error');
+      showToast(res.message || 'Failed to update credentials', 'error');
     }
   };
 
   const tabs = [
     { id: 'store', label: 'Store Info', icon: <Store className="w-3.5 h-3.5" /> },
-    { id: 'authority', label: 'Admin & Shopkeepers', icon: <ShieldCheck className="w-3.5 h-3.5" /> },
+    { id: 'security', label: 'Admin Security', icon: <ShieldCheck className="w-3.5 h-3.5" /> },
     { id: 'contact', label: 'Contact', icon: <Phone className="w-3.5 h-3.5" /> },
     { id: 'seo', label: 'Search SEO', icon: <Globe className="w-3.5 h-3.5" /> },
     { id: 'social', label: 'Social Links', icon: <Share2 className="w-3.5 h-3.5" /> },
@@ -81,11 +91,11 @@ export const Settings: React.FC = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Store Settings & Authority"
-        description="Manage your storefront profile, authorized admin & shopkeeper credentials, styling, and alerts"
+        title="Settings & Security"
+        description="Manage your storefront profile, admin password & credentials, branding, and alerts"
         breadcrumbs={[{ label: 'Settings' }]}
         actions={
-          activeTab !== 'authority' ? (
+          activeTab !== 'security' ? (
             <Button onClick={handleSave} leftIcon={<Check className="w-4 h-4" />}>
               Save Changes
             </Button>
@@ -139,156 +149,88 @@ export const Settings: React.FC = () => {
             </form>
           )}
 
-          {/* Admin & Shopkeepers Authority Tab */}
-          {activeTab === 'authority' && (
-            <div className="space-y-8">
-              {/* Current Session Overview */}
-              <div className="p-4 bg-violet-50/60 border border-violet-100 rounded-xl flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#7e14ff] to-[#47bfff] text-white flex items-center justify-center font-bold text-sm shadow-xs">
-                    {user?.name ? user.name.charAt(0) : 'A'}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-bold text-slate-800">{user?.name || 'Administrator'}</p>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
-                        user?.role === 'ADMIN' ? 'bg-[#eedffc] text-[#7e14ff]' : 'bg-blue-100 text-blue-700'
-                      }`}>
-                        {user?.role || 'ADMIN'}
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-500">
-                      Logged in as {user?.email} • {user?.storeName || 'Primary Store'}
-                    </p>
-                  </div>
+          {/* Admin Security & Password */}
+          {activeTab === 'security' && (
+            <div className="space-y-6">
+              {/* Credentials Callout Card */}
+              <div className="p-4 bg-violet-50/70 border border-violet-100 rounded-xl flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#7e14ff] text-white flex items-center justify-center shrink-0 shadow-xs">
+                  <Key className="w-5 h-5" />
                 </div>
-              </div>
-
-              {/* Registered Accounts List */}
-              <div className="space-y-3">
-                <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-[#7e14ff]" />
-                  Authorized Portal Accounts ({registeredAccounts.length})
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Only users with an authorized Super Admin or registered Shopkeeper account can sign in to the Admin Panel.
-                </p>
-
-                <div className="divide-y divide-slate-100 border border-slate-200 rounded-xl overflow-hidden">
-                  {registeredAccounts.map((acc) => (
-                    <div key={acc.id} className="p-3.5 bg-white hover:bg-slate-50 flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs ${
-                          acc.role === 'ADMIN' ? 'bg-purple-100 text-[#7e14ff]' : 'bg-blue-100 text-blue-700'
-                        }`}>
-                          {acc.name.charAt(0)}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-semibold text-slate-800">{acc.name}</span>
-                            <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase ${
-                              acc.role === 'ADMIN' ? 'bg-[#eedffc] text-[#7e14ff]' : 'bg-blue-100 text-blue-700'
-                            }`}>
-                              {acc.role}
-                            </span>
-                          </div>
-                          <p className="text-[11px] text-slate-400">
-                            Username: <code className="font-mono text-slate-600">{acc.username}</code> • Email: {acc.email}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <span className="text-xs text-slate-500 font-medium">{acc.storeName}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Pre-Configured Default Credentials Callout */}
-              <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600 space-y-2">
-                <p className="font-bold text-slate-800 flex items-center gap-1.5">
-                  <Key className="w-3.5 h-3.5 text-amber-500" />
-                  Pre-Configured Default Sign-In Credentials
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                  <div className="bg-white p-3 rounded-lg border border-slate-200">
-                    <p className="font-semibold text-slate-800 text-xs">Super Admin Account</p>
-                    <p className="text-[11px] text-slate-500 mt-1">Username: <code className="text-[#7e14ff] font-bold">admin</code></p>
-                    <p className="text-[11px] text-slate-500">Email: <code className="text-[#7e14ff]">admin@kidsplaystore.com</code></p>
-                    <p className="text-[11px] text-slate-500">Password: <code className="text-[#7e14ff] font-bold">admin123</code></p>
-                    <p className="text-[10px] text-emerald-600 font-medium mt-1">Authority: Full Storefront & Operations Control</p>
-                  </div>
-                  <div className="bg-white p-3 rounded-lg border border-slate-200">
-                    <p className="font-semibold text-slate-800 text-xs">Shopkeeper Account</p>
-                    <p className="text-[11px] text-slate-500 mt-1">Username: <code className="text-[#7e14ff] font-bold">shopkeeper</code></p>
-                    <p className="text-[11px] text-slate-500">Email: <code className="text-[#7e14ff]">shopkeeper@kidsplaystore.com</code></p>
-                    <p className="text-[11px] text-slate-500">Password: <code className="text-[#7e14ff] font-bold">shopkeeper123</code></p>
-                    <p className="text-[10px] text-blue-600 font-medium mt-1">Authority: Store Inventory, Catalog & Orders</p>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900">Admin Panel Access Authority</h3>
+                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                    This Admin Panel is protected with your single master credentials. You can update your login username, email, or password below anytime.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-4 mt-3 text-xs">
+                    <span className="text-slate-600">
+                      Active Username: <strong className="font-mono text-[#7e14ff]">{adminCredentials.username}</strong>
+                    </span>
+                    <span className="text-slate-600">
+                      Active Email: <strong className="font-mono text-[#7e14ff]">{adminCredentials.email}</strong>
+                    </span>
                   </div>
                 </div>
               </div>
 
-              {/* Create New Shopkeeper Account Form */}
-              <div className="border-t border-slate-200 pt-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <UserPlus className="w-4 h-4 text-[#7e14ff]" />
-                  <h3 className="text-sm font-bold text-slate-900">Register New Shopkeeper Account</h3>
+              {/* Update Credentials Form */}
+              <form onSubmit={handleUpdateSecurity} className="space-y-4 pt-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Input
+                    label="Admin Username *"
+                    value={securityForm.username}
+                    onChange={(e) => setSecurityForm({ ...securityForm, username: e.target.value })}
+                    required
+                  />
+                  <Input
+                    label="Admin Email *"
+                    type="email"
+                    value={securityForm.email}
+                    onChange={(e) => setSecurityForm({ ...securityForm, email: e.target.value })}
+                    required
+                  />
                 </div>
-                <p className="text-xs text-slate-500 mb-4">
-                  Create a new authorized login for store managers or vendor shopkeepers.
-                </p>
 
-                <form onSubmit={handleCreateShopkeeper} className="bg-slate-50/50 p-4 sm:p-5 rounded-xl border border-slate-200 space-y-4">
+                <div className="border-t border-slate-100 pt-4 mt-2">
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5 text-[#7e14ff]" /> Change Password
+                  </h4>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Input
-                      label="Shopkeeper Name *"
-                      placeholder="e.g. Ramesh Kumar"
-                      value={newShopkeeper.name}
-                      onChange={(e) => setNewShopkeeper({ ...newShopkeeper, name: e.target.value })}
-                      required
-                    />
-                    <Input
-                      label="Store / Outlet Name"
-                      placeholder="e.g. Toy Junction Mall Outlet"
-                      value={newShopkeeper.storeName}
-                      onChange={(e) => setNewShopkeeper({ ...newShopkeeper, storeName: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <Input
-                      label="Username *"
-                      placeholder="e.g. ramesh_shop"
-                      value={newShopkeeper.username}
-                      onChange={(e) => setNewShopkeeper({ ...newShopkeeper, username: e.target.value })}
-                      required
-                    />
-                    <Input
-                      label="Email Address *"
-                      type="email"
-                      placeholder="e.g. ramesh@kidsplaystore.com"
-                      value={newShopkeeper.email}
-                      onChange={(e) => setNewShopkeeper({ ...newShopkeeper, email: e.target.value })}
-                      required
-                    />
-                    <Input
-                      label="Password *"
+                      label="New Password"
                       type="password"
-                      placeholder="••••••••"
-                      value={newShopkeeper.password}
-                      onChange={(e) => setNewShopkeeper({ ...newShopkeeper, password: e.target.value })}
-                      required
+                      placeholder="Leave blank to keep current"
+                      value={securityForm.newPassword}
+                      onChange={(e) => setSecurityForm({ ...securityForm, newPassword: e.target.value })}
+                    />
+                    <Input
+                      label="Confirm New Password"
+                      type="password"
+                      placeholder="Re-enter new password"
+                      value={securityForm.confirmPassword}
+                      onChange={(e) => setSecurityForm({ ...securityForm, confirmPassword: e.target.value })}
                     />
                   </div>
+                </div>
 
-                  <div className="pt-2 flex justify-end">
-                    <Button type="submit" size="sm" leftIcon={<UserPlus className="w-4 h-4" />}>
-                      Create Shopkeeper Account
-                    </Button>
-                  </div>
-                </form>
-              </div>
+                <div className="border-t border-slate-100 pt-4">
+                  <Input
+                    label="Current Password * (Required to save changes)"
+                    type="password"
+                    placeholder="Enter current password (default: admin123)"
+                    value={securityForm.currentPassword}
+                    onChange={(e) => setSecurityForm({ ...securityForm, currentPassword: e.target.value })}
+                    required
+                  />
+                </div>
+
+                <div className="pt-3 flex justify-end">
+                  <Button type="submit" size="sm" leftIcon={<Check className="w-4 h-4" />}>
+                    Save Security Credentials
+                  </Button>
+                </div>
+              </form>
             </div>
           )}
 

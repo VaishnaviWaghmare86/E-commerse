@@ -1,10 +1,10 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { useToast } from '../context/ToastContext';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Lock, User, ShieldCheck, AlertCircle, Sparkles, Store } from 'lucide-react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { Lock, User, Key, AlertCircle } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const [identifier, setIdentifier] = useState('admin');
@@ -26,30 +26,39 @@ export const Login: React.FC = () => {
       setLoading(false);
 
       if (result.success) {
-        showToast('Login successful! Welcome to the Admin Panel.', 'success');
-        const origin = (location.state as any)?.from?.pathname || '/admin/dashboard';
+        showToast('Login successful! Welcome to KidsPlay.', 'success');
+        // If a shopkeeper logs in here, direct to vendor portal
+        const isVendorUser = result.role === 'VENDOR';
+        const defaultDest = isVendorUser ? '/vendor-portal' : '/admin/dashboard';
+        const origin = (location.state as any)?.from?.pathname || defaultDest;
         navigate(origin, { replace: true });
       } else {
-        setError(result.message || 'Invalid username/email or password.');
+        setError(result.message || 'Invalid username or password.');
       }
     }, 400);
   };
 
-  const setAdminCredentials = () => {
+  const handleQuickFill = () => {
     setIdentifier('admin');
     setPassword('admin123');
-    setError(null);
-  };
-
-  const setShopkeeperCredentials = () => {
-    setIdentifier('shopkeeper');
-    setPassword('shopkeeper123');
     setError(null);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-[#f8f4ff] to-slate-100 flex flex-col items-center justify-center p-4 sm:p-6">
       <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200/80 shadow-xl p-6 sm:p-8">
+        <div className="mb-4 p-2.5 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-between text-xs">
+          <div className="flex items-center gap-1.5 font-bold text-amber-900">
+            <span>🏬</span>
+            <span>Are you a Toy Shopkeeper?</span>
+          </div>
+          <Link
+            to="/vendor/login"
+            className="font-black text-rose-600 hover:text-rose-700 underline text-xs"
+          >
+            Shopkeeper Portal &rarr;
+          </Link>
+        </div>
         {/* Brand Header */}
         <div className="flex flex-col items-center text-center mb-6">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#7e14ff] to-[#47bfff] flex items-center justify-center text-white font-extrabold text-2xl shadow-md mb-3">
@@ -57,45 +66,29 @@ export const Login: React.FC = () => {
           </div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight">KidsPlay Admin</h2>
           <span className="text-xs font-semibold text-[#7e14ff] tracking-widest uppercase mt-0.5">
-            Secure Portal Access
+            Admin Panel Login
           </span>
           <p className="text-xs text-slate-500 mt-2">
-            Sign in with an authorized Admin or Shopkeeper account
+            Enter your credentials to access store management
           </p>
         </div>
 
-        {/* Quick-Fill Credentials Switcher */}
-        <div className="mb-6 p-3 bg-violet-50/70 border border-violet-100 rounded-xl">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 mb-2">
-            <Sparkles className="w-3.5 h-3.5 text-[#7e14ff]" />
-            <span>Select Authorized Role to Test:</span>
+        {/* Credentials Callout & Quick Fill */}
+        <div className="mb-6 p-3 bg-violet-50/70 border border-violet-100 rounded-xl flex items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2">
+            <Key className="w-4 h-4 text-[#7e14ff] shrink-0" />
+            <div className="text-slate-700">
+              <span className="font-semibold">Admin Credentials:</span>
+              <p className="font-mono text-[11px] text-[#7e14ff]">admin / admin123</p>
+            </div>
           </div>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={setAdminCredentials}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold border flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                identifier === 'admin'
-                  ? 'bg-[#7e14ff] text-white border-[#7e14ff] shadow-sm'
-                  : 'bg-white text-slate-700 border-slate-200 hover:bg-violet-50 hover:border-[#7e14ff]/40'
-              }`}
-            >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Super Admin</span>
-            </button>
-            <button
-              type="button"
-              onClick={setShopkeeperCredentials}
-              className={`px-3 py-2 rounded-lg text-xs font-semibold border flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                identifier === 'shopkeeper'
-                  ? 'bg-[#7e14ff] text-white border-[#7e14ff] shadow-sm'
-                  : 'bg-white text-slate-700 border-slate-200 hover:bg-violet-50 hover:border-[#7e14ff]/40'
-              }`}
-            >
-              <Store className="w-3.5 h-3.5" />
-              <span>Shopkeeper</span>
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={handleQuickFill}
+            className="px-2.5 py-1 text-[11px] font-semibold text-[#7e14ff] bg-white border border-violet-200 rounded-lg hover:bg-violet-100 transition-colors cursor-pointer shadow-2xs shrink-0"
+          >
+            Auto Fill
+          </button>
         </div>
 
         {/* Error Notice */}
@@ -111,7 +104,7 @@ export const Login: React.FC = () => {
           <Input
             label="Username or Email"
             type="text"
-            placeholder="admin or admin@kidsplaystore.com"
+            placeholder="admin"
             value={identifier}
             onChange={(e) => {
               setIdentifier(e.target.value);
@@ -141,36 +134,14 @@ export const Login: React.FC = () => {
               className="w-full text-xs font-semibold py-2.5"
               isLoading={loading}
             >
-              Sign In to Admin Portal
+              Sign In to Admin Panel
             </Button>
           </div>
         </form>
-
-        {/* Authority & Credentials Info */}
-        <div className="mt-6 pt-4 border-t border-slate-100 space-y-2 text-[11px] text-slate-500">
-          <div className="flex justify-between items-center bg-slate-50 px-2.5 py-1.5 rounded-lg">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span className="font-semibold text-slate-700">Admin Authority:</span>
-            </div>
-            <code className="text-[#7e14ff] font-mono bg-violet-50 px-1.5 py-0.5 rounded">
-              admin / admin123
-            </code>
-          </div>
-          <div className="flex justify-between items-center bg-slate-50 px-2.5 py-1.5 rounded-lg">
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-blue-500" />
-              <span className="font-semibold text-slate-700">Shopkeeper Authority:</span>
-            </div>
-            <code className="text-[#7e14ff] font-mono bg-violet-50 px-1.5 py-0.5 rounded">
-              shopkeeper / shopkeeper123
-            </code>
-          </div>
-        </div>
       </div>
 
       <p className="text-xs text-slate-400 mt-6 text-center">
-        © 2026 KidsPlay E-Commerce Store • Secured Multi-Role Administration
+        © 2026 KidsPlay E-Commerce Store • Admin Panel
       </p>
     </div>
   );
