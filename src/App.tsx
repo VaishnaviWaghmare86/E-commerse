@@ -1,104 +1,116 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Package, LayoutDashboard, ShoppingCart, Users, Settings, Tag } from 'lucide-react';
+﻿import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { AdminProvider } from './context/AdminContext';
+import { ToastProvider } from './context/ToastContext';
+import { AdminLayout } from './components/layout/AdminLayout';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
-function Sidebar() {
-  const location = useLocation();
-  
-  const navItems = [
-    { name: 'Dashboard', path: '/', icon: <LayoutDashboard size={20} /> },
-    { name: 'Categories', path: '/categories', icon: <Tag size={20} /> },
-    { name: 'Products', path: '/products', icon: <Package size={20} /> },
-    { name: 'Orders', path: '/orders', icon: <ShoppingCart size={20} /> },
-    { name: 'Customers', path: '/customers', icon: <Users size={20} /> },
-    { name: 'Settings', path: '/settings', icon: <Settings size={20} /> },
-  ];
+// Pages
+import { Dashboard } from './pages/Dashboard';
+import { Products } from './pages/Products';
+import { ProductForm } from './pages/ProductForm';
+import { Categories } from './pages/Categories';
+import { Attributes } from './pages/Attributes';
+import { Variants } from './pages/Variants';
+import { Inventory } from './pages/Inventory';
+import { Orders } from './pages/Orders';
+import { Customers } from './pages/Customers';
+import { Banners } from './pages/Banners';
+import { Collections } from './pages/Collections';
+import { Coupons } from './pages/Coupons';
+import { HomepageCMS } from './pages/HomepageCMS';
+import { MediaLibrary } from './pages/MediaLibrary';
+import { Reviews } from './pages/Reviews';
+import { Settings } from './pages/Settings';
+import { Login } from './pages/Login';
 
-  return (
-    <aside className="w-64 bg-slate-900 text-slate-300 min-h-screen flex flex-col">
-      <div className="h-16 flex items-center px-6 border-b border-slate-800">
-        <span className="text-xl font-bold text-white">KidsPlay Admin</span>
-      </div>
-      <nav className="flex-1 px-4 py-6 space-y-2">
-        {navItems.map((item) => (
-          <Link
-            key={item.name}
-            to={item.path}
-            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-              location.pathname === item.path 
-                ? 'bg-sky-500 text-white shadow-md' 
-                : 'hover:bg-slate-800 hover:text-white'
-            }`}
-          >
-            {item.icon}
-            <span className="font-medium">{item.name}</span>
-          </Link>
-        ))}
-      </nav>
-    </aside>
-  );
-}
-
-function Dashboard() {
-  return (
-    <div>
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">Dashboard Overview</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Stat Cards */}
-        {[
-          { title: 'Total Sales', value: '$12,450', color: 'bg-green-50 text-green-600 border-green-200' },
-          { title: 'Active Orders', value: '45', color: 'bg-sky-50 text-sky-600 border-sky-200' },
-          { title: 'Total Products', value: '120', color: 'bg-pink-50 text-pink-600 border-pink-200' },
-        ].map((stat, i) => (
-          <div key={i} className={`p-6 rounded-xl border ${stat.color}`}>
-            <h3 className="text-sm font-semibold uppercase tracking-wider mb-2 opacity-80">{stat.title}</h3>
-            <p className="text-3xl font-bold">{stat.value}</p>
-          </div>
-        ))}
-      </div>
-      
-      <div className="mt-8 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">Recent Activity</h2>
-        <div className="text-slate-500 text-sm py-10 text-center border-2 border-dashed border-slate-200 rounded-lg">
-          Connect Backend to load activity...
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex bg-slate-50 min-h-screen font-sans text-slate-900">
-      <Sidebar />
-      <main className="flex-1">
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center px-8 justify-between">
-          <div className="text-sm text-slate-500">Welcome back, Admin</div>
-          <div className="w-8 h-8 rounded-full bg-sky-500 flex items-center justify-center text-white font-bold">A</div>
-        </header>
-        <div className="p-8">
-          {children}
-        </div>
-      </main>
-    </div>
-  );
-}
-
-import Categories from './pages/Categories';
-
-function App() {
+export const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/categories" element={<Categories />} />
-          <Route path="/products" element={<div className="text-2xl font-bold">Products Management (Coming Soon)</div>} />
-          <Route path="*" element={<div>Page Not Found</div>} />
-        </Routes>
-      </Layout>
+      <AuthProvider>
+        <ToastProvider>
+          <AdminProvider>
+            <Routes>
+              {/* Public Authentication Screens */}
+              <Route path="/admin/login" element={<Login />} />
+              <Route path="/login" element={<Login />} />
+
+              {/* Protected Administration Routes */}
+              <Route element={<ProtectedRoute />}>
+                <Route element={<AdminLayout />}>
+                  {/* Dashboard routes */}
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+                  <Route path="/admin/dashboard" element={<Dashboard />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+
+                  {/* Catalog routes */}
+                  <Route path="/admin/products" element={<Products />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/admin/products/best-sellers" element={<Products />} />
+                  <Route path="/products/best-sellers" element={<Products />} />
+                  <Route path="/admin/products/new-arrivals" element={<Products />} />
+                  <Route path="/products/new-arrivals" element={<Products />} />
+                  <Route path="/admin/products/new" element={<ProductForm />} />
+                  <Route path="/products/new" element={<ProductForm />} />
+                  <Route path="/admin/products/:id/edit" element={<ProductForm />} />
+                  <Route path="/products/:id/edit" element={<ProductForm />} />
+
+                  <Route path="/admin/categories" element={<Categories />} />
+                  <Route path="/categories" element={<Categories />} />
+
+                  <Route path="/admin/attributes" element={<Attributes />} />
+                  <Route path="/attributes" element={<Attributes />} />
+
+                  <Route path="/admin/variants" element={<Variants />} />
+                  <Route path="/variants" element={<Variants />} />
+
+                  <Route path="/admin/inventory" element={<Inventory />} />
+                  <Route path="/inventory" element={<Inventory />} />
+
+                  {/* Orders routes */}
+                  <Route path="/admin/orders" element={<Orders />} />
+                  <Route path="/orders" element={<Orders />} />
+                  <Route path="/admin/orders/:id" element={<Orders />} />
+
+                  {/* Customers routes */}
+                  <Route path="/admin/customers" element={<Customers />} />
+                  <Route path="/customers" element={<Customers />} />
+                  <Route path="/admin/customers/:id" element={<Customers />} />
+
+                  {/* Marketing routes */}
+                  <Route path="/admin/banners" element={<Banners />} />
+                  <Route path="/banners" element={<Banners />} />
+                  <Route path="/admin/collections" element={<Collections />} />
+                  <Route path="/collections" element={<Collections />} />
+                  <Route path="/admin/coupons" element={<Coupons />} />
+                  <Route path="/coupons" element={<Coupons />} />
+
+                  {/* Content CMS routes */}
+                  <Route path="/admin/homepage" element={<HomepageCMS />} />
+                  <Route path="/homepage" element={<HomepageCMS />} />
+                  <Route path="/admin/media" element={<MediaLibrary />} />
+                  <Route path="/media" element={<MediaLibrary />} />
+
+                  {/* Reviews routes */}
+                  <Route path="/admin/reviews" element={<Reviews />} />
+                  <Route path="/reviews" element={<Reviews />} />
+
+                  {/* Settings route */}
+                  <Route path="/admin/settings" element={<Settings />} />
+                  <Route path="/settings" element={<Settings />} />
+
+                  {/* Fallback for invalid path inside admin */}
+                  <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
+                </Route>
+              </Route>
+            </Routes>
+          </AdminProvider>
+        </ToastProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
-}
+};
 
 export default App;
