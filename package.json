@@ -1,0 +1,26 @@
+{
+  "name": "kids-ecommerce-platform",
+  "version": "1.0.0",
+  "description": "Unified Kids E-Commerce Platform with Storefront, Admin Dashboard, and Express API",
+  "private": true,
+  "scripts": {
+    "dev": "npx concurrently -n \"BACKEND,ADMIN,WEBSITE\" -c \"blue,magenta,green\" \"npm run dev:backend\" \"npm run dev:admin\" \"npm run dev:frontend\"",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:admin": "npm --prefix admin run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:admin": "npm --prefix admin run build",
+    "build:frontend": "npm --prefix frontend run build",
+    "build": "npm run build:admin && npm run build:frontend",
+    "start": "npm run dev"
+  },
+  "keywords": [
+    "ecommerce",
+    "kids",
+    "admin",
+    "nextjs",
+    "vite",
+    "express"
+  ],
+  "author": "",
+  "license": "ISC"
+}

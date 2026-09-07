@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { ArrowRight, ChevronLeft, ChevronRight, Truck, ShieldCheck, RefreshCcw, Headphones, Sun } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Truck, ShieldCheck, RefreshCcw, Headphones, Sun, Sparkles, Star, Heart } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -19,47 +19,55 @@ export default function Home() {
   const slides = [
     {
       id: 1,
-      image: "/slide1.jpg",
-      heading: "Special Offers &",
-      highlight: "New Arrivals!",
-      subtitle: "Unwrap happiness with our colorful new collection of gifts and toys.",
-      cta: "Shop Offers",
-      color: "from-pink-500 to-rose-500"
+      image: "/hero-play.jpg",
+      badge: "🎈 Play & Learn Together",
+      heading: "Learn Through",
+      highlight: "Play & Fun!",
+      subtitle: "Outdoor adventures, joyful cartoon friends, and educational toys for bright growing minds.",
+      cta: "Discover More",
+      color: "from-pink-400 via-yellow-300 to-emerald-400",
+      btnBg: "bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600",
     },
     {
       id: 2,
-      image: "/slide2.png",
+      image: "/hero-wonderland.jpg",
+      badge: "🦄 Magical Toy Kingdom",
       heading: "Welcome to",
-      highlight: "Toy World",
-      subtitle: "Discover magical moments with cuddly teddies and rainbow blocks.",
-      cta: "Explore Now",
-      color: "from-purple-500 to-indigo-500"
+      highlight: "Toy Wonderland",
+      subtitle: "Step into a magical world of cuddly teddy bears, rainbow castles, and wooden train tracks.",
+      cta: "Explore Toys",
+      color: "from-purple-300 via-pink-400 to-sky-300",
+      btnBg: "bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600",
     },
     {
       id: 3,
-      image: "/slide3.png",
+      image: "/hero-adventures.jpg",
+      badge: "🚀 Speed & Action Fun",
       heading: "Ready for",
       highlight: "Big Adventures?",
-      subtitle: "Zoom into fun with RC cars, airplanes, and awesome robots!",
+      subtitle: "Zoom into fun with high-speed RC racing cars, superhero capes, and stunt airplanes!",
       cta: "Start Adventure",
-      color: "from-sky-500 to-blue-600"
+      color: "from-sky-300 via-amber-300 to-emerald-300",
+      btnBg: "bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700",
     },
     {
       id: 4,
-      image: "/slide4.jpg",
-      heading: "Learn Through",
-      highlight: "Play",
-      subtitle: "Outdoor fun, making friends, and educational toys for growing minds.",
-      cta: "Discover More",
-      color: "from-green-500 to-emerald-600"
-    }
+      image: "/hero-festival.jpg",
+      badge: "🎉 Birthday Special Offers",
+      heading: "Grand Birthday",
+      highlight: "Toy Festival!",
+      subtitle: "Unwrap pure joy with up to 50% OFF on brand new arrivals, gifts, and cuddly buddies.",
+      cta: "Grab Offers",
+      color: "from-amber-300 via-pink-400 to-yellow-300",
+      btnBg: "bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600",
+    },
   ];
 
   // Auto-play Slider
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 5000);
+    }, 5500);
     return () => clearInterval(timer);
   }, [slides.length]);
 
@@ -80,57 +88,98 @@ export default function Home() {
     { name: "Gift Sets", img: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=200&h=200&fit=crop", bg: "bg-yellow-100" },
   ];
 
+  const [categoriesList, setCategoriesList] = useState(categoryCircles);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/categories")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          const bgColors = [
+            "bg-orange-100", "bg-sky-100", "bg-amber-100", "bg-pink-100",
+            "bg-purple-100", "bg-emerald-100", "bg-rose-100", "bg-cyan-100",
+            "bg-blue-100", "bg-yellow-100"
+          ];
+          const formatted = data.map((c: any, i: number) => ({
+            name: c.name,
+            img: c.image || "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=200&h=200&fit=crop",
+            bg: bgColors[i % bgColors.length],
+          }));
+          setCategoriesList(formatted);
+        }
+      })
+      .catch(() => console.log("Using static categories fallback"));
+  }, []);
+
   return (
     <div className="w-full font-sans bg-[#fbf9f5] pb-16 overflow-hidden">
       
-      {/* 🌟 FLOATING BACKGROUND PARTICLES 🌟 */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <motion.div style={{ y: y1 }} className="absolute top-[10%] left-[5%] text-6xl opacity-15 blur-sm">🎈</motion.div>
-        <motion.div style={{ y: y2 }} className="absolute top-[30%] right-[10%] text-7xl opacity-20 blur-[2px]">🧸</motion.div>
-        <motion.div style={{ y: y1 }} className="absolute bottom-[20%] left-[15%] text-8xl opacity-15 blur-md">🏎️</motion.div>
+      {/* 🌟 FLOATING BACKGROUND PARTICLES (Crisp & Clean, No Blur) 🌟 */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none">
+        <motion.div style={{ y: y1 }} className="absolute top-[12%] left-[4%] text-5xl opacity-35 drop-shadow-sm">🎈</motion.div>
+        <motion.div style={{ y: y2 }} className="absolute top-[32%] right-[6%] text-6xl opacity-35 drop-shadow-sm">🧸</motion.div>
+        <motion.div style={{ y: y1 }} className="absolute bottom-[25%] left-[10%] text-6xl opacity-30 drop-shadow-sm">⭐</motion.div>
+        <motion.div style={{ y: y2 }} className="absolute bottom-[15%] right-[12%] text-5xl opacity-30 drop-shadow-sm">🎨</motion.div>
       </div>
 
-      {/* 🚀 FULL SCREEN HERO SLIDER 🚀 */}
-      <section className="w-full relative h-[65vh] md:h-[75vh] group cursor-pointer">
+      {/* 🚀 FULL SCREEN ULTRA-CRISP HERO SLIDER (Zero Blur & Kid Lovable) 🚀 */}
+      <section className="w-full relative h-[60vh] sm:h-[68vh] md:h-[76vh] max-h-[760px] min-h-[460px] group cursor-pointer overflow-hidden select-none bg-slate-900">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
-            className="absolute inset-0 w-full h-full"
+            transition={{ duration: 0.7, ease: "easeInOut" }}
+            className="absolute inset-0 w-full h-full overflow-hidden"
             onClick={() => router.push('/shop')}
           >
-            <img 
+            {/* Ultra-Sharp High-Definition Background Image */}
+            <motion.img 
               src={slides[currentSlide].image} 
               alt="Hero Slide" 
-              className="absolute inset-0 w-full h-full object-cover"
+              initial={{ scale: 1.05 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 6, ease: "easeOut" }}
+              className="absolute inset-0 w-full h-full object-cover object-center transform-gpu will-change-transform"
+              style={{ imageRendering: '-webkit-optimize-contrast' }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
 
+            {/* Soft Ambient Text Vignette (Keeps Characters 100% Bright & Vibrant!) */}
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/75 via-slate-950/30 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-black/10 pointer-events-none" />
+
+            {/* Content Container */}
             <div className="absolute inset-0 flex items-center">
               <div className="max-w-[1400px] mx-auto w-full px-6 md:px-12 relative z-10">
                 <motion.div 
-                  initial={{ y: 40, opacity: 0 }}
+                  initial={{ y: 30, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.3, duration: 0.8 }}
-                  className="max-w-xl"
+                  transition={{ delay: 0.2, duration: 0.6 }}
+                  className="max-w-xl backdrop-blur-xs bg-slate-950/25 p-6 sm:p-8 rounded-3xl border border-white/25 shadow-2xl"
                 >
-                  <h1 className="text-4xl md:text-6xl font-black text-white leading-[1.1] mb-4 drop-shadow-lg">
+                  {/* Lovable Pill Badge */}
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 text-slate-800 text-xs font-black shadow-lg mb-3.5 tracking-wide">
+                    <Sparkles className="w-3.5 h-3.5 text-pink-500 animate-spin" style={{ animationDuration: '3s' }} />
+                    <span>{slides[currentSlide].badge}</span>
+                  </div>
+
+                  <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-white leading-[1.1] mb-3 drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
                     {slides[currentSlide].heading} <br/>
                     <span className={`text-transparent bg-clip-text bg-gradient-to-r ${slides[currentSlide].color} drop-shadow-md`}>
                       {slides[currentSlide].highlight}
                     </span>
                   </h1>
-                  <p className="text-white/90 text-sm md:text-lg font-medium mb-8 drop-shadow-md">
+
+                  <p className="text-white text-sm sm:text-base md:text-lg font-semibold mb-6 drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)] leading-relaxed">
                     {slides[currentSlide].subtitle}
                   </p>
+
                   <Link href="/shop" onClick={(e) => e.stopPropagation()}>
                     <motion.button 
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`bg-gradient-to-r ${slides[currentSlide].color} text-white px-8 py-3.5 rounded-full font-black text-base shadow-2xl flex items-center gap-3`}
+                      whileHover={{ scale: 1.06, y: -2 }}
+                      whileTap={{ scale: 0.96 }}
+                      className={`${slides[currentSlide].btnBg} text-white px-8 py-3.5 rounded-full font-black text-sm sm:text-base shadow-2xl flex items-center gap-3 border-2 border-white/30 transition-all cursor-pointer`}
                     >
                       {slides[currentSlide].cta} <ArrowRight size={18} />
                     </motion.button>
@@ -141,29 +190,57 @@ export default function Home() {
           </motion.div>
         </AnimatePresence>
 
+        {/* Carousel Left/Right Buttons */}
         <button 
           onClick={(e) => { e.stopPropagation(); prevSlide(); }} 
-          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/30 backdrop-blur-md text-white p-3 rounded-full hover:bg-white hover:text-pink-500 transition-all opacity-0 group-hover:opacity-100 shadow-lg z-20"
+          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/40 hover:bg-white text-slate-800 hover:text-pink-500 p-3.5 rounded-full backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 shadow-xl z-20 cursor-pointer hover:scale-110"
+          title="Previous Slide"
         >
-          <ChevronLeft size={28} />
+          <ChevronLeft size={26} />
         </button>
         <button 
           onClick={(e) => { e.stopPropagation(); nextSlide(); }} 
-          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/30 backdrop-blur-md text-white p-3 rounded-full hover:bg-white hover:text-pink-500 transition-all opacity-0 group-hover:opacity-100 shadow-lg z-20"
+          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/40 hover:bg-white text-slate-800 hover:text-pink-500 p-3.5 rounded-full backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 shadow-xl z-20 cursor-pointer hover:scale-110"
+          title="Next Slide"
         >
-          <ChevronRight size={28} />
+          <ChevronRight size={26} />
         </button>
 
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+        {/* Carousel Pagination Dots */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20 bg-black/30 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
           {slides.map((_, idx) => (
             <button 
               key={idx}
               onClick={(e) => { e.stopPropagation(); setCurrentSlide(idx); }}
-              className={`h-3 rounded-full transition-all duration-300 shadow-md ${currentSlide === idx ? 'w-10 bg-pink-500' : 'w-3 bg-white/60 hover:bg-white'}`}
+              className={`h-3 rounded-full transition-all duration-300 cursor-pointer shadow-md ${
+                currentSlide === idx ? 'w-10 bg-pink-500 ring-2 ring-white/60' : 'w-3 bg-white/70 hover:bg-white'
+              }`}
             />
           ))}
         </div>
       </section>
+
+      {/* 🌈 ADORABLE TICKER BAR (Attractive & Loved by Kids & Parents) 🌈 */}
+      <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-sky-500 text-white py-3 shadow-inner overflow-hidden">
+        <div className="max-w-[1400px] mx-auto px-4 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm font-extrabold tracking-wide">
+          <div className="flex items-center gap-2">
+            <span>🧸</span>
+            <span>100% Non-Toxic &amp; Child Safe</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span>⭐</span>
+            <span>Loved by 50,000+ Happy Kids</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span>🚀</span>
+            <span>Super Fast Express Delivery</span>
+          </div>
+          <div className="hidden md:flex items-center gap-2">
+            <span>🎁</span>
+            <span>Surprise Gift with Every Order!</span>
+          </div>
+        </div>
+      </div>
 
       {/* 🎪 SECTION 1: TOP CATEGORY CIRCLES BAR (Matching Reference Image 100%) 🎪 */}
       <section className="max-w-[1400px] mx-auto px-4 py-8 relative z-10">
@@ -174,7 +251,7 @@ export default function Home() {
           </button>
 
           <div className="flex-1 flex justify-between items-center overflow-x-auto py-2 no-scrollbar gap-4 md:gap-2 px-2">
-            {categoryCircles.map((cat, idx) => (
+            {categoriesList.map((cat, idx) => (
               <Link href="/shop" key={idx} className="flex flex-col items-center min-w-[85px] group">
                 <motion.div 
                   whileHover={{ y: -6, scale: 1.08 }}

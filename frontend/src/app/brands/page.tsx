@@ -1,62 +1,69 @@
 "use client";
-import { motion } from "framer-motion";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { api, Brand } from "../../services/api";
+import { Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
 
-export default function AnimatedPage() {
+export default function BrandsPage() {
+  const [brands, setBrands] = useState<Brand[]>([]);
+
+  useEffect(() => {
+    api.getBrands().then(setBrands);
+  }, []);
+
   return (
-    <div className="w-full min-h-[70vh] flex flex-col items-center justify-center bg-gradient-to-br from-pink-100 via-sky-100 to-yellow-100 overflow-hidden relative">
-      
-      {/* Floating Background Elements */}
-      <motion.div 
-        animate={{ y: [0, -20, 0], rotate: [0, 10, -10, 0] }} 
-        transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-        className="absolute top-20 left-20 text-6xl opacity-50"
-      >
-        🎈
-      </motion.div>
-      <motion.div 
-        animate={{ y: [0, 30, 0], x: [0, 20, 0], rotate: [0, 180, 360] }} 
-        transition={{ repeat: Infinity, duration: 6, ease: "linear" }}
-        className="absolute bottom-20 right-20 text-6xl opacity-50"
-      >
-        ⭐
-      </motion.div>
-      <motion.div 
-        animate={{ scale: [1, 1.2, 1] }} 
-        transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-        className="absolute top-40 right-40 text-4xl opacity-50"
-      >
-        ☁️
-      </motion.div>
-
-      {/* Main Content */}
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.5, rotateY: 90 }}
-        animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-        transition={{ type: "spring", bounce: 0.5, duration: 1.5 }}
-        className="bg-white/80 backdrop-blur-xl p-12 rounded-3xl shadow-2xl border border-white text-center z-10 max-w-lg"
-      >
-        <motion.div
-          animate={{ rotateZ: [0, -5, 5, -5, 5, 0] }}
-          transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-        >
-          <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-sky-500 mb-4">
-            Magic in Progress! ✨
+    <div className="w-full bg-[#FAF9F6] min-h-screen py-10 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="max-w-6xl mx-auto">
+        
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <span className="bg-pink-100 text-pink-700 text-xs font-black px-3.5 py-1 rounded-full uppercase tracking-wider">
+            Official Brand Partners 🌟
+          </span>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tight mt-3 mb-3">
+            World-Famous Toy Brands
           </h1>
-        </motion.div>
-        <p className="text-slate-600 text-lg mb-8 font-medium">
-          We are adding 3D animations and building this page right now! Check back soon for an amazing experience.
-        </p>
-        <Link href="/">
-          <motion.button 
-            whileHover={{ scale: 1.1, boxShadow: "0px 10px 30px rgba(236, 72, 153, 0.4)" }}
-            whileTap={{ scale: 0.9 }}
-            className="bg-pink-500 text-white px-8 py-3 rounded-full font-bold text-lg"
-          >
-            &larr; Back to Home
-          </motion.button>
-        </Link>
-      </motion.div>
+          <p className="text-slate-600 text-sm font-medium">
+            Explore authentic, certified collections from LEGO, Hot Wheels, Barbie, Melissa &amp; Doug, and Fisher-Price.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {brands.map((brand, idx) => (
+            <motion.div
+              key={brand.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              whileHover={{ y: -5 }}
+              className="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl border border-slate-200 transition-all flex flex-col justify-between"
+            >
+              <div>
+                <div className="w-16 h-16 rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 mb-4 flex items-center justify-center">
+                  <img src={brand.logo} alt={brand.name} className="w-full h-full object-cover" />
+                </div>
+                <div className="flex items-center gap-1 text-[11px] font-extrabold text-sky-600 mb-1">
+                  <ShieldCheck size={14} className="text-sky-500" />
+                  <span>Verified Official Brand</span>
+                </div>
+                <h3 className="text-xl font-black text-slate-900 mb-2">{brand.name}</h3>
+                <p className="text-slate-500 text-xs leading-relaxed mb-6 font-medium">
+                  {brand.description}
+                </p>
+              </div>
+
+              <Link
+                href={`/products?brand=${encodeURIComponent(brand.name)}`}
+                className="w-full bg-slate-900 hover:bg-pink-500 text-white py-3 rounded-2xl font-black text-xs transition-colors flex items-center justify-center gap-2 text-center"
+              >
+                Shop {brand.name} Toys <ArrowRight size={14} />
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+
+      </div>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import "./globals.css";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { ShoppingCart, Heart, Search, User, Truck, ShieldCheck, RefreshCcw, HelpCircle, Menu, X, Sparkles } from "lucide-react";
+import { ShoppingCart, Heart, Search, User, Truck, ShieldCheck, RefreshCcw, HelpCircle, Menu, X, Sparkles, Store } from "lucide-react";
 import { CartProvider, useCart } from "../context/CartContext";
 
 function HeaderNav() {
@@ -25,20 +25,18 @@ function HeaderNav() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
       setMobileMenuOpen(false);
     }
   };
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Shop", href: "/shop" },
-    { name: "Categories", href: "/shop" },
-    { name: "Brands", href: "/shop" },
-    { name: "Age Group", href: "/shop" },
-    { name: "Best Sellers", href: "/shop" },
-    { name: "New Arrivals", href: "/shop" },
-    { name: "Offers", href: "/shop" },
+    { name: "All Toys", href: "/products" },
+    { name: "Brands", href: "/brands" },
+    { name: "Age Group", href: "/age" },
+    { name: "Offers", href: "/offers" },
+    { name: "My Orders", href: "/orders" },
   ];
 
   return (
@@ -61,10 +59,31 @@ function HeaderNav() {
               <Truck size={14} className="text-pink-400" />
               <span className="font-medium">Free Shipping on Orders Above ₹999</span>
             </div>
-            <div className="hidden md:flex items-center gap-6 font-medium text-slate-300">
-              <div className="flex items-center gap-1.5"><ShieldCheck size={14} className="text-sky-400"/> Safe &amp; Secure Payments</div>
+            <div className="hidden md:flex items-center gap-4 font-medium text-slate-300">
+              <div className="flex items-center gap-1.5"><ShieldCheck size={14} className="text-sky-400"/> Safe Payments</div>
               <div className="flex items-center gap-1.5"><RefreshCcw size={14} className="text-sky-400"/> Easy Returns</div>
-              <div className="flex items-center gap-1.5"><HelpCircle size={14} className="text-amber-400"/> Help &amp; Support</div>
+
+              {/* Shopkeeper Portal Link */}
+              <a 
+                href="http://localhost:5173/vendor/login" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white px-3 py-1 rounded-full text-xs font-bold transition-all shadow-sm"
+                title="Shopkeeper Portal: Login & Register Your Toy Shop"
+              >
+                <Store size={13} className="text-yellow-200"/> Shopkeeper Portal
+              </a>
+
+              {/* Admin Panel Link */}
+              <a 
+                href="http://localhost:5173/admin/login" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 bg-violet-600 hover:bg-violet-500 text-white px-3 py-1 rounded-full text-xs font-bold transition-all shadow-sm"
+                title="Launch Super Admin Dashboard"
+              >
+                <ShieldCheck size={13} className="text-amber-300"/> Admin Panel
+              </a>
             </div>
           </div>
         </div>
@@ -128,10 +147,32 @@ function HeaderNav() {
                 <span className="hidden lg:inline">Wishlist</span>
               </Link>
               
-              <Link href="/shop" className="flex items-center gap-1.5 text-slate-700 hover:text-pink-500 transition-colors font-semibold text-sm">
+              <Link href="/orders" className="flex items-center gap-1.5 text-slate-700 hover:text-pink-500 transition-colors font-semibold text-sm">
                 <User size={22} />
-                <span className="hidden lg:inline">Account</span>
+                <span className="hidden lg:inline">Orders</span>
               </Link>
+
+              <a 
+                href="http://localhost:5173/vendor/login" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hidden lg:flex items-center gap-1.5 text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-3 py-1 rounded-full transition-all font-bold text-xs shadow-2xs"
+                title="Shopkeeper / Vendor Portal: Add products, manage catalog & orders"
+              >
+                <Store size={14} className="text-amber-600" />
+                <span>Shopkeeper</span>
+              </a>
+
+              <a 
+                href="http://localhost:5173/admin/login" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hidden lg:flex items-center gap-1.5 text-violet-700 bg-violet-50 hover:bg-violet-100 border border-violet-200 px-3 py-1 rounded-full transition-all font-bold text-xs shadow-2xs"
+                title="Super Admin: Manage vendors, categories, brands, approvals"
+              >
+                <ShieldCheck size={14} className="text-violet-600" />
+                <span>Admin</span>
+              </a>
 
               <Link href="/cart" className="flex items-center gap-1.5 text-slate-700 hover:text-pink-500 transition-colors font-semibold text-sm relative">
                 <div className="relative">
@@ -204,6 +245,28 @@ function HeaderNav() {
                 </Link>
               );
             })}
+
+            {/* Mobile Shopkeeper Link */}
+            <a
+              href="http://localhost:5173/vendor/login"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-4 py-2.5 rounded-xl text-sm font-bold text-amber-800 bg-amber-50 border border-amber-200 hover:bg-amber-100"
+            >
+              🏬 Shopkeeper Portal (Sell Toys / Register)
+            </a>
+
+            {/* Mobile Admin Link */}
+            <a
+              href="http://localhost:5173/admin/login"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-4 py-2.5 rounded-xl text-sm font-bold text-violet-700 bg-violet-50 border border-violet-200 hover:bg-violet-100"
+            >
+              🛡️ Super Admin Dashboard
+            </a>
           </div>
         )}
       </header>
@@ -250,6 +313,16 @@ export default function RootLayout({
                   <li><Link href="/contact" className="hover:text-pink-400 transition-colors">Contact Us</Link></li>
                   <li><Link href="/privacy" className="hover:text-pink-400 transition-colors">Privacy Policy</Link></li>
                   <li><Link href="/terms" className="hover:text-pink-400 transition-colors">Terms &amp; Conditions</Link></li>
+                  <li>
+                    <a href="http://localhost:5173/vendor/login" target="_blank" rel="noopener noreferrer" className="text-pink-400 hover:text-pink-300 font-bold transition-colors flex items-center gap-1">
+                      <span>🏬 Shopkeeper Portal</span> ↗
+                    </a>
+                  </li>
+                  <li>
+                    <a href="http://localhost:5173/admin/login" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:text-amber-300 font-bold transition-colors flex items-center gap-1">
+                      <span>🛡️ Admin Portal</span> ↗
+                    </a>
+                  </li>
                 </ul>
               </div>
 

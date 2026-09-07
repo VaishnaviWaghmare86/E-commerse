@@ -1,62 +1,99 @@
 "use client";
-import { motion } from "framer-motion";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { api, Offer } from "../../services/api";
+import { Tag, Copy, Check, ArrowRight, Sparkles, Flame } from "lucide-react";
 
-export default function AnimatedPage() {
+export default function OffersPage() {
+  const [offers, setOffers] = useState<Offer[]>([]);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+
+  useEffect(() => {
+    api.getOffers().then(setOffers);
+  }, []);
+
+  const handleCopy = (code: string) => {
+    if (typeof window !== "undefined") {
+      navigator.clipboard?.writeText(code);
+      setCopiedCode(code);
+      setTimeout(() => setCopiedCode(null), 2500);
+    }
+  };
+
   return (
-    <div className="w-full min-h-[70vh] flex flex-col items-center justify-center bg-gradient-to-br from-pink-100 via-sky-100 to-yellow-100 overflow-hidden relative">
-      
-      {/* Floating Background Elements */}
-      <motion.div 
-        animate={{ y: [0, -20, 0], rotate: [0, 10, -10, 0] }} 
-        transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-        className="absolute top-20 left-20 text-6xl opacity-50"
-      >
-        🎈
-      </motion.div>
-      <motion.div 
-        animate={{ y: [0, 30, 0], x: [0, 20, 0], rotate: [0, 180, 360] }} 
-        transition={{ repeat: Infinity, duration: 6, ease: "linear" }}
-        className="absolute bottom-20 right-20 text-6xl opacity-50"
-      >
-        ⭐
-      </motion.div>
-      <motion.div 
-        animate={{ scale: [1, 1.2, 1] }} 
-        transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-        className="absolute top-40 right-40 text-4xl opacity-50"
-      >
-        ☁️
-      </motion.div>
-
-      {/* Main Content */}
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.5, rotateY: 90 }}
-        animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-        transition={{ type: "spring", bounce: 0.5, duration: 1.5 }}
-        className="bg-white/80 backdrop-blur-xl p-12 rounded-3xl shadow-2xl border border-white text-center z-10 max-w-lg"
-      >
-        <motion.div
-          animate={{ rotateZ: [0, -5, 5, -5, 5, 0] }}
-          transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-        >
-          <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-sky-500 mb-4">
-            Magic in Progress! ✨
+    <div className="w-full bg-[#FAF9F6] min-h-screen py-10 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="max-w-6xl mx-auto">
+        
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <span className="bg-rose-100 text-rose-700 text-xs font-black px-3.5 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5 w-fit mx-auto">
+            <Flame size={14} className="text-rose-600 animate-pulse" /> Limited Period Discounts
+          </span>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tight mt-3 mb-3">
+            Special Deals &amp; Promo Offers
           </h1>
-        </motion.div>
-        <p className="text-slate-600 text-lg mb-8 font-medium">
-          We are adding 3D animations and building this page right now! Check back soon for an amazing experience.
-        </p>
-        <Link href="/">
-          <motion.button 
-            whileHover={{ scale: 1.1, boxShadow: "0px 10px 30px rgba(236, 72, 153, 0.4)" }}
-            whileTap={{ scale: 0.9 }}
-            className="bg-pink-500 text-white px-8 py-3 rounded-full font-bold text-lg"
-          >
-            &larr; Back to Home
-          </motion.button>
-        </Link>
-      </motion.div>
+          <p className="text-slate-600 text-sm font-medium">
+            Unlock exclusive coupons for toys, building sets, and STEM robotics kits across top sellers.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          {offers.map((offer, idx) => (
+            <motion.div
+              key={offer.id}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col justify-between relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-pink-50 rounded-bl-full -z-0"></div>
+
+              <div className="relative z-10">
+                <span className="bg-pink-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">
+                  {offer.tag || "Hot Offer"}
+                </span>
+
+                <div className="text-4xl font-black text-slate-900 mt-4 mb-1">
+                  {offer.discountPercent}% OFF
+                </div>
+                <h3 className="text-lg font-black text-slate-800 mb-2">{offer.title}</h3>
+                <p className="text-slate-500 text-xs font-medium leading-relaxed mb-6">
+                  {offer.description}
+                </p>
+              </div>
+
+              <div className="relative z-10 pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-xl border border-dashed border-slate-300 w-full sm:w-auto justify-between">
+                  <span className="font-mono font-black text-slate-900 text-xs tracking-wider">{offer.code}</span>
+                  <button
+                    onClick={() => handleCopy(offer.code)}
+                    className="text-pink-600 hover:text-pink-700 text-xs font-black flex items-center gap-1"
+                  >
+                    {copiedCode === offer.code ? (
+                      <>
+                        <Check size={14} className="text-emerald-500" /> Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={14} /> Copy
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <Link
+                  href="/products?onSale=true"
+                  className="w-full sm:w-auto bg-slate-900 hover:bg-pink-500 text-white px-5 py-2.5 rounded-full font-black text-xs transition-colors flex items-center justify-center gap-1.5"
+                >
+                  Shop Deal <ArrowRight size={14} />
+                </Link>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+      </div>
     </div>
   );
 }
