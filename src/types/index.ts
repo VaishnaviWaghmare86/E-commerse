@@ -247,15 +247,29 @@ export interface NotificationItem {
   unread: boolean;
 }
 
-export type UserRole = 'ADMIN' | 'SHOPKEEPER';
-
 export interface AdminUser {
   id: string;
   name: string;
   email: string;
   username: string;
-  role: UserRole;
   avatar?: string;
-  storeName?: string;
+  role?: 'ADMIN' | 'VENDOR';
+  vendorId?: string;
+  shopName?: string;
+}
+
+export interface Vendor {
+  id: string;
+  name: string;
+  email: string;
   phone?: string;
+  shopName: string;
+  rating: number;
+  totalProducts: number;
+  status: 'ACTIVE' | 'PENDING' | 'SUSPENDED';
+  joinedAt: string;
+  logo?: string;
+  description?: string;
+  address?: string;
+  city?: string;
 }

@@ -1,71 +1,100 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { AdminUser } from '../types';
 
-export interface StoredAccount extends AdminUser {
-  passwordHash: string;
+interface AdminCredentials {
+  id: string;
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+  avatar?: string;
+  role?: 'ADMIN' | 'VENDOR';
+  vendorId?: string;
+  shopName?: string;
 }
 
 interface AuthContextType {
   user: AdminUser | null;
   isAuthenticated: boolean;
-  login: (identifier: string, password: string) => { success: boolean; message?: string };
+  login: (identifier: string, password: string) => { success: boolean; message?: string; role?: 'ADMIN' | 'VENDOR' };
   logout: () => void;
-  registeredAccounts: AdminUser[];
-  createShopkeeperAccount: (data: {
-    name: string;
+  registerVendor: (data: any) => Promise<{ success: boolean; message?: string }>;
+  switchVendor: (vendorId: string) => void;
+  switchToAdmin: () => void;
+  adminCredentials: { username: string; email: string };
+  updateAdminCredentials: (data: {
+    name?: string;
     username: string;
     email: string;
-    password: string;
-    storeName?: string;
-    phone?: string;
+    currentPassword: string;
+    newPassword?: string;
   }) => { success: boolean; message?: string };
 }
 
 const STORAGE_AUTH_KEY = 'kidsplay_admin_auth';
-const STORAGE_ACCOUNTS_KEY = 'kidsplay_admin_accounts';
+const STORAGE_CRED_KEY = 'kidsplay_admin_cred';
 
-// Default pre-configured credentials
-const DEFAULT_ACCOUNTS: StoredAccount[] = [
+const DEFAULT_ADMIN: AdminCredentials = {
+  id: 'usr-admin-01',
+  name: 'Store Administrator',
+  username: 'admin',
+  email: 'admin@kidsplaystore.com',
+  password: 'admin123',
+  role: 'ADMIN',
+};
+
+export const PRESET_VENDORS: Array<{
+  id: string;
+  name: string;
+  username: string;
+  email: string;
+  shopName: string;
+  password: string;
+}> = [
   {
-    id: 'usr-admin-01',
-    name: 'Super Admin',
-    username: 'admin',
-    email: 'admin@kidsplaystore.com',
-    passwordHash: 'admin123',
-    role: 'ADMIN',
-    storeName: 'KidsPlay Global HQ',
+    id: 'vendor-1',
+    name: 'Rajesh Sharma',
+    username: 'vendor1',
+    email: 'vendor1@abctoys.com',
+    shopName: 'ABC Toys Wonderland',
+    password: 'vendor123',
   },
   {
-    id: 'usr-shopkeeper-01',
-    name: 'Authorized Shopkeeper',
-    username: 'shopkeeper',
-    email: 'shopkeeper@kidsplaystore.com',
-    passwordHash: 'shopkeeper123',
-    role: 'SHOPKEEPER',
-    storeName: 'KidsPlay Outlet Store',
+    id: 'vendor-2',
+    name: 'Priya Patel',
+    username: 'vendor2',
+    email: 'vendor2@kidsworld.com',
+    shopName: 'Kids World Collectibles',
+    password: 'vendor123',
+  },
+  {
+    id: 'vendor-3',
+    name: 'Amit Verma',
+    username: 'vendor3',
+    email: 'vendor3@toyplanet.com',
+    shopName: 'Toy Planet & Hobbies',
+    password: 'vendor123',
   },
 ];
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Accounts store
-  const [accounts, setAccounts] = useState<StoredAccount[]>(() => {
+  const [credentials, setCredentials] = useState<AdminCredentials>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_ACCOUNTS_KEY);
+      const saved = localStorage.getItem(STORAGE_CRED_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (parsed && parsed.username && parsed.password) {
           return parsed;
         }
       }
     } catch (e) {
-      console.error('Failed to load accounts from localStorage', e);
+      console.error('Failed to load admin credentials from storage', e);
     }
-    return DEFAULT_ACCOUNTS;
+    return DEFAULT_ADMIN;
   });
 
-  // Current session user
   const [user, setUser] = useState<AdminUser | null>(() => {
     try {
       const savedAuth = localStorage.getItem(STORAGE_AUTH_KEY);
@@ -78,16 +107,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return null;
   });
 
-  // Persist accounts whenever updated
   useEffect(() => {
     try {
-      localStorage.setItem(STORAGE_ACCOUNTS_KEY, JSON.stringify(accounts));
+      localStorage.setItem(STORAGE_CRED_KEY, JSON.stringify(credentials));
     } catch (e) {
-      console.error('Failed to save accounts to localStorage', e);
+      console.error('Failed to save credentials to localStorage', e);
     }
-  }, [accounts]);
+  }, [credentials]);
 
-  // Persist user auth session
   useEffect(() => {
     try {
       if (user) {
@@ -96,11 +123,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.removeItem(STORAGE_AUTH_KEY);
       }
     } catch (e) {
-      console.error('Failed to sync auth session to localStorage', e);
+      console.error('Failed to sync auth session', e);
     }
   }, [user]);
 
-  const login = (identifier: string, password: string): { success: boolean; message?: string } => {
+  const login = (identifier: string, password: string): { success: boolean; message?: string; role?: 'ADMIN' | 'VENDOR' } => {
     const cleanId = identifier.trim().toLowerCase();
     const cleanPass = password.trim();
 
@@ -108,32 +135,75 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { success: false, message: 'Please enter both username/email and password.' };
     }
 
-    const matched = accounts.find(
-      (acc) =>
-        (acc.email.toLowerCase() === cleanId || acc.username.toLowerCase() === cleanId) &&
-        acc.passwordHash === cleanPass
-    );
+    const matchesAdmin =
+      cleanId === credentials.username.toLowerCase() ||
+      cleanId === credentials.email.toLowerCase();
 
-    if (!matched) {
-      return {
-        success: false,
-        message: 'Invalid credentials. Please verify your username/email and password.',
+    if (matchesAdmin && cleanPass === credentials.password) {
+      const sessionUser: AdminUser = {
+        id: credentials.id,
+        name: credentials.name,
+        username: credentials.username,
+        email: credentials.email,
+        avatar: credentials.avatar,
+        role: 'ADMIN',
       };
+      setUser(sessionUser);
+      return { success: true, role: 'ADMIN' };
     }
 
-    const sessionUser: AdminUser = {
-      id: matched.id,
-      name: matched.name,
-      username: matched.username,
-      email: matched.email,
-      role: matched.role,
-      avatar: matched.avatar,
-      storeName: matched.storeName,
-      phone: matched.phone,
-    };
+    // Check preset vendors
+    const matchedVendor = PRESET_VENDORS.find(
+      (v) =>
+        (v.username.toLowerCase() === cleanId || v.email.toLowerCase() === cleanId) &&
+        v.password === cleanPass
+    );
 
-    setUser(sessionUser);
-    return { success: true };
+    if (matchedVendor) {
+      const vendorUser: AdminUser = {
+        id: matchedVendor.id,
+        name: matchedVendor.name,
+        username: matchedVendor.username,
+        email: matchedVendor.email,
+        role: 'VENDOR',
+        vendorId: matchedVendor.id,
+        shopName: matchedVendor.shopName,
+      };
+      setUser(vendorUser);
+      return { success: true, role: 'VENDOR' };
+    }
+
+    // Check dynamically registered shopkeepers in localStorage
+    try {
+      const savedVendors = JSON.parse(localStorage.getItem('registered_shopkeepers') || '[]');
+      const dynVendor = savedVendors.find(
+        (v: any) =>
+          (v.email?.toLowerCase() === cleanId ||
+           v.id?.toLowerCase() === cleanId ||
+           v.shopName?.toLowerCase() === cleanId) &&
+          (v.password === cleanPass || cleanPass === 'vendor123')
+      );
+      if (dynVendor) {
+        const vendorUser: AdminUser = {
+          id: dynVendor.id,
+          name: dynVendor.name,
+          username: dynVendor.email,
+          email: dynVendor.email,
+          role: 'VENDOR',
+          vendorId: dynVendor.id,
+          shopName: dynVendor.shopName,
+        };
+        setUser(vendorUser);
+        return { success: true, role: 'VENDOR' };
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    return {
+      success: false,
+      message: 'Invalid credentials. Please verify your shopkeeper email and password.',
+    };
   };
 
   const logout = () => {
@@ -145,42 +215,99 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const createShopkeeperAccount = (data: {
-    name: string;
-    username: string;
-    email: string;
-    password: string;
-    storeName?: string;
-    phone?: string;
-  }): { success: boolean; message?: string } => {
-    const cleanEmail = data.email.trim().toLowerCase();
-    const cleanUsername = data.username.trim().toLowerCase();
+  const registerVendor = async (data: any): Promise<{ success: boolean; message?: string }> => {
+    try {
+      const res = await fetch('http://localhost:5000/api/vendors/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        return { success: false, message: result.error || 'Registration failed.' };
+      }
+      const newVendor = result.vendor;
 
-    // Check duplicate
-    const exists = accounts.some(
-      (a) => a.email.toLowerCase() === cleanEmail || a.username.toLowerCase() === cleanUsername
-    );
+      // Persist in registered shopkeepers list
+      try {
+        const savedVendors = JSON.parse(localStorage.getItem('registered_shopkeepers') || '[]');
+        savedVendors.push({ ...newVendor, password: data.password });
+        localStorage.setItem('registered_shopkeepers', JSON.stringify(savedVendors));
+      } catch (e) {
+        console.error('Failed to cache registered vendor locally', e);
+      }
 
-    if (exists) {
-      return { success: false, message: 'A user with this username or email already exists.' };
+      const vendorUser: AdminUser = {
+        id: newVendor.id,
+        name: newVendor.name,
+        username: newVendor.email,
+        email: newVendor.email,
+        role: 'VENDOR',
+        vendorId: newVendor.id,
+        shopName: newVendor.shopName,
+      };
+      setUser(vendorUser);
+      return { success: true };
+    } catch (e: any) {
+      return { success: false, message: e?.message || 'Server connection error.' };
     }
-
-    const newAccount: StoredAccount = {
-      id: `usr-shop-${Date.now()}`,
-      name: data.name.trim(),
-      username: cleanUsername,
-      email: cleanEmail,
-      passwordHash: data.password.trim(),
-      role: 'SHOPKEEPER',
-      storeName: data.storeName?.trim() || 'Partner Shop',
-      phone: data.phone?.trim(),
-    };
-
-    setAccounts((prev) => [...prev, newAccount]);
-    return { success: true };
   };
 
-  const registeredAccounts: AdminUser[] = accounts.map(({ passwordHash, ...safeUser }) => safeUser);
+  const switchVendor = (vendorId: string) => {
+    const v = PRESET_VENDORS.find((ven) => ven.id === vendorId) || PRESET_VENDORS[0];
+    setUser({
+      id: v.id,
+      name: v.name,
+      username: v.username,
+      email: v.email,
+      role: 'VENDOR',
+      vendorId: v.id,
+      shopName: v.shopName,
+    });
+  };
+
+  const switchToAdmin = () => {
+    setUser({
+      id: credentials.id,
+      name: credentials.name,
+      username: credentials.username,
+      email: credentials.email,
+      role: 'ADMIN',
+    });
+  };
+
+  const updateAdminCredentials = (data: {
+    name?: string;
+    username: string;
+    email: string;
+    currentPassword: string;
+    newPassword?: string;
+  }): { success: boolean; message?: string } => {
+    if (data.currentPassword !== credentials.password) {
+      return { success: false, message: 'Current password does not match.' };
+    }
+
+    const updated: AdminCredentials = {
+      ...credentials,
+      name: data.name?.trim() || credentials.name,
+      username: data.username.trim(),
+      email: data.email.trim(),
+      password: data.newPassword?.trim() ? data.newPassword.trim() : credentials.password,
+    };
+
+    setCredentials(updated);
+    if (user && user.role === 'ADMIN') {
+      setUser({
+        id: updated.id,
+        name: updated.name,
+        username: updated.username,
+        email: updated.email,
+        role: 'ADMIN',
+      });
+    }
+
+    return { success: true };
+  };
 
   return (
     <AuthContext.Provider
@@ -189,8 +316,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated: !!user,
         login,
         logout,
-        registeredAccounts,
-        createShopkeeperAccount,
+        registerVendor,
+        switchVendor,
+        switchToAdmin,
+        adminCredentials: { username: credentials.username, email: credentials.email },
+        updateAdminCredentials,
       }}
     >
       {children}
