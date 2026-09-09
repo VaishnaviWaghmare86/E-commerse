@@ -35,8 +35,6 @@ function HeaderNav() {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "All Toys", href: "/products" },
-    { name: "Best Sellers", href: "/best-sellers" },
-    { name: "New Arrivals", href: "/new" },
     { name: "Brands", href: "/brands" },
     { name: "Age Group", href: "/age" },
     { name: "Best Sellers", href: "/best-sellers" },
