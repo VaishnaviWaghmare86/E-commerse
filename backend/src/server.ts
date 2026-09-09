@@ -68,6 +68,8 @@ app.get('/api/health', (req, res) => {
 });
 
 // API Routes
+import customerRoutes from './routes/customerRoutes';
+app.use('/api/customers', customerRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/vendors', vendorRoutes);
