@@ -109,7 +109,7 @@ export const Coupons: React.FC = () => {
                 <TableRow key={c.id}>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-violet-50 text-[#7e14ff] flex items-center justify-center">
+                      <div className="w-7 h-7 rounded-lg bg-pink-50 text-[#ff91db] flex items-center justify-center">
                         <TicketPercent className="w-3.5 h-3.5" />
                       </div>
                       <span className="font-mono font-bold text-slate-900 text-xs tracking-wider">
@@ -139,7 +139,7 @@ export const Coupons: React.FC = () => {
                       </span>
                       <div className="w-24 bg-slate-100 rounded-full h-1.5 mt-1 overflow-hidden">
                         <div
-                          className="bg-[#7e14ff] h-full rounded-full"
+                          className="bg-[#ff91db] h-full rounded-full"
                           style={{
                             width: `${Math.min(100, (c.usageCount / c.usageLimit) * 100)}%`,
                           }}

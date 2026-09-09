@@ -141,8 +141,8 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({ dateFilter, onFilter
           >
             <defs>
               <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#7e14ff" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="#7e14ff" stopOpacity="0.0" />
+                <stop offset="0%" stopColor="#ff91db" stopOpacity="0.25" />
+                <stop offset="100%" stopColor="#ff91db" stopOpacity="0.0" />
               </linearGradient>
             </defs>
 
@@ -179,7 +179,7 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({ dateFilter, onFilter
             <path
               d={linePath}
               fill="none"
-              stroke="#7e14ff"
+              stroke="#ff91db"
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -193,7 +193,7 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({ dateFilter, onFilter
                   y={height - 10}
                   textAnchor="middle"
                   className={`text-[11px] font-medium transition-colors ${
-                    hoveredPoint?.label === pt.label ? 'fill-[#7e14ff] font-bold' : 'fill-slate-400'
+                    hoveredPoint?.label === pt.label ? 'fill-[#ff91db] font-bold' : 'fill-slate-400'
                   }`}
                 >
                   {pt.label}
@@ -204,7 +204,7 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({ dateFilter, onFilter
                   cx={pt.x}
                   cy={pt.y}
                   r={hoveredPoint?.label === pt.label ? 5 : 3.5}
-                  className="fill-white stroke-[#7e14ff] stroke-2 cursor-pointer transition-all"
+                  className="fill-white stroke-[#ff91db] stroke-2 cursor-pointer transition-all"
                   onMouseEnter={() => setHoveredPoint(pt)}
                 />
 

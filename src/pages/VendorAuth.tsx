@@ -377,7 +377,7 @@ export const VendorAuth: React.FC = () => {
           </a>
           <Link
             to="/admin/login"
-            className="text-violet-600 hover:underline flex items-center gap-1 font-extrabold"
+            className="text-pink-500 hover:underline flex items-center gap-1 font-extrabold"
           >
             <ShieldCheck size={13} /> Admin Panel &rarr;
           </Link>

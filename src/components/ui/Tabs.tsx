@@ -74,7 +74,7 @@ export const Tabs: React.FC<TabsProps> = ({
               }}
               className={`flex items-center gap-2 py-3 px-1 border-b-2 text-xs font-medium transition-colors cursor-pointer whitespace-nowrap ${
                 isActive
-                  ? 'border-[#7e14ff] text-[#7e14ff] font-semibold'
+                  ? 'border-[#ff91db] text-[#ff91db] font-semibold'
                   : 'border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300'
               }`}
             >
@@ -83,7 +83,7 @@ export const Tabs: React.FC<TabsProps> = ({
               {tab.badge !== undefined && (
                 <span
                   className={`ml-1 px-1.5 py-0.5 rounded-full text-[10px] ${
-                    isActive ? 'bg-violet-100 text-[#7e14ff]' : 'bg-slate-100 text-slate-600'
+                    isActive ? 'bg-pink-100 text-[#ff91db]' : 'bg-slate-100 text-slate-600'
                   }`}
                 >
                   {tab.badge}

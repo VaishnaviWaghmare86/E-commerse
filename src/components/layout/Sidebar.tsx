@@ -103,7 +103,7 @@ export const Sidebar: React.FC = () => {
     {
       name: 'Shop Profile',
       path: '/vendor-portal?tab=profile',
-      icon: <UserCheck className="w-4.5 h-4.5 text-violet-500" />,
+      icon: <UserCheck className="w-4.5 h-4.5 text-pink-500" />,
     },
   ];
 
@@ -228,7 +228,7 @@ export const Sidebar: React.FC = () => {
       {/* Sidebar Container */}
       <aside
         className={`fixed top-0 bottom-0 left-0 z-40 flex flex-col ${
-          isVendor ? 'bg-[#fffaf0] border-r border-amber-200' : 'bg-[#f3ecfc] border-r border-[#e5d5f8]'
+          isVendor ? 'bg-[#fffaf0] border-r border-amber-200' : 'bg-[#fff0f7] border-r border-[#ffd4ea]'
         } transition-all duration-300 ease-in-out select-none ${
           sidebarCollapsed ? 'w-20' : 'w-64'
         } ${
@@ -237,7 +237,7 @@ export const Sidebar: React.FC = () => {
       >
         {/* Brand section */}
         <div className={`h-16 flex items-center justify-between px-5 border-b ${
-          isVendor ? 'border-amber-200 bg-amber-100/50' : 'border-[#e5d5f8] bg-[#eedffc]/50'
+          isVendor ? 'border-amber-200 bg-amber-100/50' : 'border-[#ffd4ea] bg-[#ffe3f5]/50'
         }`}>
           <NavLink to={isVendor ? "/vendor-portal" : "/admin/dashboard"} className="flex items-center gap-3 overflow-hidden">
             {isVendor ? (
@@ -245,7 +245,7 @@ export const Sidebar: React.FC = () => {
                 <Store className="w-5 h-5" />
               </div>
             ) : (
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#7e14ff] to-[#47bfff] flex items-center justify-center text-white font-bold shrink-0 shadow-xs">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#ff91db] to-[#ffa3e4] flex items-center justify-center text-white font-bold shrink-0 shadow-xs">
                 <span className="text-white text-base font-extrabold">K</span>
               </div>
             )}
@@ -255,7 +255,7 @@ export const Sidebar: React.FC = () => {
                   {isVendor ? (user?.shopName || 'Toy Shop') : 'KidsPlay'}
                 </span>
                 <span className={`text-[9px] uppercase font-black tracking-widest ${
-                  isVendor ? 'text-amber-700' : 'text-[#7e14ff]'
+                  isVendor ? 'text-amber-700' : 'text-[#ff91db]'
                 }`}>
                   {isVendor ? 'Shopkeeper Portal' : 'Admin Panel'}
                 </span>
@@ -287,8 +287,8 @@ export const Sidebar: React.FC = () => {
                       onClick={() => setSidebarCollapsed(false)}
                       className={`w-full h-10 rounded-xl flex items-center justify-center transition-colors ${
                         groupActive
-                          ? 'bg-[#7e14ff] text-white shadow-xs'
-                          : 'text-[#523970] hover:bg-[#eadef8] hover:text-[#2a1348]'
+                          ? 'bg-[#ff91db] text-white shadow-xs'
+                          : 'text-[#733557] hover:bg-[#ffe0f1] hover:text-[#451630]'
                       }`}
                       title={item.name}
                     >
@@ -305,25 +305,25 @@ export const Sidebar: React.FC = () => {
                     onClick={() => toggleGroup(item.name)}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       groupActive
-                        ? 'text-[#2a1348] bg-[#eadef8]/60 font-black'
-                        : 'text-[#523970] hover:bg-[#eadef8]/40 hover:text-[#2a1348]'
+                        ? 'text-[#451630] bg-[#ffe0f1]/60 font-black'
+                        : 'text-[#733557] hover:bg-[#ffe0f1]/40 hover:text-[#451630]'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className={groupActive ? 'text-[#7e14ff]' : 'text-[#7e14ff]/70'}>
+                      <span className={groupActive ? 'text-[#ff91db]' : 'text-[#ff91db]/70'}>
                         {item.icon}
                       </span>
                       <span>{item.name}</span>
                     </div>
                     {isOpen ? (
-                      <ChevronDown className="w-4 h-4 text-[#715494]" />
+                      <ChevronDown className="w-4 h-4 text-[#9c537b]" />
                     ) : (
-                      <ChevronRight className="w-4 h-4 text-[#715494]" />
+                      <ChevronRight className="w-4 h-4 text-[#9c537b]" />
                     )}
                   </button>
 
                   {isOpen && (
-                    <div className="pl-6 pr-1 space-y-1 border-l-2 border-[#dec5f7] ml-4 my-1">
+                    <div className="pl-6 pr-1 space-y-1 border-l-2 border-[#ffd0ef] ml-4 my-1">
                       {item.children.map((sub) => {
                         const active = isLinkActive(sub.path);
                         return (
@@ -332,12 +332,12 @@ export const Sidebar: React.FC = () => {
                             to={sub.path}
                             className={`flex items-center justify-between px-3 py-1.5 rounded-lg text-xs transition-all relative ${
                               active
-                                ? 'bg-[#7e14ff] text-white font-bold shadow-xs'
-                                : 'text-[#523970] hover:bg-[#eadef8] hover:text-[#2a1348] font-medium'
+                                ? 'bg-[#ff91db] text-white font-bold shadow-xs'
+                                : 'text-[#733557] hover:bg-[#ffe0f1] hover:text-[#451630] font-medium'
                             }`}
                           >
                             <div className="flex items-center gap-2.5">
-                              <span className={active ? 'text-white' : 'text-[#715494]'}>
+                              <span className={active ? 'text-white' : 'text-[#9c537b]'}>
                                 {sub.icon}
                               </span>
                               <span>{sub.name}</span>
@@ -345,7 +345,7 @@ export const Sidebar: React.FC = () => {
                             {sub.badge !== undefined && (
                               <span
                                 className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
-                                  active ? 'bg-white text-[#7e14ff]' : 'bg-[#eedffc] text-[#7e14ff]'
+                                  active ? 'bg-white text-[#ff91db]' : 'bg-[#ffe3f5] text-[#ff91db]'
                                 }`}
                               >
                                 {sub.badge}
@@ -370,15 +370,15 @@ export const Sidebar: React.FC = () => {
                   active
                     ? isVendor
                       ? 'bg-amber-600 text-white shadow-xs'
-                      : 'bg-[#7e14ff] text-white shadow-xs'
+                      : 'bg-[#ff91db] text-white shadow-xs'
                     : isVendor
                     ? 'text-amber-900 hover:bg-amber-100 hover:text-amber-950 font-semibold'
-                    : 'text-[#523970] hover:bg-[#eadef8] hover:text-[#2a1348] font-medium'
+                    : 'text-[#733557] hover:bg-[#ffe0f1] hover:text-[#451630] font-medium'
                 }`}
                 title={sidebarCollapsed ? item.name : undefined}
               >
                 <div className="flex items-center gap-3">
-                  <span className={active ? 'text-white' : isVendor ? 'text-amber-600' : 'text-[#7e14ff]'}>
+                  <span className={active ? 'text-white' : isVendor ? 'text-amber-600' : 'text-[#ff91db]'}>
                     {item.icon}
                   </span>
                   {!sidebarCollapsed && <span>{item.name}</span>}
@@ -390,7 +390,7 @@ export const Sidebar: React.FC = () => {
                       ? 'bg-white text-slate-900'
                       : isVendor
                       ? 'bg-amber-200 text-amber-900'
-                      : 'bg-[#7e14ff] text-white'
+                      : 'bg-[#ff91db] text-white'
                   }`}>
                     {item.badge}
                   </span>
@@ -406,7 +406,7 @@ export const Sidebar: React.FC = () => {
 
         {/* Sidebar Footer / Collapse toggle button */}
         <div className={`p-3 border-t hidden lg:flex items-center justify-between ${
-          isVendor ? 'border-amber-200 bg-amber-50/50' : 'border-[#e5d5f8] bg-[#eedffc]/30'
+          isVendor ? 'border-amber-200 bg-amber-50/50' : 'border-[#ffd4ea] bg-[#ffe3f5]/30'
         }`}>
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
