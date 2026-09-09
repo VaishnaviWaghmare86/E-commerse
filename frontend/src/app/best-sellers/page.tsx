@@ -100,7 +100,7 @@ function BestSellersInner() {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || \'http://localhost:5000/api\'}/products`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/products`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data) && data.length > 0) {
