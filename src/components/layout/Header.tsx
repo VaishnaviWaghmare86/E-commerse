@@ -90,14 +90,14 @@ export const Header: React.FC = () => {
 
   return (
     <header className={`h-16 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs border-b ${
-      isVendor ? 'bg-[#fffaf0] border-amber-200' : 'bg-[#f3ecfc] border-[#e5d5f8]'
+      isVendor ? 'bg-[#fffaf0] border-amber-200' : 'bg-[#fff0f7] border-[#ffd4ea]'
     }`}>
       {/* Left section: Hamburger / Page Title */}
       <div className="flex items-center gap-3 sm:gap-4">
         {/* Mobile toggle */}
         <button
           onClick={() => setMobileSidebarOpen(true)}
-          className="lg:hidden p-2 text-[#523970] hover:text-[#2a1348] hover:bg-slate-200/50 rounded-lg transition-colors cursor-pointer"
+          className="lg:hidden p-2 text-[#733557] hover:text-[#451630] hover:bg-slate-200/50 rounded-lg transition-colors cursor-pointer"
           aria-label="Open Sidebar"
         >
           <Menu className="w-5 h-5" />
@@ -106,7 +106,7 @@ export const Header: React.FC = () => {
         {/* Desktop collapse indicator button */}
         <button
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="hidden lg:flex p-2 text-[#523970] hover:text-[#2a1348] hover:bg-slate-200/50 rounded-lg transition-colors cursor-pointer"
+          className="hidden lg:flex p-2 text-[#733557] hover:text-[#451630] hover:bg-slate-200/50 rounded-lg transition-colors cursor-pointer"
           title="Toggle Sidebar"
         >
           <Menu className="w-5 h-5" />
@@ -156,7 +156,7 @@ export const Header: React.FC = () => {
           <div className="relative" ref={notifRef}>
             <button
               onClick={() => setNotificationsOpen(!notificationsOpen)}
-              className="p-2 rounded-lg text-[#523970] hover:text-[#2a1348] hover:bg-[#eadef8] relative transition-colors cursor-pointer"
+              className="p-2 rounded-lg text-[#733557] hover:text-[#451630] hover:bg-[#ffe0f1] relative transition-colors cursor-pointer"
               aria-label="Notifications"
             >
               <Bell className="w-5 h-5" />
@@ -178,7 +178,7 @@ export const Header: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => markAllNotificationsAsRead()}
-                      className="text-[11px] font-semibold text-[#7e14ff] hover:underline cursor-pointer"
+                      className="text-[11px] font-semibold text-[#ff91db] hover:underline cursor-pointer"
                     >
                       Mark all as read
                     </button>
@@ -207,7 +207,7 @@ export const Header: React.FC = () => {
             className="flex items-center gap-2.5 p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl hover:bg-slate-200/50 transition-colors cursor-pointer"
           >
             <div className={`w-8 h-8 rounded-full text-white flex items-center justify-center font-black text-xs shadow-xs uppercase ${
-              isVendor ? 'bg-gradient-to-tr from-amber-500 to-rose-500' : 'bg-gradient-to-tr from-[#7e14ff] to-[#47bfff]'
+              isVendor ? 'bg-gradient-to-tr from-amber-500 to-rose-500' : 'bg-gradient-to-tr from-[#ff91db] to-[#ffa3e4]'
             }`}>
               {user?.name ? user.name.charAt(0) : (isVendor ? 'S' : 'A')}
             </div>
@@ -216,7 +216,7 @@ export const Header: React.FC = () => {
                 {user?.name || (isVendor ? 'Shopkeeper' : 'Admin')}
               </span>
               <span className={`text-[10px] font-bold leading-tight ${
-                isVendor ? 'text-amber-700' : 'text-[#715494]'
+                isVendor ? 'text-amber-700' : 'text-[#9c537b]'
               }`}>
                 {isVendor ? (user?.shopName || 'Shopkeeper') : 'Administrator'}
               </span>
@@ -230,7 +230,7 @@ export const Header: React.FC = () => {
                 <div className="flex items-center justify-between mb-1">
                   <p className="text-xs font-black text-slate-900 truncate">{user?.name || (isVendor ? 'Shopkeeper' : 'Admin')}</p>
                   <span className={`text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider ${
-                    isVendor ? 'bg-amber-100 text-amber-800' : 'bg-[#eedffc] text-[#7e14ff]'
+                    isVendor ? 'bg-amber-100 text-amber-800' : 'bg-[#ffe3f5] text-[#ff91db]'
                   }`}>
                     {isVendor ? 'SHOPKEEPER' : 'SUPER ADMIN'}
                   </span>

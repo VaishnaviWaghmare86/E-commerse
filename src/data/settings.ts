@@ -17,7 +17,7 @@ export const initialSettings: StoreSettings = {
   facebookUrl: 'https://facebook.com/kidsplaystore',
   instagramUrl: 'https://instagram.com/kidsplay.official',
   youtubeUrl: 'https://youtube.com/@kidsplaychannel',
-  primaryColor: '#7e14ff',
+  primaryColor: '#ff91db',
   enableStockAlerts: true,
   lowStockThreshold: 10,
 };

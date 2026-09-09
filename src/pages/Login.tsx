@@ -45,7 +45,7 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-[#f8f4ff] to-slate-100 flex flex-col items-center justify-center p-4 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-[#fff5fc] to-slate-100 flex flex-col items-center justify-center p-4 sm:p-6">
       <div className="w-full max-w-md bg-white rounded-2xl border border-slate-200/80 shadow-xl p-6 sm:p-8">
         <div className="mb-4 p-2.5 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-between text-xs">
           <div className="flex items-center gap-1.5 font-bold text-amber-900">
@@ -61,11 +61,11 @@ export const Login: React.FC = () => {
         </div>
         {/* Brand Header */}
         <div className="flex flex-col items-center text-center mb-6">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#7e14ff] to-[#47bfff] flex items-center justify-center text-white font-extrabold text-2xl shadow-md mb-3">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#ff91db] to-[#ffa3e4] flex items-center justify-center text-white font-extrabold text-2xl shadow-md mb-3">
             K
           </div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight">KidsPlay Admin</h2>
-          <span className="text-xs font-semibold text-[#7e14ff] tracking-widest uppercase mt-0.5">
+          <span className="text-xs font-semibold text-[#ff91db] tracking-widest uppercase mt-0.5">
             Admin Panel Login
           </span>
           <p className="text-xs text-slate-500 mt-2">
@@ -74,18 +74,18 @@ export const Login: React.FC = () => {
         </div>
 
         {/* Credentials Callout & Quick Fill */}
-        <div className="mb-6 p-3 bg-violet-50/70 border border-violet-100 rounded-xl flex items-center justify-between gap-3 text-xs">
+        <div className="mb-6 p-3 bg-pink-50/70 border border-pink-100 rounded-xl flex items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
-            <Key className="w-4 h-4 text-[#7e14ff] shrink-0" />
+            <Key className="w-4 h-4 text-[#ff91db] shrink-0" />
             <div className="text-slate-700">
               <span className="font-semibold">Admin Credentials:</span>
-              <p className="font-mono text-[11px] text-[#7e14ff]">admin / admin123</p>
+              <p className="font-mono text-[11px] text-[#ff91db]">admin / admin123</p>
             </div>
           </div>
           <button
             type="button"
             onClick={handleQuickFill}
-            className="px-2.5 py-1 text-[11px] font-semibold text-[#7e14ff] bg-white border border-violet-200 rounded-lg hover:bg-violet-100 transition-colors cursor-pointer shadow-2xs shrink-0"
+            className="px-2.5 py-1 text-[11px] font-semibold text-[#ff91db] bg-white border border-pink-200 rounded-lg hover:bg-pink-100 transition-colors cursor-pointer shadow-2xs shrink-0"
           >
             Auto Fill
           </button>

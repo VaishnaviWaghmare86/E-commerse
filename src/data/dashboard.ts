@@ -34,7 +34,7 @@ export const initialStats: StatMetric[] = [
     isPositive: true,
     timeframe: 'vs last month',
     iconName: 'Users',
-    color: 'text-violet-600 bg-violet-50 border-violet-100',
+    color: 'text-pink-500 bg-pink-50 border-pink-100',
   },
   {
     title: 'Total Products',

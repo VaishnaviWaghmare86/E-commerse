@@ -209,7 +209,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
             )}
             <div className="flex justify-between text-sm font-bold text-slate-900 pt-2 border-t border-slate-200">
               <span>Total Amount</span>
-              <span className="text-[#7e14ff]">₹{order.totalAmount.toLocaleString()}</span>
+              <span className="text-[#ff91db]">₹{order.totalAmount.toLocaleString()}</span>
             </div>
           </div>
         </div>
@@ -222,7 +222,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           <div className="relative pl-6 space-y-3 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
             {order.timeline.map((step, idx) => (
               <div key={idx} className="relative">
-                <div className="absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-violet-100 border border-violet-300 flex items-center justify-center text-[#7e14ff]">
+                <div className="absolute -left-6 top-0.5 w-5 h-5 rounded-full bg-pink-100 border border-pink-300 flex items-center justify-center text-[#ff91db]">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                 </div>
                 <div>

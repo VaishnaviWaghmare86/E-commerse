@@ -39,14 +39,14 @@ export const StatCard: React.FC<StatCardProps> = ({
   const iconMap = {
     DollarSign: <RupeeIcon className="w-5 h-5 text-emerald-600" />,
     ShoppingCart: <ShoppingCart className="w-5 h-5 text-blue-600" />,
-    Users: <Users className="w-5 h-5 text-[#7e14ff]" />,
+    Users: <Users className="w-5 h-5 text-[#ff91db]" />,
     Package: <Package className="w-5 h-5 text-amber-600" />,
   };
 
   const bgMap = {
     DollarSign: 'bg-emerald-50 border-emerald-100',
     ShoppingCart: 'bg-blue-50 border-blue-100',
-    Users: 'bg-violet-50 border-violet-100',
+    Users: 'bg-pink-50 border-pink-100',
     Package: 'bg-amber-50 border-amber-100',
   };
 
