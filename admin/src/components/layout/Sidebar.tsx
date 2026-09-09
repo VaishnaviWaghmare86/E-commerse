@@ -227,7 +227,7 @@ export const Sidebar: React.FC = () => {
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 hidden lg:flex flex-col ${
+        className={`fixed top-0 bottom-0 left-0 z-40 flex flex-col ${
           isVendor ? 'bg-[#fffaf0] border-r border-amber-200' : 'bg-[#fff0f7] border-r border-[#ffd4ea]'
         } transition-all duration-300 ease-in-out select-none ${
           sidebarCollapsed ? 'w-20' : 'w-64'
