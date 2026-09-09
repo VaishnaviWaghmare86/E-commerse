@@ -153,8 +153,8 @@ export const Settings: React.FC = () => {
           {activeTab === 'security' && (
             <div className="space-y-6">
               {/* Credentials Callout Card */}
-              <div className="p-4 bg-violet-50/70 border border-violet-100 rounded-xl flex items-start gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#7e14ff] text-white flex items-center justify-center shrink-0 shadow-xs">
+              <div className="p-4 bg-pink-50/70 border border-pink-100 rounded-xl flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#ff91db] text-white flex items-center justify-center shrink-0 shadow-xs">
                   <Key className="w-5 h-5" />
                 </div>
                 <div>
@@ -164,10 +164,10 @@ export const Settings: React.FC = () => {
                   </p>
                   <div className="flex flex-wrap items-center gap-4 mt-3 text-xs">
                     <span className="text-slate-600">
-                      Active Username: <strong className="font-mono text-[#7e14ff]">{adminCredentials.username}</strong>
+                      Active Username: <strong className="font-mono text-[#ff91db]">{adminCredentials.username}</strong>
                     </span>
                     <span className="text-slate-600">
-                      Active Email: <strong className="font-mono text-[#7e14ff]">{adminCredentials.email}</strong>
+                      Active Email: <strong className="font-mono text-[#ff91db]">{adminCredentials.email}</strong>
                     </span>
                   </div>
                 </div>
@@ -193,7 +193,7 @@ export const Settings: React.FC = () => {
 
                 <div className="border-t border-slate-100 pt-4 mt-2">
                   <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                    <Lock className="w-3.5 h-3.5 text-[#7e14ff]" /> Change Password
+                    <Lock className="w-3.5 h-3.5 text-[#ff91db]" /> Change Password
                   </h4>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

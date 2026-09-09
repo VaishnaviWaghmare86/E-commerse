@@ -51,7 +51,7 @@ export const HomepageCMS: React.FC = () => {
       <Card>
         <CardHeader className="flex-row items-center justify-between pb-3">
           <div className="flex items-center gap-2">
-            <LayoutTemplate className="w-4 h-4 text-[#7e14ff]" />
+            <LayoutTemplate className="w-4 h-4 text-[#ff91db]" />
             <CardTitle>Front Page Section Hierarchy</CardTitle>
           </div>
           <span className="text-xs text-slate-500">

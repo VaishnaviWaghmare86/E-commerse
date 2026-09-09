@@ -5,6 +5,20 @@
   --foreground: #171717;
 }
 
+@theme {
+  --color-pink-50: #fff5fc;
+  --color-pink-100: #ffebf9;
+  --color-pink-200: #ffd6f3;
+  --color-pink-300: #ffb8ec;
+  --color-pink-400: #ffa3e4;
+  --color-pink-500: #ff91db;
+  --color-pink-600: #eb70c3;
+  --color-pink-700: #cb52a4;
+  --color-pink-800: #a83d86;
+  --color-pink-900: #89336e;
+  --color-pink-950: #571644;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

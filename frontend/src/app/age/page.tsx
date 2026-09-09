@@ -22,14 +22,14 @@ export default function AgePage() {
   ];
 
   return (
-    <div className="w-full bg-[#FAF9F6] min-h-screen py-10 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-6xl mx-auto">
+    <div className="w-full bg-[#FAF9F6] min-h-screen py-8 px-3 sm:px-4 md:px-5 lg:px-6 font-sans">
+      <div className="w-full">
         
-        <div className="text-center max-w-2xl mx-auto mb-12">
+        <div className="text-center max-w-2xl mx-auto mb-10">
           <span className="bg-amber-100 text-amber-800 text-xs font-black px-3.5 py-1 rounded-full uppercase tracking-wider">
             Developmentally Tailored 🎈
           </span>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight mt-3 mb-3">
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mt-3 mb-2">
             Shop Toys by Age Group
           </h1>
           <p className="text-slate-600 text-sm font-medium">
@@ -37,7 +37,7 @@ export default function AgePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 lg:gap-8">
           {ageGroups.map((ag, idx) => (
             <motion.div
               key={ag.id}

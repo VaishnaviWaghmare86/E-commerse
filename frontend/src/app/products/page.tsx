@@ -70,11 +70,91 @@ function ProductsContent() {
     if (sale === "true") setOnSaleOnly(true);
   }, [searchParams]);
 
+  // Dynamically merge categories from API and all categories present on products
+  const allCategoriesList = useMemo(() => {
+    const map = new Map<string, Category>();
+    const usedIds = new Set<string>();
+
+    categories.forEach((c) => {
+      if (c && c.name) {
+        const key = c.name.trim().toLowerCase();
+        const slug = c.slug || key.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        let id = c.id;
+        if (!id || usedIds.has(id)) {
+          id = `cat-${slug}`;
+        }
+        usedIds.add(id);
+        map.set(key, { ...c, id, slug });
+      }
+    });
+
+    products.forEach((p) => {
+      if (p.status !== "APPROVED" || p.isActive === false) return;
+      const catName = typeof p.category === "string" ? p.category : p.category?.name;
+      if (catName && catName.trim()) {
+        const key = catName.trim().toLowerCase();
+        if (!map.has(key)) {
+          const slug = key.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+          let id = p.categoryId || `cat-${slug}`;
+          if (usedIds.has(id)) {
+            id = `cat-${slug}`;
+          }
+          usedIds.add(id);
+          map.set(key, {
+            id,
+            name: catName.trim(),
+            slug,
+            description: `${catName.trim()} toys`,
+          });
+        }
+      }
+    });
+    return Array.from(map.values());
+  }, [categories, products]);
+
+  // Dynamically merge brands from API and all brands present on products
+  const allBrandsList = useMemo(() => {
+    const map = new Map<string, Brand>();
+    const usedIds = new Set<string>();
+
+    brands.forEach((b) => {
+      if (b && b.name) {
+        const key = b.name.trim().toLowerCase();
+        const slug = b.slug || key.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        let id = b.id;
+        if (!id || usedIds.has(id)) {
+          id = `brand-${slug}`;
+        }
+        usedIds.add(id);
+        map.set(key, { ...b, id, slug });
+      }
+    });
+
+    products.forEach((p) => {
+      if (p.status !== "APPROVED" || p.isActive === false) return;
+      if (p.brand && p.brand.trim()) {
+        const key = p.brand.trim().toLowerCase();
+        if (!map.has(key)) {
+          const slug = key.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+          const id = `brand-${slug}`;
+          usedIds.add(id);
+          map.set(key, {
+            id,
+            name: p.brand.trim(),
+            slug,
+            description: `${p.brand.trim()} toys`,
+          });
+        }
+      }
+    });
+    return Array.from(map.values());
+  }, [brands, products]);
+
   // Filtered and Sorted Products
   const filteredProducts = useMemo(() => {
     return products
       .filter((p) => {
-        // Customer storefront rule: only approved & active
+        // Customer storefront rule: only show approved and active toys (never unapproved / pending)
         if (p.status !== "APPROVED") return false;
         if (p.isActive === false) return false;
 
@@ -85,20 +165,31 @@ function ProductsContent() {
           const matchDesc = p.description?.toLowerCase().includes(q);
           const matchBrand = p.brand?.toLowerCase().includes(q);
           const matchVendor = p.vendorName?.toLowerCase().includes(q);
-          if (!matchName && !matchDesc && !matchBrand && !matchVendor) return false;
+          const matchCat = (typeof p.category === "string" ? p.category : p.category?.name)?.toLowerCase().includes(q);
+          if (!matchName && !matchDesc && !matchBrand && !matchVendor && !matchCat) return false;
         }
 
-        // Category
+        // Category filter: exact match, id match, or flexible substring match
         if (selectedCategory !== "all") {
-          const catName = typeof p.category === "string" ? p.category : p.category?.name;
-          if (catName?.toLowerCase() !== selectedCategory.toLowerCase() && p.categoryId !== selectedCategory) {
+          const catName = (typeof p.category === "string" ? p.category : p.category?.name || "").trim().toLowerCase();
+          const target = selectedCategory.trim().toLowerCase();
+          
+          const isMatch =
+            catName === target ||
+            p.categoryId === selectedCategory ||
+            (target.length > 3 && catName.includes(target)) ||
+            (catName.length > 3 && target.includes(catName));
+
+          if (!isMatch) return false;
+        }
+
+        // Brand filter
+        if (selectedBrand !== "all") {
+          const brandName = (p.brand || "").trim().toLowerCase();
+          const target = selectedBrand.trim().toLowerCase();
+          if (brandName !== target && !brandName.includes(target) && !target.includes(brandName)) {
             return false;
           }
-        }
-
-        // Brand
-        if (selectedBrand !== "all") {
-          if (p.brand?.toLowerCase() !== selectedBrand.toLowerCase()) return false;
         }
 
         // Age Group
@@ -153,8 +244,8 @@ function ProductsContent() {
     (searchQuery ? 1 : 0);
 
   return (
-    <div className="w-full bg-[#FAF9F6] min-h-screen py-8 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-7xl mx-auto">
+    <div className="w-full bg-[#FAF9F6] min-h-screen py-6 px-3 sm:px-4 md:px-5 lg:px-6 font-sans">
+      <div className="w-full">
         {/* Header Title & Breadcrumb */}
         <div className="mb-6">
           <div className="flex items-center gap-2 text-xs text-slate-500 font-semibold mb-2">
@@ -260,157 +351,277 @@ function ProductsContent() {
         </div>
 
         {/* Main Grid: Filters Sidebar + Products Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5 gap-6 lg:gap-8 items-stretch">
           
           {/* SIDEBAR FILTERS (Desktop & Mobile Modal) */}
-          <aside className={`lg:block ${mobileFilterOpen ? 'fixed inset-0 z-50 bg-black/40 flex justify-end' : 'hidden'}`}>
-            <div className={`bg-white rounded-3xl p-6 shadow-sm border border-slate-200 lg:w-full w-80 h-full lg:h-auto overflow-y-auto space-y-6 ${mobileFilterOpen ? 'p-6 rounded-l-3xl rounded-r-none' : ''}`}>
+          <aside className={`lg:block h-full ${mobileFilterOpen ? 'fixed inset-0 z-50 bg-black/40 flex justify-end' : 'hidden'}`}>
+            <div className={`bg-white rounded-3xl p-6 shadow-sm border border-slate-200 lg:w-full w-80 h-full flex flex-col justify-between ${mobileFilterOpen ? 'p-6 rounded-l-3xl rounded-r-none overflow-y-auto' : ''}`}>
               
-              {mobileFilterOpen && (
-                <div className="flex justify-between items-center pb-4 border-b border-slate-100 lg:hidden">
-                  <h3 className="font-black text-slate-800 text-lg">Filter Products</h3>
-                  <button onClick={() => setMobileFilterOpen(false)} className="text-slate-400 hover:text-slate-700">
-                    <X size={20} />
-                  </button>
-                </div>
-              )}
+              <div className="space-y-6">
+                {mobileFilterOpen && (
+                  <div className="flex justify-between items-center pb-4 border-b border-slate-100 lg:hidden">
+                    <h3 className="font-black text-slate-800 text-lg">Filter Products</h3>
+                    <button onClick={() => setMobileFilterOpen(false)} className="text-slate-400 hover:text-slate-700">
+                      <X size={20} />
+                    </button>
+                  </div>
+                )}
 
-              {/* Category Filter */}
-              <div>
-                <h4 className="font-extrabold text-slate-800 text-sm mb-3">Categories</h4>
-                <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-                  <button
-                    onClick={() => setSelectedCategory("all")}
-                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-between ${
-                      selectedCategory === "all" ? "bg-pink-500 text-white" : "text-slate-600 hover:bg-slate-50"
-                    }`}
-                  >
-                    <span>All Categories</span>
-                  </button>
-                  {categories.map((cat) => (
+                {/* Sidebar Header with Filter count and Reset */}
+                <div className="hidden lg:flex items-center justify-between pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <SlidersHorizontal size={16} className="text-pink-500" />
+                    <h3 className="font-black text-slate-900 text-sm tracking-wide">Filters &amp; Sort</h3>
+                  </div>
+                  {activeFiltersCount > 0 && (
                     <button
-                      key={cat.id}
-                      onClick={() => setSelectedCategory(cat.name)}
+                      onClick={clearAllFilters}
+                      className="text-[11px] font-bold text-pink-500 hover:text-pink-600 hover:underline cursor-pointer"
+                    >
+                      Reset All
+                    </button>
+                  )}
+                </div>
+
+                {/* Sort By Filter in Sidebar */}
+                <div>
+                  <h4 className="font-extrabold text-slate-800 text-xs uppercase tracking-wider mb-2.5 flex items-center justify-between text-slate-400">
+                    <span>Sort Order</span>
+                  </h4>
+                  <div className="space-y-1">
+                    {[
+                      { id: "popular", label: "🌟 Most Popular" },
+                      { id: "newest", label: "✨ Newest Arrivals" },
+                      { id: "price_asc", label: "💵 Price: Low to High" },
+                      { id: "price_desc", label: "💎 Price: High to Low" },
+                      { id: "rating", label: "⭐ Highest Rated" },
+                    ].map((s) => (
+                      <button
+                        key={s.id}
+                        onClick={() => setSortBy(s.id)}
+                        className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+                          sortBy === s.id
+                            ? "bg-purple-600 text-white shadow-xs"
+                            : "text-slate-600 hover:bg-slate-50"
+                        }`}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Category Filter (Clean & Fully Visible, Dynamic Product Categories) */}
+                <div className="pt-4 border-t border-slate-100">
+                  <h4 className="font-extrabold text-slate-800 text-xs uppercase tracking-wider mb-2.5 flex items-center justify-between text-slate-400">
+                    <span>Categories</span>
+                    <span className="text-[10px] font-bold text-slate-400 font-mono">({allCategoriesList.length + 1})</span>
+                  </h4>
+                  <div className="space-y-1">
+                    <button
+                      onClick={() => setSelectedCategory("all")}
+                      className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${
+                        selectedCategory === "all" ? "bg-pink-500 text-white shadow-xs" : "text-slate-600 hover:bg-slate-50"
+                      }`}
+                    >
+                      <span>All Categories</span>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                        selectedCategory === "all" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"
+                      }`}>
+                        {products.filter(p => p.status === "APPROVED" && p.isActive !== false).length}
+                      </span>
+                    </button>
+                    {allCategoriesList.map((cat, idx) => {
+                      const isSelected = selectedCategory.toLowerCase() === cat.name.toLowerCase();
+                      const count = products.filter((p) => {
+                        if (p.status !== "APPROVED" || p.isActive === false) return false;
+                        const c = (typeof p.category === "string" ? p.category : p.category?.name || "").toLowerCase();
+                        const t = cat.name.toLowerCase();
+                        return c === t || (t.length > 3 && c.includes(t)) || (c.length > 3 && t.includes(c));
+                      }).length;
+
+                      return (
+                        <button
+                          key={`cat-btn-${cat.id}-${idx}`}
+                          onClick={() => setSelectedCategory(cat.name)}
+                          className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer group ${
+                            isSelected ? "bg-pink-500 text-white shadow-xs" : "text-slate-600 hover:bg-slate-50"
+                          }`}
+                        >
+                          <span className="truncate mr-2">{cat.name}</span>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold ${
+                            isSelected ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500 group-hover:bg-slate-200"
+                          }`}>
+                            {count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Brand Filter (Clean & Fully Visible, Dynamic Brands) */}
+                <div className="pt-4 border-t border-slate-100">
+                  <h4 className="font-extrabold text-slate-800 text-xs uppercase tracking-wider mb-2.5 flex items-center justify-between text-slate-400">
+                    <span>Brands</span>
+                    <span className="text-[10px] font-bold text-slate-400 font-mono">({allBrandsList.length + 1})</span>
+                  </h4>
+                  <div className="space-y-1">
+                    <button
+                      onClick={() => setSelectedBrand("all")}
+                      className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${
+                        selectedBrand === "all" ? "bg-sky-500 text-white shadow-xs" : "text-slate-600 hover:bg-slate-50"
+                      }`}
+                    >
+                      <span>All Brands</span>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                        selectedBrand === "all" ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"
+                      }`}>
+                        {products.filter(p => p.status === "APPROVED" && p.isActive !== false).length}
+                      </span>
+                    </button>
+                    {allBrandsList.map((b, idx) => {
+                      const isSelected = selectedBrand.toLowerCase() === b.name.toLowerCase();
+                      const count = products.filter((p) => {
+                        if (p.status !== "APPROVED" || p.isActive === false) return false;
+                        const br = (p.brand || "").toLowerCase();
+                        const t = b.name.toLowerCase();
+                        return br === t || br.includes(t) || t.includes(br);
+                      }).length;
+
+                      return (
+                        <button
+                          key={`brand-btn-${b.id}-${idx}`}
+                          onClick={() => setSelectedBrand(b.name)}
+                          className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer group ${
+                            isSelected ? "bg-sky-500 text-white shadow-xs" : "text-slate-600 hover:bg-slate-50"
+                          }`}
+                        >
+                          <span className="truncate mr-2">{b.name}</span>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold ${
+                            isSelected ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500 group-hover:bg-slate-200"
+                          }`}>
+                            {count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Age Group Filter */}
+                <div className="pt-4 border-t border-slate-100">
+                  <h4 className="font-extrabold text-slate-800 text-xs uppercase tracking-wider mb-2.5 flex items-center justify-between text-slate-400">
+                    <span>Age Groups</span>
+                  </h4>
+                  <div className="space-y-1">
+                    <button
+                      onClick={() => setSelectedAge("all")}
                       className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-between ${
-                        selectedCategory.toLowerCase() === cat.name.toLowerCase()
-                          ? "bg-pink-500 text-white"
-                          : "text-slate-600 hover:bg-slate-50"
+                        selectedAge === "all" ? "bg-amber-500 text-white shadow-xs" : "text-slate-600 hover:bg-slate-50"
                       }`}
                     >
-                      <span>{cat.name}</span>
+                      <span>All Ages</span>
+                      {selectedAge === "all" && <span className="text-[10px]">✓</span>}
                     </button>
-                  ))}
+                    {ageGroups.map((ag) => (
+                      <button
+                        key={ag.id}
+                        onClick={() => setSelectedAge(ag.label)}
+                        className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-between ${
+                          selectedAge.toLowerCase().includes(ag.label.toLowerCase().replace("years", "").trim())
+                            ? "bg-amber-500 text-white shadow-xs"
+                            : "text-slate-600 hover:bg-slate-50"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span>{ag.icon || "🧸"}</span>
+                          <span>{ag.label}</span>
+                        </div>
+                        {selectedAge.toLowerCase().includes(ag.label.toLowerCase().replace("years", "").trim()) && (
+                          <span className="text-[10px]">✓</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              {/* Brand Filter */}
-              <div className="pt-4 border-t border-slate-100">
-                <h4 className="font-extrabold text-slate-800 text-sm mb-3">Brands</h4>
-                <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
-                  <button
-                    onClick={() => setSelectedBrand("all")}
-                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all ${
-                      selectedBrand === "all" ? "bg-sky-500 text-white" : "text-slate-600 hover:bg-slate-50"
-                    }`}
-                  >
-                    All Brands
-                  </button>
-                  {brands.map((b) => (
-                    <button
-                      key={b.id}
-                      onClick={() => setSelectedBrand(b.name)}
-                      className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all ${
-                        selectedBrand.toLowerCase() === b.name.toLowerCase()
-                          ? "bg-sky-500 text-white"
-                          : "text-slate-600 hover:bg-slate-50"
-                      }`}
-                    >
-                      {b.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Age Group Filter */}
-              <div className="pt-4 border-t border-slate-100">
-                <h4 className="font-extrabold text-slate-800 text-sm mb-3">Age Groups</h4>
-                <div className="space-y-1.5">
-                  <button
-                    onClick={() => setSelectedAge("all")}
-                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all ${
-                      selectedAge === "all" ? "bg-amber-500 text-white" : "text-slate-600 hover:bg-slate-50"
-                    }`}
-                  >
-                    All Ages
-                  </button>
-                  {ageGroups.map((ag) => (
-                    <button
-                      key={ag.id}
-                      onClick={() => setSelectedAge(ag.label)}
-                      className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
-                        selectedAge.toLowerCase().includes(ag.label.toLowerCase().replace("years", "").trim())
-                          ? "bg-amber-500 text-white"
-                          : "text-slate-600 hover:bg-slate-50"
-                      }`}
-                    >
-                      <span>{ag.icon || "🧸"}</span>
-                      <span>{ag.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Price Range Slider */}
-              <div className="pt-4 border-t border-slate-100">
-                <div className="flex justify-between items-center mb-2">
-                  <h4 className="font-extrabold text-slate-800 text-sm">Max Price</h4>
-                  <span className="text-xs font-black text-pink-600">₹{maxPrice}</span>
-                </div>
-                <input
-                  type="range"
-                  min={500}
-                  max={6000}
-                  step={200}
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(Number(e.target.value))}
-                  className="w-full accent-pink-500 cursor-pointer"
-                />
-                <div className="flex justify-between text-[10px] text-slate-400 font-bold mt-1">
-                  <span>₹500</span>
-                  <span>₹6000+</span>
-                </div>
-              </div>
-
-              {/* Checkbox Toggles */}
-              <div className="pt-4 border-t border-slate-100 space-y-3">
-                <label className="flex items-center gap-2.5 cursor-pointer text-xs font-bold text-slate-700">
+                {/* Price Range Slider */}
+                <div className="pt-4 border-t border-slate-100">
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="font-extrabold text-slate-800 text-xs uppercase tracking-wider text-slate-400">Max Price</h4>
+                    <span className="text-xs font-black text-pink-600">₹{maxPrice}</span>
+                  </div>
                   <input
-                    type="checkbox"
-                    checked={onSaleOnly}
-                    onChange={(e) => setOnSaleOnly(e.target.checked)}
-                    className="w-4 h-4 rounded text-pink-500 focus:ring-pink-400 cursor-pointer"
+                    type="range"
+                    min={500}
+                    max={6000}
+                    step={200}
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(Number(e.target.value))}
+                    className="w-full accent-pink-500 cursor-pointer"
                   />
-                  <span>On Discount / Sale Only 🔥</span>
-                </label>
-                <label className="flex items-center gap-2.5 cursor-pointer text-xs font-bold text-slate-700">
-                  <input
-                    type="checkbox"
-                    checked={inStockOnly}
-                    onChange={(e) => setInStockOnly(e.target.checked)}
-                    className="w-4 h-4 rounded text-pink-500 focus:ring-pink-400 cursor-pointer"
-                  />
-                  <span>In Stock Only</span>
-                </label>
+                  <div className="flex justify-between text-[10px] text-slate-400 font-bold mt-1">
+                    <span>₹500</span>
+                    <span>₹6000+</span>
+                  </div>
+                </div>
+
+                {/* Checkbox Toggles */}
+                <div className="pt-4 border-t border-slate-100 space-y-2.5">
+                  <label className="flex items-center gap-2.5 cursor-pointer text-xs font-bold text-slate-700 select-none">
+                    <input
+                      type="checkbox"
+                      checked={onSaleOnly}
+                      onChange={(e) => setOnSaleOnly(e.target.checked)}
+                      className="w-4 h-4 rounded text-pink-500 focus:ring-pink-400 cursor-pointer"
+                    />
+                    <span>On Discount / Sale Only 🔥</span>
+                  </label>
+                  <label className="flex items-center gap-2.5 cursor-pointer text-xs font-bold text-slate-700 select-none">
+                    <input
+                      type="checkbox"
+                      checked={inStockOnly}
+                      onChange={(e) => setInStockOnly(e.target.checked)}
+                      className="w-4 h-4 rounded text-pink-500 focus:ring-pink-400 cursor-pointer"
+                    />
+                    <span>In Stock Only</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Bottom Trust Card (Fills down to touch where footer starts) */}
+              <div className="mt-8 pt-6 border-t border-slate-100 space-y-3">
+                <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-sky-50 rounded-2xl p-4 border border-pink-100/60 text-center space-y-2">
+                  <div className="text-2xl">🧸</div>
+                  <h5 className="font-extrabold text-slate-900 text-xs">100% Certified Safe Toys</h5>
+                  <p className="text-slate-500 text-[11px] leading-relaxed font-medium">
+                    Lab-tested, BPA-free, non-toxic toys certified safe for children.
+                  </p>
+                  <div className="pt-1 flex flex-wrap justify-center gap-1.5 text-[10px] font-bold text-slate-600">
+                    <span className="bg-white px-2 py-0.5 rounded-md border border-slate-200">🚀 Fast Delivery</span>
+                    <span className="bg-white px-2 py-0.5 rounded-md border border-slate-200">🔄 Easy Returns</span>
+                  </div>
+                </div>
+
+                {activeFiltersCount > 0 && (
+                  <button
+                    onClick={clearAllFilters}
+                    className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl font-bold text-xs transition-colors text-center cursor-pointer"
+                  >
+                    Reset All Filters ({activeFiltersCount})
+                  </button>
+                )}
               </div>
 
             </div>
           </aside>
 
           {/* PRODUCTS GRID */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 xl:col-span-4">
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[1, 2, 3, 4, 5, 6].map((n) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
                   <div key={n} className="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 animate-pulse space-y-4">
                     <div className="w-full h-48 bg-slate-200 rounded-2xl"></div>
                     <div className="h-4 bg-slate-200 rounded w-3/4"></div>
@@ -434,7 +645,7 @@ function ProductsContent() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
                 {filteredProducts.map((p) => {
                   const hasDiscount = (p.salePrice && p.salePrice < p.basePrice) || (p.discount && p.discount > 0);
                   const currentPrice = p.salePrice || p.price || p.basePrice;
@@ -496,8 +707,11 @@ function ProductsContent() {
                           </h3>
                         </Link>
 
-                        {/* Meta: Brand & Age */}
-                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 mb-2">
+                        {/* Meta: Category Badge, Brand & Age */}
+                        <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-bold text-slate-400 mb-2">
+                          <span className="bg-pink-50 text-pink-700 border border-pink-200/60 px-2 py-0.5 rounded-md font-extrabold">
+                            {typeof p.category === "string" ? p.category : p.category?.name || "Toys"}
+                          </span>
                           <span className="bg-slate-100 px-2 py-0.5 rounded-md text-slate-600">{p.brand}</span>
                           <span>•</span>
                           <span>{p.ageGroup}</span>

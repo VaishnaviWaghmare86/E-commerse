@@ -283,17 +283,19 @@ export default function ProductDetailPage() {
             <div className="space-y-3 pt-6 border-t border-slate-100">
               <div className="flex items-center gap-4">
                 <span className="text-xs font-bold text-slate-600">Quantity:</span>
-                <div className="flex items-center gap-3 bg-slate-100 rounded-xl px-3 py-1.5">
+                <div className="flex items-center gap-1.5 bg-slate-100 border border-slate-200/80 rounded-xl p-1 shadow-2xs">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="font-bold text-slate-700 hover:text-pink-500 text-sm"
+                    className="w-7 h-7 rounded-lg bg-white hover:bg-pink-50 text-slate-700 hover:text-pink-600 flex items-center justify-center font-bold border border-slate-200 transition-all shadow-2xs active:scale-95 cursor-pointer text-sm"
+                    aria-label="Decrease quantity"
                   >
                     -
                   </button>
-                  <span className="font-black text-slate-900 text-sm px-2">{quantity}</span>
+                  <span className="min-w-[28px] text-center font-black text-slate-900 text-sm select-none">{quantity}</span>
                   <button
                     onClick={() => setQuantity(quantity + 1)}
-                    className="font-bold text-slate-700 hover:text-pink-500 text-sm"
+                    className="w-7 h-7 rounded-lg bg-white hover:bg-pink-50 text-slate-700 hover:text-pink-600 flex items-center justify-center font-bold border border-slate-200 transition-all shadow-2xs active:scale-95 cursor-pointer text-sm"
+                    aria-label="Increase quantity"
                   >
                     +
                   </button>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="100%" height="100%">
+  <rect width="160" height="160" rx="24" fill="#004D25"/>
+  <ellipse cx="80" cy="80" rx="66" ry="58" fill="#006633" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="80" y="65" font-family="'Georgia', serif" font-weight="bold" font-size="16" text-anchor="middle" fill="#FFFFFF">Melissa &amp;</text>
+  <text x="80" y="92" font-family="'Georgia', serif" font-weight="bold" font-size="22" text-anchor="middle" fill="#FFFFFF">Doug</text>
+  <circle cx="80" cy="112" r="3" fill="#FFE600"/>
+  <text x="80" y="125" font-family="Arial, sans-serif" font-weight="bold" font-size="8" text-anchor="middle" fill="#E2F5EC" letter-spacing="1">WOODEN TOYS</text>
+</svg>

@@ -255,12 +255,54 @@ export const api = {
       return await res.json();
     } catch (err) {
       return [
-        { id: 'brand-1', name: 'LEGO', slug: 'lego', description: 'Creative building blocks and robotics', featured: true },
-        { id: 'brand-2', name: 'Hot Wheels', slug: 'hot-wheels', description: 'Diecast cars and stunt loops', featured: true },
-        { id: 'brand-3', name: 'Barbie', slug: 'barbie', description: 'Fashion dolls and playsets', featured: true },
-        { id: 'brand-4', name: 'Fisher-Price', slug: 'fisher-price', description: 'Early learning and infant toys', featured: true },
-        { id: 'brand-5', name: 'Nerf', slug: 'nerf', description: 'Safe foam target blasters', featured: true },
-        { id: 'brand-6', name: 'Melissa & Doug', slug: 'melissa-and-doug', description: 'Wooden educational puzzles', featured: true },
+        {
+          id: 'brand-1',
+          name: 'LEGO',
+          slug: 'lego',
+          logo: '/brands/lego.svg',
+          description: 'Creative building blocks and robotics',
+          featured: true,
+        },
+        {
+          id: 'brand-2',
+          name: 'Hot Wheels',
+          slug: 'hot-wheels',
+          logo: '/brands/hot-wheels.svg',
+          description: 'Diecast cars and stunt loops',
+          featured: true,
+        },
+        {
+          id: 'brand-3',
+          name: 'Barbie',
+          slug: 'barbie',
+          logo: '/brands/barbie.svg',
+          description: 'Fashion dolls and playsets',
+          featured: true,
+        },
+        {
+          id: 'brand-4',
+          name: 'Fisher-Price',
+          slug: 'fisher-price',
+          logo: '/brands/fisher-price.svg',
+          description: 'Early learning and infant toys',
+          featured: true,
+        },
+        {
+          id: 'brand-5',
+          name: 'Nerf',
+          slug: 'nerf',
+          logo: '/brands/nerf.svg',
+          description: 'Safe foam target blasters',
+          featured: true,
+        },
+        {
+          id: 'brand-6',
+          name: 'Melissa & Doug',
+          slug: 'melissa-and-doug',
+          logo: '/brands/melissa-doug.svg',
+          description: 'Wooden educational puzzles',
+          featured: true,
+        },
       ];
     }
   },

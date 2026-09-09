@@ -35,8 +35,8 @@ export default function CartPage() {
             </button>
           )}
         </div>
-        <p className="text-slate-500 text-sm font-semibold mb-8">
-          You have <span className="text-pink-500 font-extrabold">{cartCount}</span> item{cartCount === 1 ? '' : 's'} in your bag.
+        <p className="text-slate-600 text-sm font-semibold mb-8 flex items-center gap-1.5">
+          You have <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full bg-pink-100 text-pink-700 font-black text-sm">{cartCount}</span> item{cartCount === 1 ? '' : 's'} in your bag.
         </p>
 
         {cart.length === 0 ? (
@@ -86,19 +86,23 @@ export default function CartPage() {
 
                   <div className="flex items-center justify-between w-full sm:w-auto gap-6 mt-2 sm:mt-0">
                     {/* Quantity controls */}
-                    <div className="flex items-center gap-2 bg-slate-100 rounded-xl px-2.5 py-1">
+                    <div className="flex items-center gap-1.5 bg-slate-100 border border-slate-200/80 rounded-xl p-1 shadow-2xs">
                       <button
                         onClick={() => updateQuantity(item.id, -1)}
-                        className="text-slate-600 hover:text-pink-500 p-0.5 font-bold"
+                        className="w-7 h-7 rounded-lg bg-white hover:bg-pink-50 text-slate-700 hover:text-pink-600 flex items-center justify-center font-bold border border-slate-200 transition-all shadow-2xs active:scale-95 cursor-pointer"
+                        aria-label="Decrease quantity"
                       >
-                        <Minus size={14} />
+                        <Minus size={13} strokeWidth={2.5} />
                       </button>
-                      <span className="text-xs font-black px-2">{item.quantity}</span>
+                      <span className="min-w-[28px] text-center font-black text-sm text-slate-900 select-none">
+                        {item.quantity}
+                      </span>
                       <button
                         onClick={() => updateQuantity(item.id, 1)}
-                        className="text-slate-600 hover:text-pink-500 p-0.5 font-bold"
+                        className="w-7 h-7 rounded-lg bg-white hover:bg-pink-50 text-slate-700 hover:text-pink-600 flex items-center justify-center font-bold border border-slate-200 transition-all shadow-2xs active:scale-95 cursor-pointer"
+                        aria-label="Increase quantity"
                       >
-                        <Plus size={14} />
+                        <Plus size={13} strokeWidth={2.5} />
                       </button>
                     </div>
 
@@ -108,7 +112,7 @@ export default function CartPage() {
                       </div>
                       <button
                         onClick={() => removeFromCart(item.id)}
-                        className="text-rose-500 hover:text-rose-700 p-1 mt-1"
+                        className="text-rose-500 hover:text-rose-700 p-1 mt-1 cursor-pointer transition-colors"
                         title="Remove item"
                       >
                         <Trash2 size={16} />
@@ -143,13 +147,13 @@ export default function CartPage() {
                   </span>
                 </div>
                 {deliveryFee > 0 && (
-                  <p className="text-[11px] text-pink-500 font-bold">
+                  <p className="text-[11px] text-pink-700 font-bold">
                     Add ₹{999 - subtotal} more for FREE shipping!
                   </p>
                 )}
-                <div className="flex justify-between text-base font-black text-slate-900 pt-3 border-t border-slate-100">
+                <div className="flex justify-between items-baseline text-base font-black text-slate-900 pt-3 border-t border-slate-100">
                   <span>Total Amount</span>
-                  <span className="text-pink-500">₹{grandTotal}</span>
+                  <span className="text-xl font-black text-slate-900">₹{grandTotal}</span>
                 </div>
               </div>
 

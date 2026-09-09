@@ -134,24 +134,41 @@ export default function Home() {
             className="absolute inset-0 w-full h-full overflow-hidden"
             onClick={() => router.push('/shop')}
           >
-            {/* Ultra-Sharp High-Definition Background Image */}
-            <motion.img 
-              src={slides[currentSlide].image} 
-              alt="Hero Slide" 
-              initial={{ scale: 1.05 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 6, ease: "easeOut" }}
-              className="absolute inset-0 w-full h-full object-cover object-center transform-gpu will-change-transform"
-              style={{ imageRendering: '-webkit-optimize-contrast' }}
-            />
+            {/* 🎬 Beautiful Animated Cartoon Playground Background Video 🎬 */}
+            <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+              <video
+                className="hero-background-video absolute inset-0 w-full h-full object-cover object-center motion-reduce:hidden"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                poster={slides[currentSlide].image || "/hero-play.jpg"}
+              >
+                <source src="/videos/kids-hero.mp4" type="video/mp4" />
+                {/* Fallback image if video cannot be played */}
+                <img
+                  src={slides[currentSlide].image || "/hero-play.jpg"}
+                  alt="Hero Background"
+                  className="w-full h-full object-cover object-center"
+                />
+              </video>
 
-            {/* Soft Ambient Text Vignette (Keeps Characters 100% Bright & Vibrant!) */}
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/75 via-slate-950/30 to-transparent pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-black/10 pointer-events-none" />
+              {/* Reduced motion fallback image (for users who prefer reduced motion) */}
+              <img
+                src={slides[currentSlide].image || "/hero-play.jpg"}
+                alt="Hero Background"
+                className="hidden motion-reduce:block absolute inset-0 w-full h-full object-cover object-center"
+              />
+            </div>
+
+            {/* Soft Ambient Text Vignette (Keeps Characters 100% Bright & Text Crystal Clear!) */}
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/35 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-black/20 pointer-events-none" />
 
             {/* Content Container */}
             <div className="absolute inset-0 flex items-center">
-              <div className="max-w-[1400px] mx-auto w-full px-6 md:px-12 relative z-10">
+              <div className="w-full px-3 sm:px-4 md:px-5 lg:px-6 relative z-10">
                 <motion.div 
                   initial={{ y: 30, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -222,7 +239,7 @@ export default function Home() {
 
       {/* 🌈 ADORABLE TICKER BAR (Attractive & Loved by Kids & Parents) 🌈 */}
       <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-sky-500 text-white py-3 shadow-inner overflow-hidden">
-        <div className="max-w-[1400px] mx-auto px-4 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm font-extrabold tracking-wide">
+        <div className="w-full px-3 sm:px-4 md:px-5 lg:px-6 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm font-extrabold tracking-wide">
           <div className="flex items-center gap-2">
             <span>🧸</span>
             <span>100% Non-Toxic &amp; Child Safe</span>
@@ -243,7 +260,7 @@ export default function Home() {
       </div>
 
       {/* 🎪 SECTION 1: TOP CATEGORY CIRCLES BAR (Matching Reference Image 100%) 🎪 */}
-      <section className="max-w-[1400px] mx-auto px-4 py-8 relative z-10">
+      <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-6 md:py-8 relative z-10">
         <div className="flex items-center gap-2">
           
           <button className="hidden md:flex p-2.5 rounded-full bg-white shadow-md border border-slate-200 text-slate-600 hover:text-pink-500 hover:scale-105 transition-all">
@@ -272,7 +289,7 @@ export default function Home() {
       </section>
 
       {/* 🎢 SECTION 2: 3 MIDDLE FEATURED BANNER CARDS (Matching Reference 1:1) 🎢 */}
-      <section className="max-w-[1400px] mx-auto px-4 py-4 relative z-10">
+      <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-4 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* Card 1: Blue Sky Pilot Theme */}
@@ -358,7 +375,7 @@ export default function Home() {
       </section>
 
       {/* 🛡️ SECTION 3: TRUST BADGES BAR (5 Cards in 1 Row - Matching Reference) 🛡️ */}
-      <section className="max-w-[1400px] mx-auto px-4 py-4 relative z-10">
+      <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-4 relative z-10">
         <div className="bg-white rounded-3xl p-4 shadow-sm border border-slate-200 grid grid-cols-2 md:grid-cols-5 gap-4 items-center">
           
           <div className="flex items-center gap-3 p-2 border-r border-slate-100 last:border-none">
@@ -415,7 +432,7 @@ export default function Home() {
       </section>
 
       {/* 🎪 SECTION 4: 5 BOTTOM CATEGORY CALLOUT CARDS (Matching Reference 1:1) 🎪 */}
-      <section className="max-w-[1400px] mx-auto px-4 py-4 relative z-10">
+      <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-4 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           
           {/* Card 1: Trending Toys (Red Car) */}
@@ -439,7 +456,7 @@ export default function Home() {
           </Link>
 
           {/* Card 2: New Arrivals (Dinosaur) */}
-          <Link href="/shop">
+          <Link href="/new">
             <motion.div 
               whileHover={{ y: -5 }}
               className="bg-gradient-to-br from-sky-100 to-blue-50 rounded-3xl p-4 h-[160px] relative overflow-hidden shadow-sm border border-sky-100 flex flex-col justify-between group cursor-pointer"
@@ -459,7 +476,7 @@ export default function Home() {
           </Link>
 
           {/* Card 3: Best Sellers (Teddy) */}
-          <Link href="/shop">
+          <Link href="/best-sellers">
             <motion.div 
               whileHover={{ y: -5 }}
               className="bg-gradient-to-br from-amber-100 to-yellow-50 rounded-3xl p-4 h-[160px] relative overflow-hidden shadow-sm border border-amber-100 flex flex-col justify-between group cursor-pointer"

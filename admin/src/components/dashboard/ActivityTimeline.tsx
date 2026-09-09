@@ -11,7 +11,7 @@ export const ActivityTimeline: React.FC = () => {
       case 'product':
         return <Package className="w-3.5 h-3.5 text-amber-600" />;
       case 'customer':
-        return <User className="w-3.5 h-3.5 text-[#7e14ff]" />;
+        return <User className="w-3.5 h-3.5 text-[#ff91db]" />;
       default:
         return <Clock className="w-3.5 h-3.5 text-slate-500" />;
     }
@@ -24,7 +24,7 @@ export const ActivityTimeline: React.FC = () => {
       case 'product':
         return 'bg-amber-50 border-amber-100';
       case 'customer':
-        return 'bg-violet-50 border-violet-100';
+        return 'bg-pink-50 border-pink-100';
       default:
         return 'bg-slate-50 border-slate-200';
     }

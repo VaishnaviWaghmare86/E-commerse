@@ -23,14 +23,14 @@ export default function OffersPage() {
   };
 
   return (
-    <div className="w-full bg-[#FAF9F6] min-h-screen py-10 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-6xl mx-auto">
+    <div className="w-full bg-[#FAF9F6] min-h-screen py-8 px-3 sm:px-4 md:px-5 lg:px-6 font-sans">
+      <div className="w-full">
         
-        <div className="text-center max-w-2xl mx-auto mb-12">
+        <div className="text-center max-w-2xl mx-auto mb-10">
           <span className="bg-rose-100 text-rose-700 text-xs font-black px-3.5 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5 w-fit mx-auto">
             <Flame size={14} className="text-rose-600 animate-pulse" /> Limited Period Discounts
           </span>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight mt-3 mb-3">
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mt-3 mb-2">
             Special Deals &amp; Promo Offers
           </h1>
           <p className="text-slate-600 text-sm font-medium">
@@ -38,7 +38,7 @@ export default function OffersPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
           {offers.map((offer, idx) => (
             <motion.div
               key={offer.id}

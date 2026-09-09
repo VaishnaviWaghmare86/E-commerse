@@ -147,7 +147,7 @@ export const Attributes: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <div>
             <h3 className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-[#7e14ff]" />
+              <Sparkles className="w-3.5 h-3.5 text-[#ff91db]" />
               Quick-Add Store Attributes
             </h3>
             <p className="text-[11px] text-slate-500 mt-0.5">
@@ -174,7 +174,7 @@ export const Attributes: React.FC = () => {
                   className={`px-3 py-1.5 text-xs font-semibold rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 ${
                     exists
                       ? 'bg-slate-50 text-slate-400 border-slate-200 hover:border-slate-300'
-                      : 'bg-violet-50 text-[#7e14ff] border-[#dec5f7] hover:bg-[#7e14ff] hover:text-white shadow-2xs'
+                      : 'bg-pink-50 text-[#ff91db] border-[#ffd0ef] hover:bg-[#ff91db] hover:text-white shadow-2xs'
                   }`}
                   title={preset.description}
                 >
@@ -195,7 +195,7 @@ export const Attributes: React.FC = () => {
             <div>
               <CardHeader className="flex-row items-center justify-between pb-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-violet-50 text-[#7e14ff] flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-pink-50 text-[#ff91db] flex items-center justify-center">
                     {getAttrIcon(attr.name)}
                   </div>
                   <div>
@@ -260,7 +260,7 @@ export const Attributes: React.FC = () => {
                       handleQuickAdd(attr.id);
                     }
                   }}
-                  className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-[#7e14ff] focus:bg-white"
+                  className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-[#ff91db] focus:bg-white"
                 />
                 <Button
                   size="xs"
@@ -299,9 +299,9 @@ export const Attributes: React.FC = () => {
       >
         <form onSubmit={handleSaveAttribute} className="space-y-4">
           {/* Quick preset chips */}
-          <div className="p-3 bg-violet-50/60 rounded-xl border border-violet-100">
-            <span className="text-[11px] font-semibold text-violet-800 block mb-1.5 flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-[#7e14ff]" />
+          <div className="p-3 bg-pink-50/60 rounded-xl border border-pink-100">
+            <span className="text-[11px] font-semibold text-pink-700 block mb-1.5 flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-[#ff91db]" />
               Quick template presets (Click to autofill):
             </span>
             <div className="flex flex-wrap gap-1.5">
@@ -313,7 +313,7 @@ export const Attributes: React.FC = () => {
                     setNewAttrName(p.name);
                     setNewAttrInitialValues(p.values);
                   }}
-                  className="px-2.5 py-1 text-xs font-semibold bg-white text-violet-700 hover:bg-[#7e14ff] hover:text-white border border-violet-200 rounded-lg transition-colors cursor-pointer flex items-center gap-1 shadow-2xs"
+                  className="px-2.5 py-1 text-xs font-semibold bg-white text-pink-600 hover:bg-[#ff91db] hover:text-white border border-pink-200 rounded-lg transition-colors cursor-pointer flex items-center gap-1 shadow-2xs"
                 >
                   <Plus className="w-3 h-3" />
                   {p.name}
@@ -346,7 +346,7 @@ export const Attributes: React.FC = () => {
                     handleAddInitialValue();
                   }
                 }}
-                className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-[#7e14ff]"
+                className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-[#ff91db]"
               />
               <Button type="button" size="sm" variant="secondary" onClick={handleAddInitialValue}>
                 Add Value

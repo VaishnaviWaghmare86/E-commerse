@@ -214,7 +214,7 @@ export const defaultBrands: Brand[] = [
     id: 'brand-1',
     name: 'LEGO',
     slug: 'lego',
-    logo: 'https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=120&h=120&fit=crop',
+    logo: '/brands/lego.svg',
     description: 'World-renowned creative building blocks and mechanical marvels.',
     featured: true,
   },
@@ -222,7 +222,7 @@ export const defaultBrands: Brand[] = [
     id: 'brand-2',
     name: 'Hot Wheels',
     slug: 'hot-wheels',
-    logo: 'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=120&h=120&fit=crop',
+    logo: '/brands/hot-wheels.svg',
     description: 'High-speed die-cast cars, extreme gravity loops, and stunt tracks.',
     featured: true,
   },
@@ -230,7 +230,7 @@ export const defaultBrands: Brand[] = [
     id: 'brand-3',
     name: 'Barbie',
     slug: 'barbie',
-    logo: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=120&h=120&fit=crop',
+    logo: '/brands/barbie.svg',
     description: 'Inspiring storytelling, fashion dolls, and creative dreamhouses.',
     featured: true,
   },
@@ -238,7 +238,7 @@ export const defaultBrands: Brand[] = [
     id: 'brand-4',
     name: 'Fisher-Price',
     slug: 'fisher-price',
-    logo: 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=120&h=120&fit=crop',
+    logo: '/brands/fisher-price.svg',
     description: 'Sensory and early childhood learning toys safe for toddlers.',
     featured: true,
   },
@@ -246,7 +246,7 @@ export const defaultBrands: Brand[] = [
     id: 'brand-5',
     name: 'Nerf',
     slug: 'nerf',
-    logo: 'https://images.unsplash.com/photo-1531306728370-e2ebd9d7bb99?w=120&h=120&fit=crop',
+    logo: '/brands/nerf.svg',
     description: 'Safe foam blasters and active energetic outdoor target games.',
     featured: true,
   },
@@ -254,7 +254,7 @@ export const defaultBrands: Brand[] = [
     id: 'brand-6',
     name: 'Melissa & Doug',
     slug: 'melissa-and-doug',
-    logo: 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=120&h=120&fit=crop',
+    logo: '/brands/melissa-doug.svg',
     description: 'Timeless wooden puzzles, pretend play sets, and creative crafts.',
     featured: true,
   },
@@ -1273,9 +1273,9 @@ class LocalDbStore {
       price: item.salePrice ? Number(item.salePrice) : Number(item.basePrice || 999),
       discount: item.discount || (item.basePrice && item.salePrice ? Math.round(((item.basePrice - item.salePrice) / item.basePrice) * 100) : 0),
       stock: item.stock !== undefined ? Number(item.stock) : 20,
-      // Default to PENDING if submitted by a vendor, or as requested
-      status: item.status || 'PENDING',
-      isActive: item.status === 'APPROVED' ? true : false,
+      // Status & active rules: vendor submitted products require admin approval
+      status: item.status || (item.vendorId ? 'PENDING' : 'APPROVED'),
+      isActive: (item.status === 'APPROVED' || (!item.status && !item.vendorId)) ? true : false,
       isFeatured: Boolean(item.isFeatured),
       isNewArrival: item.isNewArrival !== undefined ? Boolean(item.isNewArrival) : true,
       isBestSeller: Boolean(item.isBestSeller),
@@ -1290,6 +1290,28 @@ class LocalDbStore {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
+
+    // Auto-register product category if not already in categories
+    const rawCat = newProduct.category;
+    const catName = typeof rawCat === 'string' ? rawCat : (rawCat as any)?.name;
+    if (catName && typeof catName === 'string' && !this.data.categories.some(c => c.name.toLowerCase() === catName.toLowerCase())) {
+      const catSlug = catName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      const uniqueCatId = this.data.categories.some(c => c.id === newProduct.categoryId)
+        ? `cat-${catSlug}`
+        : (newProduct.categoryId || `cat-${catSlug}`);
+
+      this.data.categories.push({
+        id: uniqueCatId,
+        name: catName,
+        slug: catSlug,
+        description: `${catName} toys`,
+        status: 'Active',
+        isActive: true,
+        featured: true,
+        image: newProduct.image || 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=200&h=200&fit=crop',
+        itemCount: 1,
+      });
+    }
 
     this.data.products.unshift(newProduct);
     this.saveData(this.data);
@@ -1367,6 +1389,31 @@ class LocalDbStore {
 
   // --- CATEGORIES ---
   getCategories(): CategoryItem[] {
+    const existingNames = new Set(this.data.categories.map((c) => c.name.toLowerCase()));
+    let hasAdded = false;
+
+    this.data.products.forEach((p) => {
+      const catName = typeof p.category === 'string' ? p.category : (p.category as any)?.name;
+      if (catName && catName.trim() && !existingNames.has(catName.trim().toLowerCase())) {
+        existingNames.add(catName.trim().toLowerCase());
+        this.data.categories.push({
+          id: p.categoryId || `cat-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          name: catName.trim(),
+          slug: catName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          description: `${catName.trim()} toys and games`,
+          status: 'Active',
+          isActive: true,
+          featured: true,
+          image: p.image || 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=200&h=200&fit=crop',
+          itemCount: 1,
+        });
+        hasAdded = true;
+      }
+    });
+
+    if (hasAdded) {
+      this.saveData(this.data);
+    }
     return this.data.categories;
   }
 

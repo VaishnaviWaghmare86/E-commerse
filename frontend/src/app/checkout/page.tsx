@@ -311,9 +311,9 @@ export default function CheckoutPage() {
                     {deliveryFee === 0 ? "FREE" : `₹${deliveryFee}`}
                   </span>
                 </div>
-                <div className="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-slate-100">
+                <div className="flex justify-between items-baseline text-base font-black text-slate-900 pt-2 border-t border-slate-100">
                   <span>Total Due</span>
-                  <span className="text-pink-500">₹{grandTotal}</span>
+                  <span className="text-xl font-black text-slate-900">₹{grandTotal}</span>
                 </div>
               </div>
 

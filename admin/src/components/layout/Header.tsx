@@ -8,6 +8,9 @@ import {
   ChevronDown,
   ExternalLink,
   Store,
+  Check,
+  CheckCheck,
+  X,
 } from 'lucide-react';
 import { useAdmin } from '../../context/AdminContext';
 import { useAuth } from '../../context/AuthContext';
@@ -26,7 +29,10 @@ export const Header: React.FC = () => {
     setSearchQuery,
     notifications,
     unreadNotificationsCount,
+    markNotificationAsRead,
     markAllNotificationsAsRead,
+    dismissNotification,
+    clearAllNotifications,
   } = useAdmin();
 
   const { showToast } = useToast();
@@ -90,14 +96,14 @@ export const Header: React.FC = () => {
 
   return (
     <header className={`h-16 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs border-b ${
-      isVendor ? 'bg-[#fffaf0] border-amber-200' : 'bg-[#f3ecfc] border-[#e5d5f8]'
+      isVendor ? 'bg-[#fffaf0] border-amber-200' : 'bg-[#fff0f7] border-[#ffd4ea]'
     }`}>
       {/* Left section: Hamburger / Page Title */}
       <div className="flex items-center gap-3 sm:gap-4">
         {/* Mobile toggle */}
         <button
           onClick={() => setMobileSidebarOpen(true)}
-          className="lg:hidden p-2 text-[#523970] hover:text-[#2a1348] hover:bg-slate-200/50 rounded-lg transition-colors cursor-pointer"
+          className="lg:hidden p-2 text-[#733557] hover:text-[#451630] hover:bg-slate-200/50 rounded-lg transition-colors cursor-pointer"
           aria-label="Open Sidebar"
         >
           <Menu className="w-5 h-5" />
@@ -106,7 +112,7 @@ export const Header: React.FC = () => {
         {/* Desktop collapse indicator button */}
         <button
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="hidden lg:flex p-2 text-[#523970] hover:text-[#2a1348] hover:bg-slate-200/50 rounded-lg transition-colors cursor-pointer"
+          className="hidden lg:flex p-2 text-[#733557] hover:text-[#451630] hover:bg-slate-200/50 rounded-lg transition-colors cursor-pointer"
           title="Toggle Sidebar"
         >
           <Menu className="w-5 h-5" />
@@ -156,7 +162,7 @@ export const Header: React.FC = () => {
           <div className="relative" ref={notifRef}>
             <button
               onClick={() => setNotificationsOpen(!notificationsOpen)}
-              className="p-2 rounded-lg text-[#523970] hover:text-[#2a1348] hover:bg-[#eadef8] relative transition-colors cursor-pointer"
+              className="p-2 rounded-lg text-[#733557] hover:text-[#451630] hover:bg-[#ffe0f1] relative transition-colors cursor-pointer"
               aria-label="Notifications"
             >
               <Bell className="w-5 h-5" />
@@ -169,28 +175,134 @@ export const Header: React.FC = () => {
             </button>
 
             {notificationsOpen && (
-              <div className="absolute right-0 mt-2 w-80 sm:w-92 rounded-2xl bg-white shadow-xl border border-slate-200 py-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+              <div className="absolute right-0 mt-2 w-84 sm:w-96 rounded-2xl bg-white shadow-xl border border-slate-200 py-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+                {/* Header */}
                 <div className="px-4 py-2.5 border-b border-slate-100 flex items-center justify-between gap-2">
-                  <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                    Notifications
-                  </span>
-                  {unreadNotificationsCount > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => markAllNotificationsAsRead()}
-                      className="text-[11px] font-semibold text-[#7e14ff] hover:underline cursor-pointer"
-                    >
-                      Mark all as read
-                    </button>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                      Notifications
+                    </span>
+                    {unreadNotificationsCount > 0 && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-pink-100 text-pink-700">
+                        {unreadNotificationsCount} new
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {unreadNotificationsCount > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => markAllNotificationsAsRead()}
+                        className="text-[11px] font-semibold text-pink-600 hover:text-pink-700 hover:underline cursor-pointer flex items-center gap-1"
+                        title="Mark all as read"
+                      >
+                        <CheckCheck className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Mark all read</span>
+                      </button>
+                    )}
+                    {notifications.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => clearAllNotifications()}
+                        className="text-[11px] font-semibold text-slate-400 hover:text-rose-600 hover:underline cursor-pointer flex items-center gap-1"
+                        title="Ignore and dismiss all notifications"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                        <span>Ignore all</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <div className="divide-y divide-slate-50 max-h-80 overflow-y-auto">
-                  {notifications.map((n) => (
-                    <div key={n.id} className="p-3 text-xs text-slate-700">
-                      <div className="font-bold">{n.title}</div>
-                      <div className="text-slate-400 text-[10px]">{n.desc}</div>
+
+                {/* Notifications List */}
+                <div className="divide-y divide-slate-100 max-h-80 overflow-y-auto">
+                  {notifications.length === 0 ? (
+                    <div className="p-6 text-center text-slate-400 text-xs">
+                      <CheckCheck className="w-6 h-6 mx-auto mb-2 text-emerald-500/70" />
+                      <p className="font-semibold text-slate-600">No notifications</p>
+                      <p className="text-[11px] text-slate-400 mt-0.5">You're all caught up!</p>
                     </div>
-                  ))}
+                  ) : (
+                    notifications.map((n) => (
+                      <div
+                        key={n.id}
+                        onClick={() => {
+                          if (n.unread) markNotificationAsRead(n.id);
+                          if (n.link) {
+                            navigate(n.link);
+                            setNotificationsOpen(false);
+                          }
+                        }}
+                        className={`p-3 text-xs transition-colors flex items-start justify-between gap-2.5 ${
+                          n.link ? 'cursor-pointer' : ''
+                        } ${
+                          n.unread ? 'bg-pink-50/40 hover:bg-pink-50/70' : 'bg-white hover:bg-slate-50'
+                        }`}
+                      >
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            {n.unread ? (
+                              <span
+                                className="w-2 h-2 rounded-full bg-[#ff91db] shrink-0"
+                                title="Unread"
+                              />
+                            ) : (
+                              <span
+                                className="w-2 h-2 rounded-full bg-transparent shrink-0"
+                              />
+                            )}
+                            <div className={`font-bold truncate ${n.unread ? 'text-slate-900' : 'text-slate-700'}`}>
+                              {n.title}
+                            </div>
+                            <span className="text-[10px] text-slate-400 ml-auto shrink-0 pl-1">
+                              {n.time}
+                            </span>
+                          </div>
+                          <p className="text-slate-500 text-[11px] leading-relaxed line-clamp-2 pl-3.5">
+                            {n.desc}
+                          </p>
+                        </div>
+
+                        {/* Action signs: Mark as read & Ignore */}
+                        <div
+                          className="flex items-center gap-1 shrink-0 pt-0.5"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {/* Mark as read sign */}
+                          {n.unread ? (
+                            <button
+                              type="button"
+                              onClick={() => markNotificationAsRead(n.id)}
+                              className="p-1.5 rounded-lg text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 transition-colors cursor-pointer"
+                              title="Mark as read"
+                              aria-label="Mark as read"
+                            >
+                              <Check className="w-4 h-4" />
+                            </button>
+                          ) : (
+                            <span
+                              className="p-1.5 text-slate-300 inline-flex items-center justify-center"
+                              title="Already read"
+                              aria-label="Already read"
+                            >
+                              <CheckCheck className="w-4 h-4 text-emerald-500/60" />
+                            </span>
+                          )}
+
+                          {/* Ignore sign */}
+                          <button
+                            type="button"
+                            onClick={() => dismissNotification(n.id)}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                            title="Ignore notification"
+                            aria-label="Ignore notification"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             )}
@@ -207,7 +319,7 @@ export const Header: React.FC = () => {
             className="flex items-center gap-2.5 p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl hover:bg-slate-200/50 transition-colors cursor-pointer"
           >
             <div className={`w-8 h-8 rounded-full text-white flex items-center justify-center font-black text-xs shadow-xs uppercase ${
-              isVendor ? 'bg-gradient-to-tr from-amber-500 to-rose-500' : 'bg-gradient-to-tr from-[#7e14ff] to-[#47bfff]'
+              isVendor ? 'bg-gradient-to-tr from-amber-500 to-rose-500' : 'bg-gradient-to-tr from-[#ff91db] to-[#ffa3e4]'
             }`}>
               {user?.name ? user.name.charAt(0) : (isVendor ? 'S' : 'A')}
             </div>
@@ -216,7 +328,7 @@ export const Header: React.FC = () => {
                 {user?.name || (isVendor ? 'Shopkeeper' : 'Admin')}
               </span>
               <span className={`text-[10px] font-bold leading-tight ${
-                isVendor ? 'text-amber-700' : 'text-[#715494]'
+                isVendor ? 'text-amber-700' : 'text-[#9c537b]'
               }`}>
                 {isVendor ? (user?.shopName || 'Shopkeeper') : 'Administrator'}
               </span>
@@ -230,7 +342,7 @@ export const Header: React.FC = () => {
                 <div className="flex items-center justify-between mb-1">
                   <p className="text-xs font-black text-slate-900 truncate">{user?.name || (isVendor ? 'Shopkeeper' : 'Admin')}</p>
                   <span className={`text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider ${
-                    isVendor ? 'bg-amber-100 text-amber-800' : 'bg-[#eedffc] text-[#7e14ff]'
+                    isVendor ? 'bg-amber-100 text-amber-800' : 'bg-[#ffe3f5] text-[#ff91db]'
                   }`}>
                     {isVendor ? 'SHOPKEEPER' : 'SUPER ADMIN'}
                   </span>

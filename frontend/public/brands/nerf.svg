@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="100%" height="100%">
+  <defs>
+    <linearGradient id="nerfBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#021B38"/>
+      <stop offset="100%" stop-color="#073B75"/>
+    </linearGradient>
+    <linearGradient id="nerfBurst" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF3700"/>
+      <stop offset="60%" stop-color="#FF8500"/>
+      <stop offset="100%" stop-color="#FFD000"/>
+    </linearGradient>
+  </defs>
+  <rect width="160" height="160" rx="24" fill="url(#nerfBg)"/>
+  <polygon points="15,115 30,45 145,45 130,120" fill="url(#nerfBurst)"/>
+  <text x="78" y="96" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-style="italic" font-size="38" text-anchor="middle" fill="#021B38" stroke="#FFFFFF" stroke-width="2" paint-order="stroke fill" transform="rotate(-6 80 85)">NERF</text>
+</svg>

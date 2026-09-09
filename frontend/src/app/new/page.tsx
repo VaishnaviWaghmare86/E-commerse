@@ -130,7 +130,7 @@ function NewArrivalsInner() {
     <div className="w-full bg-[#FAF9F6] min-h-screen py-8 font-sans">
       
       {/* 🚀 NEW ARRIVALS HERO BANNER 🚀 */}
-      <section className="max-w-[1400px] mx-auto px-4 mb-10">
+      <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6 mb-10">
         <div className="bg-gradient-to-r from-yellow-200 via-amber-100 to-sky-200 rounded-3xl p-8 md:p-12 text-slate-800 relative overflow-hidden flex flex-col md:flex-row items-center justify-between shadow-sm border border-amber-200 min-h-[220px]">
           
           <div className="z-10 max-w-xl text-center md:text-left mb-6 md:mb-0">
@@ -155,7 +155,7 @@ function NewArrivalsInner() {
       </section>
 
       {/* 🎨 CATEGORY FILTER TABS 🎨 */}
-      <section className="max-w-[1400px] mx-auto px-4 mb-8">
+      <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6 mb-8">
         <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
           {["All", "Cars & Vehicles", "Baby Toys", "Arts & Crafts", "Educational Toys", "Outdoor Toys", "Building Blocks"].map(cat => (
             <button
@@ -172,7 +172,7 @@ function NewArrivalsInner() {
       </section>
 
       {/* 🛍️ PRODUCT GRID 🛍️ */}
-      <section className="max-w-[1400px] mx-auto px-4">
+      <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6">
         {loading ? (
           <div className="text-center py-20 font-bold text-slate-500">Loading New Arrivals...</div>
         ) : filteredProducts.length === 0 ? (
