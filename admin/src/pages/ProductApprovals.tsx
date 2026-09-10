@@ -60,7 +60,7 @@ export const ProductApprovals: React.FC = () => {
   const handleApprove = async (id: string, name: string) => {
     setProcessingId(id);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}`}/products/${id}/approve`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/products/${id}/approve`, {
         method: 'PUT',
       });
       if (res.ok) {
@@ -80,7 +80,7 @@ export const ProductApprovals: React.FC = () => {
     if (!rejectingProduct) return;
     setProcessingId(rejectingProduct.id);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}`}/products/${rejectingProduct.id}/reject`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/products/${rejectingProduct.id}/reject`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ reason: rejectReason }),

@@ -147,11 +147,11 @@ export const Header: React.FC = () => {
 
         {/* View Storefront Link */}
         <a
-          href="http://localhost:3000"
+          href="https://playpetal.technobuzzsystems.com"
           target="_blank"
           rel="noopener noreferrer"
           className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-pink-600 bg-white border border-pink-200 hover:bg-pink-50 transition-all shadow-2xs"
-          title="Open Live Customer Storefront (localhost:3000)"
+          title="Open Live Customer Storefront"
         >
           <ExternalLink className="w-3.5 h-3.5" />
           <span>Live Store</span>

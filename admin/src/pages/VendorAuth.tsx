@@ -370,7 +370,7 @@ export const VendorAuth: React.FC = () => {
         {/* Footer Navigation Switcher */}
         <div className="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-400">
           <a
-            href="http://localhost:3000"
+            href="https://playpetal.technobuzzsystems.com"
             className="hover:text-slate-800 transition-colors flex items-center gap-1"
           >
             &larr; Back to Toy Store

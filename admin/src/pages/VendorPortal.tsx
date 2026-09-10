@@ -73,8 +73,8 @@ export const VendorPortal: React.FC = () => {
     setLoading(true);
     try {
       const [prodsRes, ordersRes] = await Promise.all([
-        fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}`}/vendors/${currentVendorId}/products`),
-        fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}`}/vendors/${currentVendorId}/orders`),
+        fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/vendors/${currentVendorId}/products`),
+        fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/vendors/${currentVendorId}/orders`),
       ]);
       if (prodsRes.ok) {
         const prods = await prodsRes.json();
@@ -179,7 +179,7 @@ export const VendorPortal: React.FC = () => {
 
     setSubmitting(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || `${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}`}/vendors/${currentVendorId}/products`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/vendors/${currentVendorId}/products`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
