@@ -629,12 +629,9 @@ class LocalDbStore {
           products: parsed.products && parsed.products.length > 0 ? this.enrichExistingProducts(parsed.products) : defaultProducts,
           categories: parsed.categories && parsed.categories.length > 0 ? parsed.categories : defaultCategories,
           orders: parsed.orders || [],
+          reviews: parsed.reviews || [],
           banners: parsed.banners && parsed.banners.length > 0 ? parsed.banners : defaultBanners,
         };
-        // Ensure pending products exist for admin queue testing if none exist
-        if (!this.data.products.some(p => p.status === 'PENDING')) {
-          this.data.products.push(...defaultProducts.filter(p => p.status === 'PENDING'));
-        }
         this.saveData(this.data);
       } else {
         this.data = {
@@ -645,7 +642,7 @@ class LocalDbStore {
           products: defaultProducts,
           categories: defaultCategories,
           orders: [],
-    reviews: [],
+          reviews: [],
           banners: defaultBanners,
         };
         this.saveData(this.data);
@@ -660,7 +657,7 @@ class LocalDbStore {
         products: defaultProducts,
         categories: defaultCategories,
         orders: [],
-    reviews: [],
+        reviews: [],
         banners: defaultBanners,
       };
     }
@@ -1162,6 +1159,31 @@ class LocalDbStore {
   // --- BANNERS ---
   getBanners(): BannerItem[] {
     return this.data.banners;
+  }
+
+  // --- REVIEWS ---
+  getReviews(): ReviewItem[] {
+    return this.data.reviews || [];
+  }
+
+  addReview(review: ReviewItem): ReviewItem {
+    if (!this.data.reviews) {
+      this.data.reviews = [];
+    }
+    this.data.reviews.unshift(review);
+    this.saveData(this.data);
+    return review;
+  }
+
+  deleteReview(id: string): boolean {
+    if (!this.data.reviews) return false;
+    const initialLen = this.data.reviews.length;
+    this.data.reviews = this.data.reviews.filter((r) => r.id !== id);
+    if (this.data.reviews.length !== initialLen) {
+      this.saveData(this.data);
+      return true;
+    }
+    return false;
   }
 }
 

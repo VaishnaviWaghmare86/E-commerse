@@ -1,10 +1,9 @@
 import { Request, Response } from 'express';
-import { store } from '../data/dbStore';
-import { v4 as uuidv4 } from 'uuid';
+import { dbStore, ReviewItem } from '../data/dbStore';
 
 export const getReviews = (req: Request, res: Response) => {
   try {
-    const reviews = store.getReviews();
+    const reviews = dbStore.getReviews();
     res.json(reviews);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching reviews' });
@@ -16,12 +15,12 @@ export const addReview = (req: Request, res: Response) => {
     const { productId, customerName, customerEmail, rating, comment } = req.body;
     
     // Find the product to get its name, image, and vendorId
-    const product = store.getProducts().find(p => p.id === productId);
+    const product = dbStore.getProducts().find(p => p.id === productId);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    const newReview = {
+    const newReview: ReviewItem = {
       id: `rev-${Date.now()}`,
       productId,
       productName: product.name,
@@ -32,10 +31,10 @@ export const addReview = (req: Request, res: Response) => {
       rating,
       comment,
       date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
-      status: 'Approved' as const // Auto-approve per user request
+      status: 'Approved' // Auto-approve per user request
     };
 
-    store.addReview(newReview);
+    dbStore.addReview(newReview);
     res.status(201).json(newReview);
   } catch (error) {
     res.status(500).json({ message: 'Error adding review' });
@@ -44,7 +43,8 @@ export const addReview = (req: Request, res: Response) => {
 
 export const deleteReview = (req: Request, res: Response) => {
   try {
-    const success = store.deleteReview(req.params.id);
+    const id = String(req.params.id);
+    const success = dbStore.deleteReview(id);
     if (success) {
       res.json({ message: 'Review deleted successfully' });
     } else {
