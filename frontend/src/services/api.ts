@@ -19,7 +19,7 @@ export interface Product {
   price: number;
   discount?: number;
   stock: number;
-  status: 'APPROVED' | 'PENDING' | 'REJECTED';
+  status: 'APPROVED' | 'PENDING' | 'REJECTED' | 'Active';
   isActive?: boolean;
   isFeatured?: boolean;
   isNewArrival?: boolean;

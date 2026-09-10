@@ -72,7 +72,7 @@ export interface ProductItem {
   isFeatured?: boolean;
   isNewArrival?: boolean;
   isBestSeller?: boolean;
-  status: 'APPROVED' | 'PENDING' | 'REJECTED';
+  status: 'APPROVED' | 'PENDING' | 'REJECTED' | 'Active';
   rejectionReason?: string;
   isActive?: boolean;
   rating: number;
@@ -540,426 +540,6 @@ export const defaultProducts: ProductItem[] = [
     },
     features: ['Ultra-soft velvety touch', 'Child-safe embroidered eyes', 'Washable cover', 'Hypoallergenic fabric'],
     createdAt: '2026-02-15T09:15:00.000Z'
-  },
-  {
-    id: 'prod-4',
-    name: 'Princess Dream Villa 3-Story Dollhouse',
-    slug: 'princess-dream-villa-3-story-dollhouse',
-    sku: 'DOLL-VILLA-03',
-    category: 'Dolls & Playsets',
-    categoryId: 'cat-4',
-    brand: 'Barbie',
-    ageGroup: '3 - 5 Years',
-    vendorId: 'vendor-1',
-    vendorName: 'ABC Toys Wonderland',
-    vendorRating: 4.9,
-    basePrice: 4999,
-    salePrice: 3999,
-    price: 3999,
-    discount: 20,
-    stock: 12,
-    status: 'APPROVED',
-    isActive: true,
-    isFeatured: true,
-    isBestSeller: false,
-    isNewArrival: true,
-    rating: 4.9,
-    salesCount: 64,
-    image: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=600&h=600&fit=crop',
-    images: [
-      { url: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=600&h=600&fit=crop' }
-    ],
-    shortDescription: 'Majestic 3-floor doll villa with 6 furnished rooms, working elevator, and LED lights.',
-    description: 'Includes 28 mini furniture accessories, functioning elevator lift, terrace pool, and magical sound effects that inspire endless hours of imaginative storytelling.',
-    specifications: {
-      'Dimensions': '85cm x 65cm x 30cm',
-      'Accessories': '28 miniature wooden pieces',
-      'Assembly': 'Tool-free snap-fit construction',
-      'Brand': 'Barbie Official License'
-    },
-    features: ['3 floors with rooftop garden', 'Interactive working elevator', 'Soft LED lighting', 'Fully furnished bedroom & kitchen'],
-    createdAt: '2026-02-20T14:20:00.000Z'
-  },
-  {
-    id: 'prod-5',
-    name: 'Smart Shapes & Sounds Musical Activity Cube',
-    slug: 'smart-shapes-sounds-musical-activity-cube',
-    sku: 'FP-CUBE-05',
-    category: 'Soft Toys',
-    categoryId: 'cat-1',
-    brand: 'Fisher-Price',
-    ageGroup: '0 - 2 Years',
-    vendorId: 'vendor-3',
-    vendorName: 'Toy Planet & Hobbies',
-    vendorRating: 4.7,
-    basePrice: 1799,
-    salePrice: 1299,
-    price: 1299,
-    discount: 28,
-    stock: 40,
-    status: 'APPROVED',
-    isActive: true,
-    isFeatured: false,
-    isBestSeller: true,
-    isNewArrival: false,
-    rating: 4.7,
-    salesCount: 185,
-    image: 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=600&fit=crop',
-    images: [
-      { url: 'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=600&fit=crop' }
-    ],
-    shortDescription: '6-in-1 multi-sensory educational cube with piano keys, shape sorters, and spinning gears.',
-    description: 'Promotes fine motor coordination, auditory learning, and spatial awareness with bright colors, tactile exploration beads, and bilingual nursery rhymes.',
-    specifications: {
-      'Age Range': '6 months to 24 months',
-      'Materials': 'BPA-free non-toxic smooth plastic',
-      'Sounds': '15 melodies and learning phrases'
-    },
-    features: ['5 interactive activity sides', 'Light-up piano keys', 'Geometric shape sorter', 'Bead maze & spinning clock'],
-    createdAt: '2026-02-22T08:45:00.000Z'
-  },
-  {
-    id: 'prod-6',
-    name: 'Nerf Elite 2.0 Commander Blaster with 24 Darts',
-    slug: 'nerf-elite-2-commander-blaster',
-    sku: 'NERF-BLAST-02',
-    category: 'Outdoor & Sports',
-    categoryId: 'cat-6',
-    brand: 'Nerf',
-    ageGroup: '6 - 8 Years',
-    vendorId: 'vendor-2',
-    vendorName: 'Kids World Collectibles',
-    vendorRating: 4.8,
-    basePrice: 1599,
-    salePrice: 1199,
-    price: 1199,
-    discount: 25,
-    stock: 32,
-    status: 'APPROVED',
-    isActive: true,
-    isFeatured: false,
-    isBestSeller: true,
-    isNewArrival: false,
-    rating: 4.8,
-    salesCount: 160,
-    image: 'https://images.unsplash.com/photo-1531306728370-e2ebd9d7bb99?w=600&h=600&fit=crop',
-    images: [
-      { url: 'https://images.unsplash.com/photo-1531306728370-e2ebd9d7bb99?w=600&h=600&fit=crop' }
-    ],
-    shortDescription: 'Tactical foam dart blaster with 6-dart rotating cylinder and slam-fire action.',
-    description: 'Customize for every battle with 3 tactical rails and barrel and stock attachment points. Fires darts up to 90 feet (27 meters) for energetic outdoor fun.',
-    specifications: {
-      'Firing Range': 'Up to 27 meters (90 feet)',
-      'Included': '24 Official Nerf Elite foam darts',
-      'Capacity': '6-dart rotating barrel'
-    },
-    features: ['Rapid slam-fire capability', 'No batteries needed', 'Safety foam tips', 'Tactical rails for gear upgrade'],
-    createdAt: '2026-02-25T16:10:00.000Z'
-  },
-  {
-    id: 'prod-7',
-    name: 'Classic Wooden World Map Puzzle (100 Pcs)',
-    slug: 'classic-wooden-world-map-puzzle',
-    sku: 'PUZZLE-MAP-100',
-    category: 'Puzzles & Board Games',
-    categoryId: 'cat-5',
-    brand: 'Melissa & Doug',
-    ageGroup: '6 - 8 Years',
-    vendorId: 'vendor-1',
-    vendorName: 'ABC Toys Wonderland',
-    vendorRating: 4.9,
-    basePrice: 1299,
-    salePrice: 899,
-    price: 899,
-    discount: 31,
-    stock: 22,
-    status: 'APPROVED',
-    isActive: true,
-    isFeatured: true,
-    isBestSeller: false,
-    isNewArrival: false,
-    rating: 4.8,
-    salesCount: 95,
-    image: 'https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?w=600&h=600&fit=crop',
-    images: [
-      { url: 'https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?w=600&h=600&fit=crop' }
-    ],
-    shortDescription: 'Beautifully illustrated geographical floor puzzle with continents, animals, and landmarks.',
-    description: 'Laser-cut from sustainably harvested wood with smooth splinter-free edges. Helps children discover geography, wildlife, and ocean habitats while building motor reasoning.',
-    specifications: {
-      'Pieces': '100 thick wooden interlocking tiles',
-      'Assembled Size': '60 cm x 40 cm',
-      'Finish': 'Water-based non-toxic varnish'
-    },
-    features: ['High-definition vibrant artwork', 'Storage wooden tray included', 'Durable wooden construction', 'Educational world trivia guide'],
-    createdAt: '2026-02-26T12:00:00.000Z'
-  },
-  {
-    id: 'prod-8',
-    name: 'LEGO Technic Buggy Off-Roader Racer Set',
-    slug: 'lego-technic-buggy-off-roader-racer',
-    sku: 'LEGO-TECH-42',
-    category: 'Cars & Vehicles',
-    categoryId: 'cat-2',
-    brand: 'LEGO',
-    ageGroup: '13+ Years',
-    vendorId: 'vendor-2',
-    vendorName: 'Kids World Collectibles',
-    vendorRating: 4.8,
-    basePrice: 5999,
-    salePrice: 4799,
-    price: 4799,
-    discount: 20,
-    stock: 10,
-    status: 'APPROVED',
-    isActive: true,
-    isFeatured: true,
-    isBestSeller: true,
-    isNewArrival: true,
-    rating: 5.0,
-    salesCount: 75,
-    image: 'https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=600&h=600&fit=crop',
-    images: [
-      { url: 'https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=600&h=600&fit=crop' }
-    ],
-    shortDescription: 'Advanced authentic mechanical buggy building kit featuring working V6 engine with pistons.',
-    description: 'True-to-life mechanics with front and back independent suspension, working steering wheel, opening hood, and realistic differential gearbox.',
-    specifications: {
-      'Piece Count': '1,178 building elements',
-      'Dimensions': '38cm length x 21cm width',
-      'Recommended Age': '13+ to adult enthusiasts'
-    },
-    features: ['Functional V6 piston engine', 'Independent suspension system', 'Real working differential', 'Collector edition display box'],
-    createdAt: '2026-02-28T15:30:00.000Z'
-  },
-  {
-    id: 'prod-9',
-    name: 'Solar System Planetary Orbit Science Projector',
-    slug: 'solar-system-planetary-orbit-projector',
-    sku: 'STEM-SPACE-09',
-    category: 'STEM & Robotics',
-    categoryId: 'cat-3',
-    brand: 'LEGO',
-    ageGroup: '6 - 8 Years',
-    vendorId: 'vendor-1',
-    vendorName: 'ABC Toys Wonderland',
-    vendorRating: 4.9,
-    basePrice: 2199,
-    salePrice: 1699,
-    price: 1699,
-    discount: 23,
-    stock: 18,
-    status: 'APPROVED',
-    isActive: true,
-    isFeatured: false,
-    isBestSeller: false,
-    isNewArrival: true,
-    rating: 4.8,
-    salesCount: 52,
-    image: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=600&h=600&fit=crop',
-    images: [
-      { url: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=600&h=600&fit=crop' }
-    ],
-    shortDescription: 'Motorized celestial planetary motion model that projects constellations onto bedroom ceilings.',
-    description: 'Explore the 8 rotating planets around a lighted sun sphere. Includes audio astronomy facts, 3 constellation projection discs, and DIY planet painting accessories.',
-    specifications: {
-      'Projection Range': '360 degree ceiling dome',
-      'Power': '3 AA Batteries / Micro-USB cable',
-      'Language': 'English audio narration'
-    },
-    features: ['Motorized planetary rotation', 'Constellation starry projector', 'Interactive audio astronomy facts', 'Stem certified science project'],
-    createdAt: '2026-03-01T10:15:00.000Z'
-  },
-  {
-    id: 'prod-10',
-    name: 'Wooden Chef Delights Play Kitchen Set',
-    slug: 'wooden-chef-delights-play-kitchen-set',
-    sku: 'PRE-CHEF-08',
-    category: 'Dolls & Playsets',
-    categoryId: 'cat-4',
-    brand: 'Melissa & Doug',
-    ageGroup: '3 - 5 Years',
-    vendorId: 'vendor-3',
-    vendorName: 'Toy Planet & Hobbies',
-    vendorRating: 4.7,
-    basePrice: 3999,
-    salePrice: 3299,
-    price: 3299,
-    discount: 18,
-    stock: 14,
-    status: 'APPROVED',
-    isActive: true,
-    isFeatured: true,
-    isBestSeller: false,
-    isNewArrival: false,
-    rating: 4.9,
-    salesCount: 84,
-    image: 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=600&h=600&fit=crop',
-    images: [
-      { url: 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=600&h=600&fit=crop' }
-    ],
-    shortDescription: 'Handcrafted solid wood junior culinary kitchen with clicking oven knobs and utensils.',
-    description: 'Inspires culinary pretend play with an oven with magnetic door, sink with turning faucet, microwave, stovetop burners, and 12 wooden cooking cookware items.',
-    specifications: {
-      'Height': '78 cm standing height',
-      'Material': 'FSC certified solid beech wood',
-      'Includes': '12 wooden pans, spatulas & seasoning shakers'
-    },
-    features: ['Clicking mechanical dials', 'Magnetic oven and cupboard doors', 'Chalkboard grocery list', 'Child-safe non-toxic finishes'],
-    createdAt: '2026-03-02T13:40:00.000Z'
-  },
-  {
-    id: 'prod-11',
-    name: 'Barbie Fashion Stylist Runway Studio',
-    slug: 'barbie-fashion-stylist-runway-studio',
-    sku: 'BARBIE-RUNWAY-01',
-    category: 'Dolls & Playsets',
-    categoryId: 'cat-4',
-    brand: 'Barbie',
-    ageGroup: '6 - 8 Years',
-    vendorId: 'vendor-1',
-    vendorName: 'ABC Toys Wonderland',
-    vendorRating: 4.9,
-    basePrice: 2499,
-    salePrice: 1999,
-    price: 1999,
-    discount: 20,
-    stock: 24,
-    status: 'APPROVED',
-    isActive: true,
-    isFeatured: false,
-    isBestSeller: true,
-    isNewArrival: true,
-    rating: 4.8,
-    salesCount: 110,
-    image: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&h=600&fit=crop',
-    images: [
-      { url: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&h=600&fit=crop' }
-    ],
-    shortDescription: 'Illuminated runway fashion playset with 3 trendy outfits, mannequins, and spotlight effects.',
-    description: 'Dress and style Barbie for the ultimate fashion showcase. Comes with runway with turn-and-glide platform, vanity mirror with warm lights, and 15 stylish wardrobe accessories.',
-    specifications: {
-      'Doll Included': '1 Barbie Doll with posable joints',
-      'Accessories': '15 fashion pieces and hangers',
-      'Stage': 'Rotating showcase mechanism'
-    },
-    features: ['Light-up runway runway lights', 'Revolving display turntable', 'Mix-and-match couture outfits', 'Vanity dressing station'],
-    createdAt: '2026-03-03T11:20:00.000Z'
-  },
-  {
-    id: 'prod-12',
-    name: 'Speedster Hot Wheels Mega Looping Garage Set',
-    slug: 'speedster-hot-wheels-mega-looping-garage',
-    sku: 'HW-GARAGE-99',
-    category: 'Cars & Vehicles',
-    categoryId: 'cat-2',
-    brand: 'Hot Wheels',
-    ageGroup: '3 - 5 Years',
-    vendorId: 'vendor-2',
-    vendorName: 'Kids World Collectibles',
-    vendorRating: 4.8,
-    basePrice: 4299,
-    salePrice: 3499,
-    price: 3499,
-    discount: 19,
-    stock: 16,
-    status: 'APPROVED',
-    isActive: true,
-    isFeatured: true,
-    isBestSeller: true,
-    isNewArrival: false,
-    rating: 4.9,
-    salesCount: 178,
-    image: 'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&h=600&fit=crop',
-    images: [
-      { url: 'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&h=600&fit=crop' }
-    ],
-    shortDescription: 'Multi-level vertical parking tower with dual spiral track raceway and jump ramp.',
-    description: 'Can store over 35 die-cast cars! Features a crank car elevator, rapid dual-lane downhill speed race, and a roaring T-Rex obstacle trap.',
-    specifications: {
-      'Storage': 'Holds 35+ 1:64 scale vehicles',
-      'Includes': '2 Hot Wheels exclusive die-cast cars',
-      'Height': 'Over 70 cm vertical structure'
-    },
-    features: ['Hand-crank elevator lift', 'Dual-lane head-to-head racing', 'Connects to other Hot Wheels track sets', 'T-Rex monster obstacle hazard'],
-    createdAt: '2026-03-04T17:00:00.000Z'
-  },
-  // PENDING PRODUCT FOR ADMIN APPROVAL QUEUE TESTING
-  {
-    id: 'prod-pending-1',
-    name: 'AeroGlide Optical Drone with 1080P Camera',
-    slug: 'aeroglide-optical-drone-camera',
-    sku: 'DRONE-AG-1080',
-    category: 'STEM & Robotics',
-    categoryId: 'cat-3',
-    brand: 'LEGO',
-    ageGroup: '9 - 12 Years',
-    vendorId: 'vendor-1',
-    vendorName: 'ABC Toys Wonderland',
-    vendorRating: 4.9,
-    basePrice: 3999,
-    salePrice: 3199,
-    price: 3199,
-    discount: 20,
-    stock: 8,
-    status: 'PENDING',
-    isActive: false,
-    isFeatured: false,
-    isBestSeller: false,
-    isNewArrival: true,
-    rating: 0,
-    salesCount: 0,
-    image: 'https://images.unsplash.com/photo-1527977966376-1c8408f9f108?w=600&h=600&fit=crop',
-    images: [
-      { url: 'https://images.unsplash.com/photo-1527977966376-1c8408f9f108?w=600&h=600&fit=crop' }
-    ],
-    shortDescription: 'Beginner friendly altitude-hold quadcopter drone with HD live WiFi FPV video transmission.',
-    description: 'Submitted by vendor ABC Toys Wonderland for catalog review. Features one-key takeoff, 360 degree flips, and auto hover safety.',
-    specifications: {
-      'Flight Time': '12 mins per battery (2 batteries included)',
-      'Camera': '1080P Full HD with wide angle lens',
-      'Control Distance': '80 meters'
-    },
-    features: ['FPV Live video stream to phone', 'One-key return and landing', 'Altitude hold sensor', 'Propeller blade guards'],
-    createdAt: '2026-03-05T09:00:00.000Z'
-  },
-  {
-    id: 'prod-pending-2',
-    name: 'Turbo Speed Jet Ski Water Racer',
-    slug: 'turbo-speed-jet-ski-water-racer',
-    sku: 'WATER-RC-JET',
-    category: 'Cars & Vehicles',
-    categoryId: 'cat-2',
-    brand: 'Hot Wheels',
-    ageGroup: '6 - 8 Years',
-    vendorId: 'vendor-2',
-    vendorName: 'Kids World Collectibles',
-    vendorRating: 4.8,
-    basePrice: 1899,
-    salePrice: 1499,
-    price: 1499,
-    discount: 21,
-    stock: 15,
-    status: 'PENDING',
-    isActive: false,
-    isFeatured: false,
-    isBestSeller: false,
-    isNewArrival: true,
-    rating: 0,
-    salesCount: 0,
-    image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&h=600&fit=crop',
-    images: [
-      { url: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=600&h=600&fit=crop' }
-    ],
-    shortDescription: 'Waterproof high-speed RC jet ski racer for pools, bathtubs, and calm lakes.',
-    description: 'Submitted by vendor Kids World Collectibles for catalog review. Dual twin-propeller propulsion system with auto-righting roll-over recovery.',
-    specifications: {
-      'Waterproofing': 'IPX7 certified sealed hull',
-      'Top Speed': '15 km/h',
-      'Frequency': '2.4GHz controller'
-    },
-    features: ['Twin high-efficiency electric motors', 'Low battery buzzer warning', 'Capsizing auto flip recovery'],
-    createdAt: '2026-03-06T14:30:00.000Z'
   }
 ];
 
@@ -1080,8 +660,11 @@ class LocalDbStore {
         vendorId: p.vendorId || vendor.id,
         vendorName: p.vendorName || vendor.shopName,
         vendorRating: p.vendorRating || vendor.rating,
-        status: p.status === 'PENDING' ? 'PENDING' : (p.status === 'REJECTED' ? 'REJECTED' : 'APPROVED'),
-        isActive: p.status === 'PENDING' ? false : (p.isActive !== undefined ? p.isActive : true),
+        status: p.status === 'PENDING' ? 'PENDING' : (p.status === 'REJECTED' && !p.isBestSeller && !p.isNewArrival ? 'REJECTED' : 'APPROVED'),
+        isActive: p.status === 'PENDING' ? false : (p.status === 'REJECTED' && !p.isBestSeller && !p.isNewArrival ? false : (p.isActive !== undefined ? p.isActive : true)),
+        isBestSeller: Boolean(p.isBestSeller),
+        isNewArrival: Boolean(p.isNewArrival),
+        isFeatured: Boolean(p.isFeatured),
         price: p.salePrice || p.price || p.basePrice || 999,
         sku: p.sku || `SKU-${p.id}`,
       };
@@ -1119,7 +702,7 @@ class LocalDbStore {
 
     // Customer storefront rule: only show approved & active products unless explicitly requested
     if (!filter?.allStatus) {
-      list = list.filter((p) => p.status === 'APPROVED' && p.isActive !== false);
+      list = list.filter((p) => (p.status === 'APPROVED' || p.status === 'Active') && p.isActive !== false);
     } else if (filter?.status) {
       list = list.filter((p) => p.status === filter.status);
     }
@@ -1256,6 +839,10 @@ class LocalDbStore {
     const newId = `prod-${Date.now()}`;
     const vendor = this.data.vendors.find(v => v.id === item.vendorId) || this.data.vendors[0];
 
+    const isApprovedStatus = item.status === 'APPROVED' || item.status === 'Active' || (!item.status && !item.vendorId);
+    const resolvedStatus = (item.status === 'Active' || item.status === 'APPROVED') ? 'APPROVED' : (item.status || (item.vendorId ? 'PENDING' : 'APPROVED'));
+    const resolvedActive = item.isActive !== undefined ? item.isActive : isApprovedStatus;
+
     const newProduct: ProductItem = {
       id: item.id || newId,
       name: item.name || 'New Toy Product',
@@ -1273,13 +860,13 @@ class LocalDbStore {
       price: item.salePrice ? Number(item.salePrice) : Number(item.basePrice || 999),
       discount: item.discount || (item.basePrice && item.salePrice ? Math.round(((item.basePrice - item.salePrice) / item.basePrice) * 100) : 0),
       stock: item.stock !== undefined ? Number(item.stock) : 20,
-      // Status & active rules: vendor submitted products require admin approval
-      status: item.status || (item.vendorId ? 'PENDING' : 'APPROVED'),
-      isActive: (item.status === 'APPROVED' || (!item.status && !item.vendorId)) ? true : false,
+      // Status & active rules: vendor submitted products require admin approval, admin additions are approved immediately
+      status: resolvedStatus,
+      isActive: resolvedActive,
       isFeatured: Boolean(item.isFeatured),
-      isNewArrival: item.isNewArrival !== undefined ? Boolean(item.isNewArrival) : true,
+      isNewArrival: Boolean(item.isNewArrival),
       isBestSeller: Boolean(item.isBestSeller),
-      rating: item.rating || 0,
+      rating: item.rating || 5.0,
       salesCount: item.salesCount || 0,
       image: item.image || (item.images && item.images[0]?.url) || 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&q=80',
       images: item.images || [{ url: item.image || 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&q=80' }],
@@ -1321,9 +908,21 @@ class LocalDbStore {
   updateProduct(id: string, updates: Partial<ProductItem>): ProductItem | null {
     const idx = this.data.products.findIndex((p) => p.id === id);
     if (idx === -1) return null;
-    const updated = {
-      ...this.data.products[idx],
+    const existing = this.data.products[idx];
+
+    // If an item is being marked as Best Seller or New Arrival or status is Active/APPROVED, ensure it is APPROVED and active
+    const willBeApproved = updates.status === 'Active' || updates.status === 'APPROVED' || updates.isBestSeller === true || updates.isNewArrival === true;
+    const newStatus = willBeApproved ? 'APPROVED' : (updates.status ?? existing.status);
+    const newIsActive = willBeApproved ? true : (updates.isActive ?? (newStatus === 'APPROVED' ? true : existing.isActive));
+
+    const updated: ProductItem = {
+      ...existing,
       ...updates,
+      status: newStatus,
+      isActive: newIsActive,
+      isBestSeller: updates.isBestSeller !== undefined ? Boolean(updates.isBestSeller) : existing.isBestSeller,
+      isNewArrival: updates.isNewArrival !== undefined ? Boolean(updates.isNewArrival) : existing.isNewArrival,
+      isFeatured: updates.isFeatured !== undefined ? Boolean(updates.isFeatured) : existing.isFeatured,
       updatedAt: new Date().toISOString(),
     };
     this.data.products[idx] = updated;
@@ -1405,7 +1004,7 @@ class LocalDbStore {
           isActive: true,
           featured: true,
           image: p.image || 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=200&h=200&fit=crop',
-          itemCount: 1,
+          itemCount: 0,
         });
         hasAdded = true;
       }
@@ -1414,7 +1013,22 @@ class LocalDbStore {
     if (hasAdded) {
       this.saveData(this.data);
     }
-    return this.data.categories;
+
+    // Dynamic item count computed from real products
+    return this.data.categories.map((c) => {
+      const count = this.data.products.filter((p) => {
+        const pCatName = typeof p.category === 'string' ? p.category : (p.category as any)?.name;
+        const pCatId = p.categoryId;
+        return (
+          (pCatId && pCatId === c.id) ||
+          (pCatName && pCatName.trim().toLowerCase() === c.name.trim().toLowerCase())
+        );
+      }).length;
+      return {
+        ...c,
+        itemCount: count,
+      };
+    });
   }
 
   createCategory(item: Partial<CategoryItem>): CategoryItem {
@@ -1476,8 +1090,12 @@ class LocalDbStore {
 
   createOrder(order: Partial<OrderItem>): OrderItem {
     const items = (order.items || []).map((item) => {
-      // Enrich with vendor details if missing
+      // Enrich with vendor details if missing and deduct real stock
       const matchedProd = this.data.products.find(p => p.id === item.id);
+      if (matchedProd) {
+        matchedProd.stock = Math.max(0, (matchedProd.stock ?? 20) - (item.quantity || 1));
+        matchedProd.salesCount = (matchedProd.salesCount || 0) + (item.quantity || 1);
+      }
       return {
         ...item,
         vendorId: item.vendorId || matchedProd?.vendorId || 'vendor-1',

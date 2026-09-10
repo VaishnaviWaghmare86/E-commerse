@@ -47,54 +47,12 @@ const BEST_SELLERS_DATA = [
     img: "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=500&q=80",
     badge: "🔥 BEST SELLER",
     pastelBg: "from-sky-100 to-blue-50"
-  },
-  {
-    id: "prod-4",
-    name: "Princess Fashion Doll Playset with Wardrobe",
-    category: "Action Figures & Playsets",
-    brand: "Barbie",
-    price: 1299,
-    originalPrice: 1799,
-    rating: 4.8,
-    reviews: 87,
-    salesCount: 430,
-    img: "https://images.unsplash.com/photo-1558066126-25816c278fb1?w=500&q=80",
-    badge: "🔥 BEST SELLER",
-    pastelBg: "from-purple-100 to-pink-50"
-  },
-  {
-    id: "prod-5",
-    name: "Junior STEM Robotic Explorer Kit",
-    category: "STEM & Robotics",
-    brand: "LEGO",
-    price: 2499,
-    originalPrice: 3199,
-    rating: 4.9,
-    reviews: 73,
-    salesCount: 390,
-    img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=500&q=80",
-    badge: "🔥 BEST SELLER",
-    pastelBg: "from-emerald-100 to-teal-50"
-  },
-  {
-    id: "prod-6",
-    name: "Classic Family Board Game & Puzzle Box",
-    category: "Board Games & Puzzles",
-    brand: "Melissa & Doug",
-    price: 699,
-    originalPrice: 999,
-    rating: 4.8,
-    reviews: 64,
-    salesCount: 310,
-    img: "https://images.unsplash.com/photo-1610890716171-6b1e0ce2d1dd?w=500&q=80",
-    badge: "🔥 BEST SELLER",
-    pastelBg: "from-yellow-100 to-amber-50"
   }
 ];
 
 function BestSellersInner() {
-  const { addToCart, wishlist, toggleWishlist, isMounted } = useCart();
-  const [products, setProducts] = useState(BEST_SELLERS_DATA);
+  const { addToCart, toggleWishlist, isInWishlist, isMounted } = useCart();
+  const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [quickViewProduct, setQuickViewProduct] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -103,41 +61,58 @@ function BestSellersInner() {
     fetch("http://localhost:5000/api/products")
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
-          const approved = data.filter((item: any) => item.status === "APPROVED" && item.isActive !== false);
-          if (approved.length > 0) {
-            const formatted = approved.map((item: any) => ({
-              id: item.id,
-              name: item.name,
-              category: typeof item.category === "string" ? item.category : (item.category?.name || "Toys"),
-              brand: item.brand || "ToyJoy",
-              price: Number(item.salePrice || item.price || item.basePrice),
-              originalPrice: Number(item.basePrice || item.price || 1499),
-              rating: Number(item.rating || 4.9),
-              reviews: Number(item.reviewsCount || item.reviewCount || 48),
-              salesCount: Number(item.salesCount || 120),
-              img: item.images?.[0]?.url || item.image || "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&q=80",
-              badge: "🔥 BEST SELLER",
-              pastelBg: "from-amber-100 to-orange-50"
-            }));
-            formatted.sort((a: any, b: any) => (b.rating * b.salesCount) - (a.rating * a.salesCount));
-            setProducts(formatted);
-          }
+        if (Array.isArray(data)) {
+          const approved = data.filter((item: any) => (item.status === "APPROVED" || item.status === "Active") && item.isActive !== false);
+          // Strictly show only products marked isBestSeller === true
+          const tagged = approved.filter((item: any) => Boolean(item.isBestSeller));
+
+          const pastelBgs = [
+            "from-amber-100 to-orange-50",
+            "from-pink-100 to-rose-50",
+            "from-sky-100 to-blue-50",
+            "from-purple-100 to-pink-50",
+            "from-emerald-100 to-teal-50",
+            "from-yellow-100 to-amber-50"
+          ];
+
+          const formatted = tagged.map((item: any, idx: number) => ({
+            id: item.id,
+            name: item.name,
+            category: typeof item.category === "string" ? item.category : (item.category?.name || "Toys"),
+            brand: item.brand || "ToyJoy",
+            price: Number(item.salePrice || item.price || item.basePrice),
+            originalPrice: Number(item.basePrice || item.price || 1499),
+            rating: Number(item.rating || 4.9),
+            reviews: Number(item.reviewsCount || item.reviewCount || 48),
+            salesCount: Number(item.salesCount || 120),
+            img: item.images?.[0]?.url || item.image || "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&q=80",
+            badge: "🔥 BEST SELLER",
+            pastelBg: pastelBgs[idx % pastelBgs.length]
+          }));
+          formatted.sort((a: any, b: any) => (b.rating * b.salesCount) - (a.rating * a.salesCount));
+          setProducts(formatted);
+        } else {
+          setProducts([]);
         }
       })
-      .catch(() => console.log("Using fallback static Best Sellers dataset"))
+      .catch((err) => {
+        console.error("Failed to load best sellers:", err);
+        setProducts([]);
+      })
       .finally(() => setLoading(false));
   }, []);
 
   const categories = useMemo(() => {
     const set = new Set<string>();
-    products.forEach(p => set.add(p.category));
+    products.forEach(p => {
+      if (p.category) set.add(p.category);
+    });
     return ["All", ...Array.from(set)];
   }, [products]);
 
   const filteredProducts = useMemo(() => {
     if (selectedCategory === "All") return products;
-    return products.filter(p => p.category === selectedCategory);
+    return products.filter(p => p.category.trim().toLowerCase() === selectedCategory.trim().toLowerCase());
   }, [products, selectedCategory]);
 
   if (!isMounted) return null;
@@ -204,82 +179,94 @@ function BestSellersInner() {
 
       {/* 📦 PRODUCTS GRID 📦 */}
       <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6 mb-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProducts.map((p: any) => {
-            const isWishlisted = wishlist?.some((item: any) => item.id === p.id);
+        {loading ? (
+          <div className="text-center py-20 font-bold text-slate-500">Loading Best Sellers...</div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="bg-white rounded-3xl p-12 text-center border border-slate-200 shadow-xs max-w-lg mx-auto">
+            <div className="text-6xl mb-4">🔥</div>
+            <h3 className="text-xl font-black text-slate-800 mb-2">No Best Seller Products</h3>
+            <p className="text-slate-500 text-sm font-medium">
+              There are currently no products highlighted as Best Sellers in the catalog.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredProducts.map((p: any) => {
+              const isWishlisted = isInWishlist(p.id);
 
-            return (
-              <motion.div
-                key={p.id}
-                whileHover={{ y: -6 }}
-                className="bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-xs hover:shadow-xl transition-all flex flex-col justify-between group"
-              >
-                <div className={`relative h-64 w-full bg-gradient-to-br ${p.pastelBg || "from-amber-50 to-orange-50"} p-6 flex items-center justify-center overflow-hidden`}>
-                  <img
-                    src={p.img}
-                    alt={p.name}
-                    className="h-full w-full object-contain mix-blend-multiply group-hover:scale-108 transition-transform duration-500"
-                  />
+              return (
+                <motion.div
+                  key={p.id}
+                  whileHover={{ y: -6 }}
+                  className="bg-white rounded-3xl overflow-hidden border border-slate-200/80 shadow-xs hover:shadow-xl transition-all flex flex-col justify-between group"
+                >
+                  <div className={`relative h-64 w-full bg-gradient-to-br ${p.pastelBg || "from-amber-50 to-orange-50"} p-6 flex items-center justify-center overflow-hidden`}>
+                    <img
+                      src={p.img}
+                      alt={p.name}
+                      className="h-full w-full object-contain mix-blend-multiply group-hover:scale-108 transition-transform duration-500"
+                    />
 
-                  <span className="absolute top-4 left-4 bg-amber-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-md uppercase tracking-wider">
-                    {p.badge}
-                  </span>
-
-                  <button
-                    onClick={() => toggleWishlist(p)}
-                    className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-slate-400 hover:text-pink-500 shadow-md transition-all cursor-pointer"
-                  >
-                    <Heart size={16} className={isWishlisted ? "fill-pink-500 text-pink-500" : ""} />
-                  </button>
-
-                  <button
-                    onClick={() => setQuickViewProduct(p)}
-                    className="absolute bottom-4 right-4 w-9 h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer"
-                    title="Quick Preview"
-                  >
-                    <Eye size={16} />
-                  </button>
-                </div>
-
-                <div className="p-5 flex-1 flex flex-col justify-between">
-                  <div>
-                    <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-                      {p.brand} • {p.category}
-                    </div>
-                    <h3 className="font-bold text-slate-900 text-sm md:text-base line-clamp-2 leading-snug mb-2 group-hover:text-amber-600 transition-colors">
-                      {p.name}
-                    </h3>
-                    
-                    <div className="flex items-center gap-1.5 mb-3">
-                      <div className="flex items-center text-amber-400">
-                        <Star size={14} className="fill-amber-400" />
-                      </div>
-                      <span className="text-xs font-black text-slate-800">{p.rating}</span>
-                      <span className="text-[11px] text-slate-400 font-medium">({p.reviews} reviews)</span>
-                    </div>
-                  </div>
-
-                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <div>
-                      <div className="text-lg font-black text-slate-900">₹{p.price}</div>
-                      {p.originalPrice > p.price && (
-                        <div className="text-xs text-slate-400 line-through">₹{p.originalPrice}</div>
-                      )}
-                    </div>
+                    <span className="absolute top-4 left-4 bg-amber-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-md uppercase tracking-wider">
+                      {p.badge}
+                    </span>
 
                     <button
-                      onClick={() => addToCart(p)}
-                      className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl text-xs font-black shadow-md flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                      onClick={() => toggleWishlist(p.id)}
+                      className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-slate-400 hover:text-pink-500 shadow-md transition-all cursor-pointer"
                     >
-                      <ShoppingBag size={14} />
-                      <span>Add</span>
+                      <Heart size={16} className={isWishlisted ? "fill-pink-500 text-pink-500" : ""} />
+                    </button>
+
+                    <button
+                      onClick={() => setQuickViewProduct(p)}
+                      className="absolute bottom-4 right-4 w-9 h-9 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md cursor-pointer"
+                      title="Quick Preview"
+                    >
+                      <Eye size={16} />
                     </button>
                   </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
+
+                  <div className="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                        {p.brand} • {p.category}
+                      </div>
+                      <h3 className="font-bold text-slate-900 text-sm md:text-base line-clamp-2 leading-snug mb-2 group-hover:text-amber-600 transition-colors">
+                        {p.name}
+                      </h3>
+                      
+                      <div className="flex items-center gap-1.5 mb-3">
+                        <div className="flex items-center text-amber-400">
+                          <Star size={14} className="fill-amber-400" />
+                        </div>
+                        <span className="text-xs font-black text-slate-800">{p.rating}</span>
+                        <span className="text-[11px] text-slate-400 font-medium">({p.reviews} reviews)</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                      <div>
+                        <div className="text-lg font-black text-slate-900">₹{p.price}</div>
+                        {p.originalPrice > p.price && (
+                          <div className="text-xs text-slate-400 line-through">₹{p.originalPrice}</div>
+                        )}
+                      </div>
+
+                      <button
+                        onClick={() => addToCart(p)}
+                        className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl text-xs font-black shadow-md flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                      >
+                        <ShoppingBag size={14} />
+                        <span>Add</span>
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       {/* QUICK VIEW MODAL */}

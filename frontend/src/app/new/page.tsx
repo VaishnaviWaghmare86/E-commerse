@@ -44,51 +44,12 @@ const NEW_ARRIVALS_DATA = [
     img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&q=80",
     badge: "NEW",
     pastelBg: "from-purple-100 to-indigo-50"
-  },
-  {
-    id: 104,
-    name: "Jurassic Dino World Explorer Set",
-    category: "Educational Toys",
-    brand: "ToyJoy Originals",
-    price: 1299,
-    originalPrice: 1699,
-    rating: 4.6,
-    reviews: 18,
-    img: "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&q=80",
-    badge: "NEW",
-    pastelBg: "from-teal-100 to-emerald-50"
-  },
-  {
-    id: 105,
-    name: "Foldable Light-Up Kids Kick Scooter",
-    category: "Outdoor Toys",
-    brand: "Nerf",
-    price: 1899,
-    originalPrice: 2499,
-    rating: 4.9,
-    reviews: 51,
-    img: "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=500&q=80",
-    badge: "NEW",
-    pastelBg: "from-amber-100 to-orange-50"
-  },
-  {
-    id: 106,
-    name: "Mega Creator Building Blocks 500 Pcs",
-    category: "Building Blocks",
-    brand: "LEGO",
-    price: 2199,
-    originalPrice: 2799,
-    rating: 5.0,
-    reviews: 84,
-    img: "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=500&q=80",
-    badge: "NEW",
-    pastelBg: "from-emerald-100 to-teal-50"
   }
 ];
 
 function NewArrivalsInner() {
-  const { addToCart, wishlist, toggleWishlist, isMounted } = useCart();
-  const [products, setProducts] = useState(NEW_ARRIVALS_DATA);
+  const { addToCart, toggleWishlist, isInWishlist, isMounted } = useCart();
+  const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [quickViewProduct, setQuickViewProduct] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -98,30 +59,56 @@ function NewArrivalsInner() {
     fetch("http://localhost:5000/api/products")
       .then(res => res.json())
       .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
-          const formatted = data.map((item: any) => ({
+        if (Array.isArray(data)) {
+          const approved = data.filter((item: any) => (item.status === "APPROVED" || item.status === "Active") && item.isActive !== false);
+          // Strictly show only products marked isNewArrival === true
+          const tagged = approved.filter((item: any) => Boolean(item.isNewArrival));
+
+          const pastelBgs = [
+            "from-sky-100 to-blue-50",
+            "from-pink-100 to-rose-50",
+            "from-purple-100 to-pink-50",
+            "from-amber-100 to-yellow-50",
+            "from-emerald-100 to-teal-50",
+            "from-orange-100 to-amber-50"
+          ];
+
+          const formatted = tagged.map((item: any, idx: number) => ({
             id: item.id,
             name: item.name,
-            category: item.category?.name || "Toys",
-            brand: "ToyJoy",
-            price: Number(item.salePrice || item.basePrice),
-            originalPrice: Number(item.basePrice),
-            rating: 4.8,
-            reviews: 24,
-            img: item.images?.[0]?.url || "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&q=80",
+            category: typeof item.category === "string" ? item.category : (item.category?.name || "Toys"),
+            brand: item.brand || "ToyJoy",
+            price: Number(item.salePrice || item.price || item.basePrice),
+            originalPrice: Number(item.basePrice || item.price || 1499),
+            rating: Number(item.rating || 4.8),
+            reviews: Number(item.reviewsCount || item.reviewCount || 24),
+            img: item.images?.[0]?.url || item.image || "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&q=80",
             badge: "NEW",
-            pastelBg: "from-sky-100 to-blue-50"
+            pastelBg: pastelBgs[idx % pastelBgs.length]
           }));
           setProducts(formatted);
+        } else {
+          setProducts([]);
         }
       })
-      .catch(() => console.log("Using fallback static New Arrivals dataset"))
+      .catch((err) => {
+        console.error("Failed to load new arrivals:", err);
+        setProducts([]);
+      })
       .finally(() => setLoading(false));
   }, []);
 
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    products.forEach(p => {
+      if (p.category) set.add(p.category);
+    });
+    return ["All", ...Array.from(set)];
+  }, [products]);
+
   const filteredProducts = useMemo(() => {
     if (selectedCategory === "All") return products;
-    return products.filter(p => p.category === selectedCategory);
+    return products.filter(p => p.category.trim().toLowerCase() === selectedCategory.trim().toLowerCase());
   }, [products, selectedCategory]);
 
   if (!isMounted) return null;
@@ -157,7 +144,7 @@ function NewArrivalsInner() {
       {/* 🎨 CATEGORY FILTER TABS 🎨 */}
       <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6 mb-8">
         <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar">
-          {["All", "Cars & Vehicles", "Baby Toys", "Arts & Crafts", "Educational Toys", "Outdoor Toys", "Building Blocks"].map(cat => (
+          {categories.map(cat => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
@@ -186,7 +173,7 @@ function NewArrivalsInner() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {filteredProducts.map(prod => {
-              const isWishlisted = wishlist.includes(prod.id);
+              const isWishlisted = isInWishlist(prod.id);
               const discountPct = Math.round(((prod.originalPrice - prod.price) / prod.originalPrice) * 100);
 
               return (

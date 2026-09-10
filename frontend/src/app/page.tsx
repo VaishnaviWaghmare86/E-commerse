@@ -19,7 +19,8 @@ export default function Home() {
   const slides = [
     {
       id: 1,
-      image: "/hero-play.jpg",
+      video: "/videos/video1.mp4",
+      image: "/videos/frame1.jpg",
       badge: "🎈 Play & Learn Together",
       heading: "Learn Through",
       highlight: "Play & Fun!",
@@ -30,44 +31,35 @@ export default function Home() {
     },
     {
       id: 2,
-      image: "/hero-wonderland.jpg",
-      badge: "🦄 Magical Toy Kingdom",
-      heading: "Welcome to",
-      highlight: "Toy Wonderland",
-      subtitle: "Step into a magical world of cuddly teddy bears, rainbow castles, and wooden train tracks.",
-      cta: "Explore Toys",
-      color: "from-purple-300 via-pink-400 to-sky-300",
-      btnBg: "bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600",
-    },
-    {
-      id: 3,
-      image: "/hero-adventures.jpg",
-      badge: "🚀 Speed & Action Fun",
-      heading: "Ready for",
-      highlight: "Big Adventures?",
-      subtitle: "Zoom into fun with high-speed RC racing cars, superhero capes, and stunt airplanes!",
+      video: "/videos/video2.mp4",
+      image: "/videos/frame2.jpg",
+      badge: "🏎️ Speed & Action Fun",
+      heading: "The Great",
+      highlight: "Toy Car Race!",
+      subtitle: "Zoom into fun with high-speed RC racing cars, superhero tracks, and stunt vehicles.",
       cta: "Start Adventure",
       color: "from-sky-300 via-amber-300 to-emerald-300",
       btnBg: "bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700",
     },
     {
-      id: 4,
-      image: "/hero-festival.jpg",
-      badge: "🎉 Birthday Special Offers",
-      heading: "Grand Birthday",
-      highlight: "Toy Festival!",
-      subtitle: "Unwrap pure joy with up to 50% OFF on brand new arrivals, gifts, and cuddly buddies.",
+      id: 3,
+      video: "/videos/video3.mp4",
+      image: "/videos/frame3.jpg",
+      badge: "🦖 Magical Surprise Kingdom",
+      heading: "Discover The",
+      highlight: "Magical Dinosaur!",
+      subtitle: "Unwrap pure joy with magical eggs, robot friends, and cuddly buddies with up to 50% OFF.",
       cta: "Grab Offers",
       color: "from-amber-300 via-pink-400 to-yellow-300",
       btnBg: "bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600",
     },
   ];
 
-  // Auto-play Slider
+  // Auto-play Slider (9s rotation matching 10s video length)
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 5500);
+    }, 9000);
     return () => clearInterval(timer);
   }, [slides.length]);
 
@@ -137,18 +129,26 @@ export default function Home() {
             {/* 🎬 Beautiful Animated Cartoon Playground Background Video 🎬 */}
             <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
               <video
+                key={slides[currentSlide].video}
                 className="hero-background-video absolute inset-0 w-full h-full object-cover object-center motion-reduce:hidden"
                 autoPlay
                 muted
                 loop
                 playsInline
-                preload="metadata"
-                poster={slides[currentSlide].image || "/hero-play.jpg"}
+                preload="auto"
+                poster={slides[currentSlide].image}
+                ref={(el) => {
+                  if (el) {
+                    el.defaultMuted = true;
+                    el.muted = true;
+                    el.play().catch(() => {});
+                  }
+                }}
               >
-                <source src="/videos/kids-hero.mp4" type="video/mp4" />
+                <source src={slides[currentSlide].video} type="video/mp4" />
                 {/* Fallback image if video cannot be played */}
                 <img
-                  src={slides[currentSlide].image || "/hero-play.jpg"}
+                  src={slides[currentSlide].image}
                   alt="Hero Background"
                   className="w-full h-full object-cover object-center"
                 />
@@ -156,15 +156,15 @@ export default function Home() {
 
               {/* Reduced motion fallback image (for users who prefer reduced motion) */}
               <img
-                src={slides[currentSlide].image || "/hero-play.jpg"}
+                src={slides[currentSlide].image}
                 alt="Hero Background"
                 className="hidden motion-reduce:block absolute inset-0 w-full h-full object-cover object-center"
               />
             </div>
 
             {/* Soft Ambient Text Vignette (Keeps Characters 100% Bright & Text Crystal Clear!) */}
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/35 to-transparent pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-black/20 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/65 via-slate-950/20 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-black/10 pointer-events-none" />
 
             {/* Content Container */}
             <div className="absolute inset-0 flex items-center">
@@ -269,7 +269,7 @@ export default function Home() {
 
           <div className="flex-1 flex justify-between items-center overflow-x-auto py-2 no-scrollbar gap-4 md:gap-2 px-2">
             {categoriesList.map((cat, idx) => (
-              <Link href="/shop" key={idx} className="flex flex-col items-center min-w-[85px] group">
+              <Link href={`/products?category=${encodeURIComponent(cat.name)}`} key={idx} className="flex flex-col items-center min-w-[85px] group">
                 <motion.div 
                   whileHover={{ y: -6, scale: 1.08 }}
                   className={`w-16 h-16 md:w-20 md:h-20 rounded-full p-1 shadow-md border-2 border-white group-hover:border-pink-400 transition-all ${cat.bg} flex items-center justify-center relative overflow-hidden`}

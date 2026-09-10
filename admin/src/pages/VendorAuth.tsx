@@ -7,11 +7,13 @@ import {
   Phone,
   MapPin,
   Lock,
-  ShieldCheck,
   AlertCircle,
   Sparkles,
+  ShieldCheck,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
-import { useAuth, PRESET_VENDORS } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 
 export const VendorAuth: React.FC = () => {
@@ -23,8 +25,9 @@ export const VendorAuth: React.FC = () => {
   const { showToast } = useToast();
   const navigate = useNavigate();
 
-  const [loginId, setLoginId] = useState('vendor1');
-  const [loginPassword, setLoginPassword] = useState('vendor123');
+  const [loginId, setLoginId] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [loadingLogin, setLoadingLogin] = useState(false);
 
@@ -38,6 +41,7 @@ export const VendorAuth: React.FC = () => {
     description: '',
   });
   const [regError, setRegError] = useState<string | null>(null);
+  const [showRegPassword, setShowRegPassword] = useState(false);
   const [loadingReg, setLoadingReg] = useState(false);
 
   const handleLoginSubmit = (e: React.FormEvent) => {
@@ -55,12 +59,6 @@ export const VendorAuth: React.FC = () => {
         setLoginError(res.message || 'Invalid shopkeeper credentials.');
       }
     }, 300);
-  };
-
-  const handleQuickFill = (ven: (typeof PRESET_VENDORS)[0]) => {
-    setLoginId(ven.username);
-    setLoginPassword(ven.password);
-    setLoginError(null);
   };
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
@@ -143,24 +141,6 @@ export const VendorAuth: React.FC = () => {
         {/* TAB 1: LOGIN */}
         {activeTab === 'login' && (
           <div className="space-y-4">
-            
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
-              <span className="text-[11px] font-extrabold text-slate-600 block">
-                Quick Login with Demo Shopkeeper:
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {PRESET_VENDORS.map((ven) => (
-                  <button
-                    key={ven.id}
-                    type="button"
-                    onClick={() => handleQuickFill(ven)}
-                    className="bg-white hover:bg-pink-50 border border-slate-200 hover:border-pink-300 text-slate-700 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all shadow-2xs"
-                  >
-                    🏬 {ven.shopName.split(' ')[0]} ({ven.username})
-                  </button>
-                ))}
-              </div>
-            </div>
 
             {loginError && (
               <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs font-bold text-rose-700 flex items-center gap-2">
@@ -169,7 +149,13 @@ export const VendorAuth: React.FC = () => {
               </div>
             )}
 
-            <form onSubmit={handleLoginSubmit} className="space-y-3.5">
+            <form onSubmit={handleLoginSubmit} className="space-y-3.5" autoComplete="off">
+              {/* Hidden inputs to prevent aggressive browser autofill */}
+              <div className="sr-only" aria-hidden="true">
+                <input type="text" name="fake_vendor_user" tabIndex={-1} autoComplete="off" />
+                <input type="password" name="fake_vendor_pass" tabIndex={-1} autoComplete="new-password" />
+              </div>
+
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1">
                   Shopkeeper Username or Email *
@@ -179,7 +165,10 @@ export const VendorAuth: React.FC = () => {
                   <input
                     required
                     type="text"
-                    placeholder="e.g. vendor1 or vendor1@abctoys.com"
+                    name="vendor_login_id"
+                    id="vendor_login_id"
+                    autoComplete="off"
+                    placeholder="Enter your username or email"
                     value={loginId}
                     onChange={(e) => setLoginId(e.target.value)}
                     className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-400"
@@ -195,12 +184,24 @@ export const VendorAuth: React.FC = () => {
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                   <input
                     required
-                    type="password"
-                    placeholder="vendor123"
+                    type={showLoginPassword ? "text" : "password"}
+                    name="vendor_login_pass"
+                    id="vendor_login_pass"
+                    autoComplete="new-password"
+                    placeholder="••••••••"
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-400"
+                    className="w-full pl-9 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-400"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowLoginPassword(!showLoginPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors cursor-pointer p-0.5"
+                    tabIndex={-1}
+                    title={showLoginPassword ? "Hide password" : "Show password"}
+                  >
+                    {showLoginPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
                 </div>
               </div>
 
@@ -238,7 +239,7 @@ export const VendorAuth: React.FC = () => {
               </div>
             )}
 
-            <form onSubmit={handleRegisterSubmit} className="space-y-3">
+            <form onSubmit={handleRegisterSubmit} className="space-y-3" autoComplete="off">
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1">Toy Shop / Store Name *</label>
                 <div className="relative">
@@ -324,12 +325,24 @@ export const VendorAuth: React.FC = () => {
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                   <input
                     required
-                    type="password"
+                    type={showRegPassword ? "text" : "password"}
+                    name="vendor_reg_password"
+                    id="vendor_reg_password"
+                    autoComplete="new-password"
                     placeholder="Create a password"
                     value={regForm.password}
                     onChange={(e) => setRegForm({ ...regForm, password: e.target.value })}
-                    className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-400"
+                    className="w-full pl-9 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-400"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowRegPassword(!showRegPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors cursor-pointer p-0.5"
+                    tabIndex={-1}
+                    title={showRegPassword ? "Hide password" : "Show password"}
+                  >
+                    {showRegPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
                 </div>
               </div>
 
@@ -367,19 +380,19 @@ export const VendorAuth: React.FC = () => {
           </div>
         )}
 
-        {/* Footer Navigation Switcher */}
-        <div className="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-400">
+        {/* Footer Navigation */}
+        <div className="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-slate-400">
           <a
             href="http://localhost:3000"
-            className="hover:text-slate-800 transition-colors flex items-center gap-1"
+            className="hover:text-slate-700 transition-colors flex items-center gap-1"
           >
             &larr; Back to Toy Store
           </a>
           <Link
             to="/admin/login"
-            className="text-pink-500 hover:underline flex items-center gap-1 font-extrabold"
+            className="hover:text-pink-600 transition-colors flex items-center gap-1 text-[11px] font-medium"
           >
-            <ShieldCheck size={13} /> Admin Panel &rarr;
+            <ShieldCheck size={12} className="text-slate-400" /> Admin Panel &rarr;
           </Link>
         </div>
 

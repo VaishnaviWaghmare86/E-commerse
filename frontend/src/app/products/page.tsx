@@ -89,7 +89,7 @@ function ProductsContent() {
     });
 
     products.forEach((p) => {
-      if (p.status !== "APPROVED" || p.isActive === false) return;
+      if ((p.status !== "APPROVED" && p.status !== "Active") || p.isActive === false) return;
       const catName = typeof p.category === "string" ? p.category : p.category?.name;
       if (catName && catName.trim()) {
         const key = catName.trim().toLowerCase();
@@ -131,7 +131,7 @@ function ProductsContent() {
     });
 
     products.forEach((p) => {
-      if (p.status !== "APPROVED" || p.isActive === false) return;
+      if ((p.status !== "APPROVED" && p.status !== "Active") || p.isActive === false) return;
       if (p.brand && p.brand.trim()) {
         const key = p.brand.trim().toLowerCase();
         if (!map.has(key)) {
@@ -155,7 +155,7 @@ function ProductsContent() {
     return products
       .filter((p) => {
         // Customer storefront rule: only show approved and active toys (never unapproved / pending)
-        if (p.status !== "APPROVED") return false;
+        if (p.status !== "APPROVED" && p.status !== "Active") return false;
         if (p.isActive === false) return false;
 
         // Search

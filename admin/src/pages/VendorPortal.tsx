@@ -62,6 +62,8 @@ export const VendorPortal: React.FC = () => {
     basePrice: 1999,
     salePrice: 1599,
     stock: 25,
+    isBestSeller: false,
+    isNewArrival: false,
     image: '',
     shortDescription: '',
     description: '',
@@ -188,6 +190,8 @@ export const VendorPortal: React.FC = () => {
           salePrice: formData.salePrice ? Number(formData.salePrice) : null,
           price: formData.salePrice ? Number(formData.salePrice) : Number(formData.basePrice),
           stock: Number(formData.stock),
+          isBestSeller: Boolean(formData.isBestSeller),
+          isNewArrival: Boolean(formData.isNewArrival),
         }),
       });
 
@@ -203,6 +207,8 @@ export const VendorPortal: React.FC = () => {
           basePrice: 1999,
           salePrice: 1599,
           stock: 25,
+          isBestSeller: false,
+          isNewArrival: false,
           image: '',
           shortDescription: '',
           description: '',
@@ -651,6 +657,72 @@ export const VendorPortal: React.FC = () => {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 className="w-full p-3 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500"
               />
+            </div>
+
+            {/* CUSTOMER BADGES & ORDERING TAGS */}
+            <div className="bg-slate-50/80 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3">
+              <div>
+                <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider">
+                  Customer Badges &amp; Ordering Tags
+                </h4>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Select which badges are displayed to customers when viewing or ordering this toy:
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                {/* Best Seller Checkbox/Card */}
+                <label
+                  className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer select-none ${
+                    formData.isBestSeller
+                      ? 'bg-amber-50/70 border-amber-300 ring-1 ring-amber-400/30'
+                      : 'bg-white border-slate-200 hover:border-slate-300'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.isBestSeller}
+                    onChange={(e) =>
+                      setFormData({ ...formData, isBestSeller: e.target.checked })
+                    }
+                    className="mt-0.5 rounded text-amber-600 focus:ring-amber-500 w-4 h-4 cursor-pointer"
+                  />
+                  <div className="flex-1">
+                    <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                      🔥 Best Seller
+                    </span>
+                    <p className="text-[11px] text-slate-500 mt-0.5 leading-normal">
+                      Shows "Best Seller" badge when customer views and orders this toy
+                    </p>
+                  </div>
+                </label>
+
+                {/* New Arrival Checkbox/Card */}
+                <label
+                  className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer select-none ${
+                    formData.isNewArrival
+                      ? 'bg-emerald-50/70 border-emerald-300 ring-1 ring-emerald-400/30'
+                      : 'bg-white border-slate-200 hover:border-slate-300'
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.isNewArrival}
+                    onChange={(e) =>
+                      setFormData({ ...formData, isNewArrival: e.target.checked })
+                    }
+                    className="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4 cursor-pointer"
+                  />
+                  <div className="flex-1">
+                    <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                      ✨ New Arrival
+                    </span>
+                    <p className="text-[11px] text-slate-500 mt-0.5 leading-normal">
+                      Shows "New Arrival" badge to highlight fresh toys to customers
+                    </p>
+                  </div>
+                </label>
+              </div>
             </div>
 
             <button

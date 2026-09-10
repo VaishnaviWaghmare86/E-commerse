@@ -15,7 +15,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import type { Product } from '../types';
 
 export const Products: React.FC = () => {
-  const { products, deleteProduct, updateProduct } = useAdmin();
+  const { products, deleteProduct, updateProduct, categories: adminCategories } = useAdmin();
   const { showToast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
@@ -69,7 +69,9 @@ export const Products: React.FC = () => {
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
   // Categories list for dropdown
-  const categories = ['All', 'Toys', 'Learning', 'Apparel', 'Nursery', 'Outdoor'];
+  const categories = useMemo(() => {
+    return ['All', ...Array.from(new Set([...adminCategories.map((c) => c.name), ...products.map((p) => p.category)])).filter(Boolean)];
+  }, [adminCategories, products]);
 
   // Filtered and sorted products
   const filteredProducts = useMemo(() => {
@@ -410,7 +412,10 @@ export const Products: React.FC = () => {
                             type="checkbox"
                             checked={Boolean(product.isBestSeller)}
                             onChange={(e) => {
-                              updateProduct(product.id, { isBestSeller: e.target.checked });
+                              updateProduct(product.id, {
+                                isBestSeller: e.target.checked,
+                                status: e.target.checked ? 'Active' : product.status,
+                              });
                               showToast(
                                 `"${product.name}" ${e.target.checked ? 'added to 🔥 Best Sellers' : 'removed from Best Sellers'}`,
                                 'success'
@@ -441,7 +446,10 @@ export const Products: React.FC = () => {
                             type="checkbox"
                             checked={Boolean(product.isNewArrival)}
                             onChange={(e) => {
-                              updateProduct(product.id, { isNewArrival: e.target.checked });
+                              updateProduct(product.id, {
+                                isNewArrival: e.target.checked,
+                                status: e.target.checked ? 'Active' : product.status,
+                              });
                               showToast(
                                 `"${product.name}" ${e.target.checked ? 'added to ✨ New Arrivals' : 'removed from New Arrivals'}`,
                                 'success'

@@ -73,7 +73,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       if (savedWishlist) {
         const parsed = JSON.parse(savedWishlist);
-        if (Array.isArray(parsed)) setWishlist(parsed);
+        if (Array.isArray(parsed)) {
+          const cleaned = parsed
+            .map((item) => {
+              if (item === null || item === undefined) return null;
+              if (typeof item === "object") return String(item.id ?? item._id ?? "");
+              const str = String(item);
+              return str === "[object Object]" || str === "undefined" ? null : str;
+            })
+            .filter(Boolean) as string[];
+          setWishlist(Array.from(new Set(cleaned)));
+        }
       }
     } catch (e) {
       console.error("Error reading localStorage:", e);
@@ -152,21 +162,35 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const toggleWishlist = (id: string | number) => {
+  const getCleanWishlistId = (item: any): string => {
+    if (item === null || item === undefined) return "";
+    if (typeof item === "object") {
+      return String(item.id ?? item._id ?? "");
+    }
+    const str = String(item);
+    return str === "[object Object]" || str === "undefined" ? "" : str;
+  };
+
+  const toggleWishlist = (id: string | number | any) => {
+    const targetId = getCleanWishlistId(id);
+    if (!targetId) return;
+
     setWishlist((prev) => {
-      const exists = prev.some((item) => String(item) === String(id));
+      const exists = prev.some((item) => getCleanWishlistId(item) === targetId);
       if (exists) {
         showToast("Removed item from Wishlist");
-        return prev.filter((item) => String(item) !== String(id));
+        return prev.filter((item) => getCleanWishlistId(item) !== targetId);
       } else {
         showToast("Added item to Wishlist ❤️");
-        return [...prev, id];
+        return [...prev.filter((item) => getCleanWishlistId(item) !== targetId), targetId];
       }
     });
   };
 
-  const isInWishlist = (id: string | number) => {
-    return wishlist.some((item) => String(item) === String(id));
+  const isInWishlist = (id: string | number | any) => {
+    const targetId = getCleanWishlistId(id);
+    if (!targetId) return false;
+    return wishlist.some((item) => getCleanWishlistId(item) === targetId);
   };
 
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import type {
   Product,
   Category,
@@ -22,7 +22,7 @@ import type {
 import { initialProducts } from '../data/products';
 import { initialCategories } from '../data/categories';
 import { initialAttributes } from '../data/attributes';
-import { initialInventory, sampleStockHistory } from '../data/inventory';
+import { sampleStockHistory } from '../data/inventory';
 import { initialOrders } from '../data/orders';
 import { initialCustomers } from '../data/customers';
 import { initialBanners, initialCollections, initialCoupons } from '../data/marketing';
@@ -56,6 +56,7 @@ interface AdminContextType {
   inventory: InventoryItem[];
   stockHistory: Record<string, StockHistoryEntry[]>;
   adjustStock: (inventoryId: string, newStock: number, reason: string) => void;
+  refreshProducts: () => Promise<void>;
 
   // Orders
   orders: Order[];
@@ -126,8 +127,100 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [attributes, setAttributes] = useState<Attribute[]>(initialAttributes);
-  const [inventory, setInventory] = useState<InventoryItem[]>(initialInventory);
-  const [stockHistory, setStockHistory] = useState<Record<string, StockHistoryEntry[]>>(sampleStockHistory);
+  const [stockHistory, setStockHistory] = useState<Record<string, StockHistoryEntry[]>>(() => {
+    try {
+      const saved = localStorage.getItem('toyjoy_admin_stock_history');
+      return saved ? JSON.parse(saved) : sampleStockHistory;
+    } catch {
+      return sampleStockHistory;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('toyjoy_admin_stock_history', JSON.stringify(stockHistory));
+    } catch {
+      // ignore
+    }
+  }, [stockHistory]);
+
+  // Derived Inventory directly from live catalog products
+  const inventory: InventoryItem[] = React.useMemo(() => {
+    const items: InventoryItem[] = [];
+    for (const prod of products) {
+      if (prod.variants && prod.variants.length > 0) {
+        prod.variants.forEach((v: any, idx: number) => {
+          const vStock = Number(v.stock !== undefined && v.stock !== null ? v.stock : prod.stock);
+          items.push({
+            id: `inv-${prod.id}-${v.id || v.sku || idx}`,
+            productId: prod.id,
+            productName: prod.name,
+            sku: v.sku || `${prod.sku}-${idx + 1}`,
+            variant: v.color || v.size || v.name || 'Standard',
+            currentStock: vStock,
+            minThreshold: 10,
+            status: vStock > 10 ? 'In Stock' : vStock > 0 ? 'Low Stock' : 'Out of Stock',
+            lastRestocked: prod.createdAt || 'Recent',
+            image: prod.image,
+            price: Number(v.price || prod.salePrice || prod.price || 0),
+          });
+        });
+      } else {
+        const stock = Number(prod.stock ?? 0);
+        items.push({
+          id: `inv-${prod.id}`,
+          productId: prod.id,
+          productName: prod.name,
+          sku: prod.sku || `SKU-${prod.id}`,
+          variant: 'Standard',
+          currentStock: stock,
+          minThreshold: 10,
+          status: stock > 10 ? 'In Stock' : stock > 0 ? 'Low Stock' : 'Out of Stock',
+          lastRestocked: prod.createdAt || 'Recent',
+          image: prod.image,
+          price: Number(prod.salePrice || prod.price || 0),
+        });
+      }
+    }
+    return items;
+  }, [products]);
+
+  const refreshProducts = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/api/products?allStatus=true');
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        const backendMapped: Product[] = data.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          slug: item.slug || (item.name ? item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : item.id),
+          sku: item.sku || `SKU-${item.id}`,
+          category: typeof item.category === 'string' ? item.category : (item.category?.name || 'Toys'),
+          subCategory: item.subCategory || '',
+          price: Number(item.basePrice || item.price || 999),
+          salePrice: item.salePrice ? Number(item.salePrice) : undefined,
+          discount: Number(item.discount || 0),
+          stock: item.stock !== undefined && item.stock !== null ? Number(item.stock) : 20,
+          status: item.status === 'APPROVED' || item.status === 'Active' ? 'Active' : (item.status === 'PENDING' ? 'Draft' : 'Active'),
+          featured: Boolean(item.isFeatured || item.featured),
+          isBestSeller: Boolean(item.isBestSeller),
+          isNewArrival: Boolean(item.isNewArrival),
+          image: item.image || item.images?.[0]?.url || 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=300&auto=format&fit=crop&q=60',
+          galleryImages: Array.isArray(item.images) ? item.images.map((img: any) => typeof img === 'string' ? img : img?.url || '') : [],
+          shortDescription: item.shortDescription || '',
+          description: item.description || '',
+          rating: Number(item.rating || 5.0),
+          salesCount: Number(item.salesCount || 0),
+          attributes: item.attributes || {},
+          variants: item.variants || [],
+          createdAt: item.createdAt ? item.createdAt.split('T')[0] : new Date().toISOString().split('T')[0],
+        }));
+        setProducts(backendMapped);
+      }
+    } catch (err) {
+      console.warn('Failed to refresh products from backend API:', err);
+    }
+  };
   const [orders, setOrders] = useState<Order[]>(initialOrders);
   const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
   const [banners, setBanners] = useState<Banner[]>(initialBanners);
@@ -164,64 +257,153 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
 
+  // Load initial products and categories from backend API
+  useEffect(() => {
+    refreshProducts();
+
+    fetch('http://localhost:5000/api/categories')
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          const mapped: Category[] = data.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+            slug: item.slug || (item.name ? item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') : item.id),
+            description: item.description || '',
+            parentId: item.parentId || null,
+            status: item.status === 'Inactive' || item.isActive === false ? 'Inactive' : 'Active',
+            featured: Boolean(item.featured || item.isFeatured),
+            sortOrder: Number(item.sortOrder || 1),
+            image: item.image || 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=200&h=200&fit=crop',
+            itemCount: Number(item.itemCount ?? 0),
+            children: Array.isArray(item.children) ? item.children.map((ch: any) => ({
+              id: ch.id,
+              name: ch.name,
+              slug: ch.slug || ch.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+              description: ch.description || '',
+              parentId: item.id,
+              status: ch.status === 'Inactive' ? 'Inactive' : 'Active',
+              featured: Boolean(ch.featured),
+              sortOrder: Number(ch.sortOrder || 1),
+              image: ch.image || item.image,
+              itemCount: Number(ch.itemCount ?? 0),
+            })) : undefined,
+          }));
+          setCategories(mapped);
+        }
+      })
+      .catch((err) => {
+        console.warn('Failed to load categories from backend API:', err);
+      });
+  }, []);
+
   // Products CRUD
   const addProduct = (prodData: Omit<Product, 'id' | 'createdAt' | 'salesCount'>) => {
+    const tempId = `prod-${Date.now()}`;
     const newProduct: Product = {
       ...prodData,
-      id: `prod-${Date.now()}`,
+      id: tempId,
       createdAt: new Date().toISOString().split('T')[0],
       salesCount: 0,
     };
     setProducts((prev) => [newProduct, ...prev]);
 
-    // Also add to inventory automatically
-    const newInvItem: InventoryItem = {
-      id: `inv-${Date.now()}`,
-      productId: newProduct.id,
-      productName: newProduct.name,
-      sku: newProduct.sku,
-      currentStock: newProduct.stock,
-      minThreshold: 10,
-      status: newProduct.stock > 10 ? 'In Stock' : newProduct.stock > 0 ? 'Low Stock' : 'Out of Stock',
-      lastRestocked: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
-      image: newProduct.image,
-      price: newProduct.salePrice || newProduct.price,
-    };
-    setInventory((prev) => [newInvItem, ...prev]);
+    // Persist to backend database
+    fetch('http://localhost:5000/api/products', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: tempId,
+        name: newProduct.name,
+        slug: newProduct.slug,
+        sku: newProduct.sku,
+        category: newProduct.category,
+        subCategory: newProduct.subCategory,
+        basePrice: newProduct.price,
+        salePrice: newProduct.salePrice || newProduct.price,
+        price: newProduct.salePrice || newProduct.price,
+        discount: newProduct.discount,
+        stock: newProduct.stock,
+        status: newProduct.status === 'Active' ? 'APPROVED' : newProduct.status,
+        isActive: newProduct.status === 'Active',
+        isFeatured: Boolean(newProduct.featured),
+        isBestSeller: Boolean(newProduct.isBestSeller),
+        isNewArrival: Boolean(newProduct.isNewArrival),
+        image: newProduct.image,
+        images: (newProduct.galleryImages && newProduct.galleryImages.length > 0)
+          ? newProduct.galleryImages.map((url) => ({ url }))
+          : [{ url: newProduct.image }],
+        shortDescription: newProduct.shortDescription,
+        description: newProduct.description,
+        attributes: newProduct.attributes,
+        variants: newProduct.variants,
+      }),
+    })
+      .then((res) => res.json())
+      .then((saved) => {
+        if (saved && saved.id) {
+          setProducts((prev) =>
+            prev.map((p) => (p.id === tempId ? { ...p, id: saved.id } : p))
+          );
+        }
+      })
+      .catch((err) => console.error('Failed to persist product to backend:', err));
   };
 
   const updateProduct = (id: string, updated: Partial<Product>) => {
     setProducts((prev) =>
       prev.map((item) => (item.id === id ? { ...item, ...updated } : item))
     );
-    // Update inventory if stock or price changed
-    if (updated.stock !== undefined || updated.price !== undefined || updated.name !== undefined) {
-      setInventory((prev) =>
-        prev.map((inv) =>
-          inv.productId === id
-            ? {
-                ...inv,
-                productName: updated.name ?? inv.productName,
-                currentStock: updated.stock ?? inv.currentStock,
-                price: (updated.salePrice || updated.price) ?? inv.price,
-                status: (updated.stock ?? inv.currentStock) > 10 ? 'In Stock' : (updated.stock ?? inv.currentStock) > 0 ? 'Low Stock' : 'Out of Stock',
-              }
-            : inv
-        )
-      );
+
+    // Persist updates to backend database
+    const backendUpdates: any = { ...updated };
+    if (updated.price !== undefined) backendUpdates.basePrice = updated.price;
+    if (updated.salePrice !== undefined) backendUpdates.salePrice = updated.salePrice;
+    if (updated.stock !== undefined) backendUpdates.stock = updated.stock;
+    if (updated.status !== undefined) {
+      backendUpdates.status = updated.status === 'Active' ? 'APPROVED' : updated.status;
+      backendUpdates.isActive = updated.status === 'Active';
     }
+    if (updated.featured !== undefined) backendUpdates.isFeatured = updated.featured;
+    if (updated.isBestSeller !== undefined) {
+      backendUpdates.isBestSeller = Boolean(updated.isBestSeller);
+      if (updated.isBestSeller) {
+        backendUpdates.status = 'APPROVED';
+        backendUpdates.isActive = true;
+      }
+    }
+    if (updated.isNewArrival !== undefined) {
+      backendUpdates.isNewArrival = Boolean(updated.isNewArrival);
+      if (updated.isNewArrival) {
+        backendUpdates.status = 'APPROVED';
+        backendUpdates.isActive = true;
+      }
+    }
+    if (updated.galleryImages) {
+      backendUpdates.images = updated.galleryImages.map((url) => ({ url }));
+    }
+
+    fetch(`http://localhost:5000/api/products/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(backendUpdates),
+    }).catch((err) => console.error('Failed to update product in backend:', err));
   };
 
   const deleteProduct = (id: string) => {
     setProducts((prev) => prev.filter((item) => item.id !== id));
-    setInventory((prev) => prev.filter((inv) => inv.productId !== id));
+
+    fetch(`http://localhost:5000/api/products/${id}`, {
+      method: 'DELETE',
+    }).catch((err) => console.error('Failed to delete product from backend:', err));
   };
 
   // Categories CRUD
   const addCategory = (catData: Omit<Category, 'id' | 'itemCount'>) => {
+    const tempId = `cat-${Date.now()}`;
     const newCat: Category = {
       ...catData,
-      id: `cat-${Date.now()}`,
+      id: tempId,
       itemCount: 0,
     };
 
@@ -241,6 +423,36 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } else {
       setCategories((prev) => [...prev, newCat]);
     }
+
+    // Persist to backend database
+    fetch('http://localhost:5000/api/categories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: tempId,
+        name: newCat.name,
+        slug: newCat.slug,
+        description: newCat.description,
+        parentId: newCat.parentId,
+        status: newCat.status,
+        featured: Boolean(newCat.featured),
+        image: newCat.image,
+      }),
+    })
+      .then((res) => res.json())
+      .then((saved) => {
+        if (saved && saved.id) {
+          const updateIdRecursive = (cats: Category[]): Category[] => {
+            return cats.map((c) => {
+              if (c.id === tempId) return { ...c, id: saved.id };
+              if (c.children) return { ...c, children: updateIdRecursive(c.children) };
+              return c;
+            });
+          };
+          setCategories((prev) => updateIdRecursive(prev));
+        }
+      })
+      .catch((err) => console.error('Failed to persist category to backend:', err));
   };
 
   const updateCategory = (id: string, updated: Partial<Category>) => {
@@ -256,6 +468,12 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       });
     };
     setCategories((prev) => updateRecursive(prev));
+
+    fetch(`http://localhost:5000/api/categories/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updated),
+    }).catch((err) => console.error('Failed to update category in backend:', err));
   };
 
   const deleteCategory = (id: string) => {
@@ -268,6 +486,10 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         }));
     };
     setCategories((prev) => deleteRecursive(prev));
+
+    fetch(`http://localhost:5000/api/categories/${id}`, {
+      method: 'DELETE',
+    }).catch((err) => console.error('Failed to delete category in backend:', err));
   };
 
   // Attributes CRUD
@@ -310,14 +532,21 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const targetItem = inventory.find((i) => i.id === inventoryId);
     if (!targetItem) return;
 
-    const diff = newStock - targetItem.currentStock;
+    const safeStock = Math.max(0, Math.floor(newStock));
+    const diff = safeStock - targetItem.currentStock;
     const historyEntry: StockHistoryEntry = {
       id: `h-${Date.now()}`,
-      date: new Date().toLocaleString('en-US', { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+      date: new Date().toLocaleString('en-US', {
+        month: 'short',
+        day: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
       adjustment: diff,
       reason,
       adjustedBy: 'Store Admin',
-      newStock,
+      newStock: safeStock,
     };
 
     setStockHistory((prev) => ({
@@ -325,31 +554,35 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       [inventoryId]: [historyEntry, ...(prev[inventoryId] || [])],
     }));
 
-    setInventory((prev) =>
-      prev.map((item) =>
-        item.id === inventoryId
-          ? {
-              ...item,
-              currentStock: newStock,
-              status: newStock > item.minThreshold ? 'In Stock' : newStock > 0 ? 'Low Stock' : 'Out of Stock',
-              lastRestocked: diff > 0 ? new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }) : item.lastRestocked,
+    // Sync product stock in local state
+    setProducts((prev) =>
+      prev.map((prod) => {
+        if (prod.id !== targetItem.productId) return prod;
+        let updatedVariants = prod.variants;
+        if (prod.variants && prod.variants.length > 0) {
+          updatedVariants = prod.variants.map((v: any, idx: number) => {
+            const vId = `inv-${prod.id}-${v.id || v.sku || idx}`;
+            if (vId === inventoryId) {
+              return { ...v, stock: safeStock };
             }
-          : item
-      )
+            return v;
+          });
+        }
+        return {
+          ...prod,
+          stock: safeStock,
+          variants: updatedVariants,
+          status: safeStock === 0 ? 'Out of Stock' : (prod.status === 'Out of Stock' ? 'Active' : prod.status),
+        };
+      })
     );
 
-    // Sync product stock
-    setProducts((prev) =>
-      prev.map((prod) =>
-        prod.id === targetItem.productId
-          ? {
-              ...prod,
-              stock: newStock,
-              status: newStock === 0 ? 'Out of Stock' : prod.status,
-            }
-          : prod
-      )
-    );
+    // Persist stock adjustment to backend database
+    fetch(`http://localhost:5000/api/products/${targetItem.productId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ stock: safeStock }),
+    }).catch((err) => console.error('Failed to persist stock adjustment to backend:', err));
   };
 
   // Orders
@@ -518,6 +751,67 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setSettings((prev) => ({ ...prev, ...newSettings }));
   };
 
+  // Dynamically calculate live product count for each category and auto-include real product categories
+  const enrichedCategories: Category[] = React.useMemo(() => {
+    const countProductForCategory = (cat: Category): number => {
+      const directCount = products.filter(
+        (p) =>
+          (p.category && p.category.trim().toLowerCase() === cat.name.trim().toLowerCase()) ||
+          (p as any).categoryId === cat.id
+      ).length;
+      const childrenCount = (cat.children || []).reduce(
+        (sum, child) => sum + countProductForCategory(child),
+        0
+      );
+      return directCount + childrenCount;
+    };
+
+    const enrichTree = (cats: Category[]): Category[] => {
+      return cats.map((cat) => ({
+        ...cat,
+        itemCount: countProductForCategory(cat),
+        children: cat.children ? enrichTree(cat.children) : undefined,
+      }));
+    };
+
+    const enriched = enrichTree(categories);
+
+    // Auto-discover any categories used on real products not already in categories tree
+    const existingNames = new Set<string>();
+    const collectNames = (cats: Category[]) => {
+      cats.forEach((c) => {
+        existingNames.add(c.name.trim().toLowerCase());
+        if (c.children) collectNames(c.children);
+      });
+    };
+    collectNames(categories);
+
+    const extraCategories: Category[] = [];
+    products.forEach((p) => {
+      const catName = p.category?.trim();
+      if (catName && !existingNames.has(catName.toLowerCase())) {
+        existingNames.add(catName.toLowerCase());
+        const count = products.filter(
+          (prod) => prod.category?.trim().toLowerCase() === catName.toLowerCase()
+        ).length;
+        extraCategories.push({
+          id: (p as any).categoryId || `cat-${catName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
+          name: catName,
+          slug: catName.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          description: `${catName} collection`,
+          parentId: null,
+          status: 'Active',
+          featured: false,
+          sortOrder: 10,
+          image: p.image || 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=200&h=200&fit=crop',
+          itemCount: count,
+        });
+      }
+    });
+
+    return [...enriched, ...extraCategories];
+  }, [categories, products]);
+
   return (
     <AdminContext.Provider
       value={{
@@ -525,7 +819,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         addProduct,
         updateProduct,
         deleteProduct,
-        categories,
+        categories: enrichedCategories,
         addCategory,
         updateCategory,
         deleteCategory,
@@ -537,6 +831,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         inventory,
         stockHistory,
         adjustStock,
+        refreshProducts,
         orders,
         updateOrderStatus,
         updateOrderPayment,

@@ -1,120 +1,283 @@
 "use client";
 
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
-import { ShoppingCart, Star, Filter, Heart } from "lucide-react";
+import { ShoppingBag, Star, Filter, Heart, ArrowLeft } from "lucide-react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
+import { useCart } from "../../../context/CartContext";
 
 export default function ProductListingPage() {
   const params = useParams();
-  const categorySlug = params.slug || "toys";
+  const categorySlug = (params?.slug ? String(params.slug) : "toys").toLowerCase();
+  const { addToCart, toggleWishlist, isInWishlist, isMounted } = useCart();
 
-  const products = [
-    { id: 1, name: "Remote Control Monster Truck", price: 45.99, rating: 4.8, stock: 12, category: "Vehicles", img: "🚗" },
-    { id: 2, name: "Giant Fluffy Teddy Bear", price: 29.99, rating: 4.9, stock: 5, category: "Soft Toys", img: "🧸" },
-    { id: 3, name: "Galactic Lego Space Station", price: 89.99, rating: 5.0, stock: 3, category: "Learning", img: "🛸" },
-    { id: 4, name: "Dinosaur Adventure Puzzle", price: 15.50, rating: 4.5, stock: 20, category: "Puzzles", img: "🦖" },
-    { id: 5, name: "Magic Painting Kit", price: 22.00, rating: 4.6, stock: 8, category: "Art & Craft", img: "🎨" },
-    { id: 6, name: "Educational Math Blocks", price: 34.99, rating: 4.7, stock: 15, category: "Learning", img: "🔢" },
-  ];
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedAge, setSelectedAge] = useState<string>("all");
+  const [maxPrice, setMaxPrice] = useState<number>(10000);
+
+  // Friendly title from slug
+  const categoryTitle = useMemo(() => {
+    return categorySlug
+      .split("-")
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(" ");
+  }, [categorySlug]);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/products")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          const approved = data.filter(
+            (p: any) => (p.status === "APPROVED" || p.status === "Active") && p.isActive !== false
+          );
+          setProducts(approved);
+        }
+      })
+      .catch((err) => console.error("Failed to fetch category products:", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  // Filter products by category slug
+  const categoryProducts = useMemo(() => {
+    const slugClean = categorySlug.replace(/[^a-z0-9]/g, "");
+    return products.filter((p: any) => {
+      const catName = (typeof p.category === "string" ? p.category : p.category?.name || "").toLowerCase();
+      const catClean = catName.replace(/[^a-z0-9]/g, "");
+      const matchesCategory =
+        catClean.includes(slugClean) ||
+        slugClean.includes(catClean) ||
+        (p.categoryId && p.categoryId.toLowerCase().includes(slugClean));
+
+      if (!matchesCategory) return false;
+
+      // Age filter
+      if (selectedAge !== "all") {
+        const cleanAge = selectedAge.toLowerCase().replace("years", "").trim();
+        if (!p.ageGroup?.toLowerCase().includes(cleanAge)) return false;
+      }
+
+      // Price filter
+      const price = Number(p.salePrice || p.price || p.basePrice || 0);
+      if (price > maxPrice) return false;
+
+      return true;
+    });
+  }, [products, categorySlug, selectedAge, maxPrice]);
+
+  if (!isMounted) return null;
 
   return (
-    <div className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-8">
-      
+    <div className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-8 font-sans bg-[#FAF9F6] min-h-screen">
       {/* Header */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-10 text-center md:text-left"
+        className="mb-8"
       >
-        <h1 className="text-4xl font-extrabold text-slate-800 capitalize flex items-center justify-center md:justify-start gap-3">
-          Explore {categorySlug} <span className="text-sky-500">✨</span>
-        </h1>
-        <p className="text-slate-500 mt-2 text-lg">Find the perfect gift to spark joy and imagination.</p>
+        <Link
+          href="/products"
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-pink-600 mb-3 transition-colors"
+        >
+          <ArrowLeft size={16} /> Back to All Toys
+        </Link>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl md:text-5xl font-black text-slate-900 capitalize flex items-center gap-3">
+              Explore {categoryTitle} <span className="text-pink-500">✨</span>
+            </h1>
+            <p className="text-slate-500 mt-2 text-sm md:text-base font-medium">
+              Showing {categoryProducts.length} toy{categoryProducts.length === 1 ? "" : "s"} in {categoryTitle}
+            </p>
+          </div>
+        </div>
       </motion.div>
 
       <div className="flex flex-col md:flex-row gap-8">
-        
         {/* Filters Sidebar */}
-        <motion.aside 
+        <motion.aside
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="w-full md:w-64 bg-white p-6 rounded-3xl shadow-sm border border-slate-100 h-fit"
+          className="w-full md:w-64 bg-white p-6 rounded-3xl shadow-sm border border-slate-200 h-fit"
         >
-          <div className="flex items-center gap-2 mb-6 text-slate-800 font-bold text-lg">
-            <Filter size={20} className="text-pink-500" />
+          <div className="flex items-center gap-2 mb-6 text-slate-800 font-black text-base">
+            <Filter size={18} className="text-pink-500" />
             Filters
           </div>
-          
+
           <div className="space-y-6">
             <div>
-              <h3 className="font-semibold text-slate-700 mb-3">Age Group</h3>
-              <div className="space-y-2">
-                {['0-2 Years', '3-5 Years', '6-8 Years', '9+ Years'].map(age => (
-                  <label key={age} className="flex items-center gap-3 text-slate-600 cursor-pointer hover:text-sky-500 transition-colors">
-                    <input type="checkbox" className="rounded text-sky-500 focus:ring-sky-500 h-4 w-4" />
-                    {age}
+              <h3 className="font-bold text-slate-700 text-xs uppercase tracking-wider mb-3">Age Group</h3>
+              <div className="space-y-2 text-sm">
+                {["all", "0-2 Years", "3-5 Years", "6-8 Years", "9-12 Years", "13+ Years"].map((age) => (
+                  <label
+                    key={age}
+                    className="flex items-center gap-2.5 text-slate-600 cursor-pointer hover:text-pink-600 font-semibold"
+                  >
+                    <input
+                      type="radio"
+                      name="ageGroup"
+                      checked={selectedAge === age}
+                      onChange={() => setSelectedAge(age)}
+                      className="text-pink-500 focus:ring-pink-500"
+                    />
+                    <span className="capitalize">{age === "all" ? "All Ages" : age}</span>
                   </label>
                 ))}
               </div>
             </div>
-            
+
             <div>
-              <h3 className="font-semibold text-slate-700 mb-3">Price Range</h3>
-              <input type="range" min="0" max="100" className="w-full accent-pink-500" />
-              <div className="flex justify-between text-sm text-slate-500 mt-2">
-                <span>$0</span>
-                <span>$100+</span>
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="font-bold text-slate-700 text-xs uppercase tracking-wider">Max Price</h3>
+                <span className="font-black text-slate-900 text-xs">₹{maxPrice}</span>
+              </div>
+              <input
+                type="range"
+                min="200"
+                max="10000"
+                step="100"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(Number(e.target.value))}
+                className="w-full accent-pink-500 cursor-pointer"
+              />
+              <div className="flex justify-between text-xs text-slate-400 font-semibold mt-1">
+                <span>₹200</span>
+                <span>₹10,000</span>
               </div>
             </div>
           </div>
         </motion.aside>
 
         {/* Product Grid */}
-        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product, idx) => (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: idx * 0.1 }}
-              whileHover={{ y: -8 }}
-              key={product.id}
-              className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 group hover:shadow-xl transition-all relative overflow-hidden flex flex-col"
-            >
-              {/* Like Button */}
-              <button className="absolute top-4 right-4 z-10 text-slate-300 hover:text-pink-500 transition-colors">
-                <Heart fill="currentColor" className="opacity-0 group-hover:opacity-100 transition-opacity" />
-              </button>
+        <div className="flex-1">
+          {loading ? (
+            <div className="text-center py-20 font-bold text-slate-500">Loading {categoryTitle} Toys...</div>
+          ) : categoryProducts.length === 0 ? (
+            <div className="bg-white rounded-3xl p-12 text-center border border-slate-200">
+              <div className="text-6xl mb-4">🧸</div>
+              <h3 className="text-xl font-black text-slate-800 mb-2">No toys found in {categoryTitle}</h3>
+              <p className="text-slate-500 text-sm max-w-md mx-auto mb-6">
+                Try adjusting your filters or explore our complete toy catalog.
+              </p>
+              <Link
+                href="/products"
+                className="inline-block bg-pink-500 hover:bg-pink-600 text-white font-black text-xs px-6 py-3 rounded-full transition-colors shadow-md"
+              >
+                Browse All Toys &rarr;
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {categoryProducts.map((product, idx) => {
+                const price = Number(product.salePrice || product.price || product.basePrice || 999);
+                const originalPrice = Number(product.basePrice || product.price || price);
+                const imageUrl =
+                  product.images?.[0]?.url ||
+                  product.image ||
+                  "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=500&q=80";
+                const inWish = isInWishlist(product.id);
 
-              {/* Product Image Placeholder */}
-              <div className="bg-slate-50 rounded-2xl h-48 w-full flex items-center justify-center text-7xl mb-4 group-hover:scale-105 transition-transform duration-500">
-                {product.img}
-              </div>
-
-              {/* Product Info */}
-              <div className="flex-1 flex flex-col justify-between">
-                <div>
-                  <div className="text-xs font-bold text-sky-500 uppercase tracking-wider mb-1">{product.category}</div>
-                  <h3 className="font-bold text-slate-800 leading-tight mb-2 line-clamp-2">{product.name}</h3>
-                </div>
-                
-                <div className="mt-4">
-                  <div className="flex items-center gap-1 mb-2">
-                    <Star size={16} className="text-yellow-400" fill="currentColor" />
-                    <span className="text-sm font-semibold text-slate-600">{product.rating}</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-extrabold text-slate-900">${product.price}</span>
-                    <button className="bg-slate-900 hover:bg-sky-500 text-white p-3 rounded-2xl transition-colors shadow-md active:scale-95">
-                      <ShoppingCart size={20} />
+                return (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: idx * 0.05 }}
+                    whileHover={{ y: -6 }}
+                    key={product.id}
+                    className="bg-white rounded-3xl p-5 shadow-sm border border-slate-200 group hover:shadow-xl transition-all relative overflow-hidden flex flex-col justify-between"
+                  >
+                    {/* Wishlist Button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleWishlist(product.id);
+                      }}
+                      className={`absolute top-4 right-4 z-10 p-2.5 rounded-full backdrop-blur-md transition-all ${
+                        inWish
+                          ? "bg-rose-50 text-rose-500 shadow-sm"
+                          : "bg-white/80 text-slate-400 hover:text-rose-500 hover:bg-white"
+                      }`}
+                      title={inWish ? "Remove from Wishlist" : "Add to Wishlist"}
+                    >
+                      <Heart size={18} fill={inWish ? "currentColor" : "none"} />
                     </button>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
 
+                    {/* Product Image */}
+                    <Link href={`/products/${product.id}`} className="block relative aspect-square rounded-2xl overflow-hidden mb-4 bg-slate-50">
+                      <img
+                        src={imageUrl}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      {product.isBestSeller && (
+                        <span className="absolute top-3 left-3 bg-amber-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                          🔥 Best Seller
+                        </span>
+                      )}
+                      {product.isNewArrival && !product.isBestSeller && (
+                        <span className="absolute top-3 left-3 bg-sky-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                          ✨ New
+                        </span>
+                      )}
+                    </Link>
+
+                    {/* Product Info */}
+                    <div className="flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="text-[10px] font-extrabold text-pink-500 uppercase tracking-wider mb-1">
+                          {typeof product.category === "string" ? product.category : product.category?.name || "Toys"}
+                        </div>
+                        <Link href={`/products/${product.id}`}>
+                          <h3 className="font-extrabold text-slate-800 leading-snug mb-1 line-clamp-2 hover:text-pink-600 transition-colors">
+                            {product.name}
+                          </h3>
+                        </Link>
+                      </div>
+
+                      <div className="mt-3 pt-3 border-t border-slate-100">
+                        <div className="flex items-center gap-1 mb-2">
+                          <Star size={14} className="text-yellow-400 fill-yellow-400" />
+                          <span className="text-xs font-bold text-slate-700">{product.rating || 5.0}</span>
+                          <span className="text-[11px] text-slate-400">({product.salesCount || 12} sold)</span>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-xl font-black text-slate-900">₹{price}</span>
+                            {originalPrice > price && (
+                              <span className="text-xs text-slate-400 line-through font-semibold">
+                                ₹{originalPrice}
+                              </span>
+                            )}
+                          </div>
+                          <button
+                            onClick={() =>
+                              addToCart({
+                                id: product.id,
+                                name: product.name,
+                                price: price,
+                                image: imageUrl,
+                                img: imageUrl,
+                                category: typeof product.category === "string" ? product.category : product.category?.name,
+                              })
+                            }
+                            className="bg-slate-900 hover:bg-pink-500 text-white p-2.5 rounded-xl transition-colors shadow-sm active:scale-95 cursor-pointer"
+                            title="Add to Cart"
+                          >
+                            <ShoppingBag size={18} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -124,7 +124,7 @@ export const ProductForm: React.FC = () => {
       status: 'Active' as ProductStatus,
       featured: false,
       isBestSeller: false,
-      isNewArrival: true,
+      isNewArrival: false,
       image: 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=400&auto=format&fit=crop&q=80',
       galleryImages: [
         'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=400&auto=format&fit=crop&q=80',

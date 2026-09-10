@@ -8,15 +8,16 @@ import { Modal } from '../components/ui/Modal';
 import { Input } from '../components/ui/Input';
 import { useAdmin } from '../context/AdminContext';
 import { useToast } from '../context/ToastContext';
-import { Boxes, CheckCircle2, AlertTriangle, XCircle, Sliders, History, Search } from 'lucide-react';
+import { Boxes, CheckCircle2, AlertTriangle, XCircle, Sliders, History, Search, RefreshCw } from 'lucide-react';
 import type { InventoryItem } from '../types';
 
 export const Inventory: React.FC = () => {
-  const { inventory, stockHistory, adjustStock } = useAdmin();
+  const { inventory, stockHistory, adjustStock, refreshProducts } = useAdmin();
   const { showToast } = useToast();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'All' | 'In Stock' | 'Low Stock' | 'Out of Stock'>('All');
+  const [refreshing, setRefreshing] = useState(false);
 
   // Adjustment Modal
   const [selectedItemForAdjust, setSelectedItemForAdjust] = useState<InventoryItem | null>(null);
@@ -25,6 +26,13 @@ export const Inventory: React.FC = () => {
 
   // History Modal
   const [selectedItemForHistory, setSelectedItemForHistory] = useState<InventoryItem | null>(null);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await refreshProducts();
+    setRefreshing(false);
+    showToast('Inventory synchronized with live catalog! 📦', 'success');
+  };
 
   // Stats calculation
   const totalItemsCount = inventory.length;
@@ -60,6 +68,18 @@ export const Inventory: React.FC = () => {
         title="Inventory Management"
         description="Monitor warehouse inventory levels, manage stock adjustments and view audit history"
         breadcrumbs={[{ label: 'Catalog', href: '/admin/products' }, { label: 'Inventory' }]}
+        actions={
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="flex items-center gap-1.5 cursor-pointer bg-white text-slate-700 hover:bg-slate-50"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-[#ff91db]' : 'text-slate-500'}`} />
+            <span>{refreshing ? 'Syncing...' : 'Sync Stock'}</span>
+          </Button>
+        }
       />
 
       {/* 4 Summary Cards */}
@@ -156,62 +176,74 @@ export const Inventory: React.FC = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredInventory.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={item.image}
-                        alt={item.productName}
-                        className="w-10 h-10 rounded-lg object-cover border border-slate-200 shrink-0"
-                      />
-                      <span className="font-semibold text-slate-900 text-xs">
-                        {item.productName}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-mono text-xs text-slate-500 font-medium">
-                    {item.sku}
-                  </TableCell>
-                  <TableCell className="text-xs text-slate-600">
-                    {item.variant || 'Standard'}
-                  </TableCell>
-                  <TableCell>
-                    <span
-                      className={`text-xs font-bold ${
-                        item.currentStock === 0
-                          ? 'text-rose-600'
-                          : item.currentStock <= item.minThreshold
-                          ? 'text-amber-600'
-                          : 'text-slate-900'
-                      }`}
-                    >
-                      {item.currentStock} <span className="text-[11px] font-normal text-slate-400">units</span>
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-xs text-slate-500">{item.lastRestocked}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={item.status} />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-1.5">
-                      <button
-                        onClick={() => openAdjustModal(item)}
-                        className="px-2.5 py-1 text-xs font-semibold text-[#ff91db] bg-pink-50 hover:bg-pink-100 rounded-lg flex items-center gap-1 transition-colors cursor-pointer"
-                      >
-                        <Sliders className="w-3.5 h-3.5" /> Adjust
-                      </button>
-                      <button
-                        onClick={() => setSelectedItemForHistory(item)}
-                        className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
-                        title="View stock history log"
-                      >
-                        <History className="w-4 h-4" />
-                      </button>
-                    </div>
+              {filteredInventory.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="h-32 text-center text-slate-400 text-xs font-medium">
+                    No inventory items found matching your filters.
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                filteredInventory.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={item.image || 'https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=200&h=200&fit=crop'}
+                          alt={item.productName}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src =
+                              'https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=200&h=200&fit=crop';
+                          }}
+                          className="w-10 h-10 rounded-lg object-cover border border-slate-200 shrink-0"
+                        />
+                        <span className="font-semibold text-slate-900 text-xs">
+                          {item.productName}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="font-mono text-xs text-slate-500 font-medium">
+                      {item.sku}
+                    </TableCell>
+                    <TableCell className="text-xs text-slate-600">
+                      {item.variant || 'Standard'}
+                    </TableCell>
+                    <TableCell>
+                      <span
+                        className={`text-xs font-bold ${
+                          item.currentStock === 0
+                            ? 'text-rose-600'
+                            : item.currentStock <= item.minThreshold
+                            ? 'text-amber-600'
+                            : 'text-slate-900'
+                        }`}
+                      >
+                        {item.currentStock} <span className="text-[11px] font-normal text-slate-400">units</span>
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-xs text-slate-500">{item.lastRestocked}</TableCell>
+                    <TableCell>
+                      <StatusBadge status={item.status} />
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => openAdjustModal(item)}
+                          className="px-2.5 py-1 text-xs font-semibold text-[#ff91db] bg-pink-50 hover:bg-pink-100 rounded-lg flex items-center gap-1 transition-colors cursor-pointer"
+                        >
+                          <Sliders className="w-3.5 h-3.5" /> Adjust
+                        </button>
+                        <button
+                          onClick={() => setSelectedItemForHistory(item)}
+                          className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                          title="View stock history log"
+                        >
+                          <History className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </CardContent>
