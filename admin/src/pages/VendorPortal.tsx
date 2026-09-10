@@ -31,7 +31,7 @@ export const VendorPortal: React.FC = () => {
   const currentVendorId = user?.vendorId || 'vendor-1';
   const currentShopName = user?.shopName || 'ABC Toys Wonderland';
 
-  const [activeTab, setActiveTab] = useState<'products' | 'add' | 'orders' | 'profile'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'add' | 'orders' | 'profile' | 'reviews'>('products');
   const [vendorProducts, setVendorProducts] = useState<any[]>([]);
   const [vendorOrders, setVendorOrders] = useState<any[]>([]);
   const [vendorReviews, setVendorReviews] = useState<any[]>([]);
