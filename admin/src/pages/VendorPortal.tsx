@@ -18,6 +18,10 @@ import {
   ShieldCheck,
   Phone,
   MapPin,
+  Star,
+  Edit,
+  Power,
+  RefreshCw,
   User,
 } from 'lucide-react';
 import { useAuth, PRESET_VENDORS } from '../context/AuthContext';
