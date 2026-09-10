@@ -114,26 +114,28 @@ function NewArrivalsInner() {
   if (!isMounted) return null;
 
   return (
-    <div className="w-full bg-[#FAF9F6] min-h-screen py-8 font-sans">
+    <div className="w-full bg-[#0F1026] min-h-screen py-8 font-sans text-white">
       
       {/* 🚀 NEW ARRIVALS HERO BANNER 🚀 */}
       <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6 mb-10">
-        <div className="bg-gradient-to-r from-yellow-200 via-amber-100 to-sky-200 rounded-3xl p-8 md:p-12 text-slate-800 relative overflow-hidden flex flex-col md:flex-row items-center justify-between shadow-sm border border-amber-200 min-h-[220px]">
+        <div className="bg-[#171936] rounded-3xl p-8 md:p-12 text-white relative overflow-hidden flex flex-col md:flex-row items-center justify-between shadow-xl border border-[#3A3D70] min-h-[220px]">
+          <div className="absolute -top-24 -right-24 w-72 h-72 bg-[#7C3CFF]/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-[#FF4FA3]/20 rounded-full blur-3xl pointer-events-none" />
           
           <div className="z-10 max-w-xl text-center md:text-left mb-6 md:mb-0">
-            <span className="bg-amber-500 text-white px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider mb-3 inline-block shadow-sm">
+            <span className="bg-gradient-to-r from-[#FF8A3D] to-[#FF4FA3] text-white px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider mb-3 inline-block shadow-md">
               ✨ Fresh Arrivals 2026
             </span>
-            <h1 className="text-4xl md:text-6xl font-black tracking-tight text-slate-900 leading-tight mb-2">
-              Discover <span className="text-amber-600">New Arrivals!</span> 🦒
+            <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white leading-tight mb-2">
+              Discover <span className="text-[#FFD447]">New Arrivals!</span> 🦒
             </h1>
-            <p className="text-slate-600 text-sm font-semibold mb-4">
+            <p className="text-[#D9DBF0] text-sm font-semibold mb-4">
               Explore the latest released toys, games, and play sets added by our admin team!
             </p>
           </div>
 
-          <div className="relative w-full md:w-1/2 h-48 flex items-center justify-center md:justify-end">
-            <motion.div animate={{ y: [0, -15, 0] }} transition={{ repeat: Infinity, duration: 3 }} className="text-9xl">
+          <div className="relative w-full md:w-1/2 h-48 flex items-center justify-center md:justify-end z-10">
+            <motion.div animate={{ y: [0, -15, 0] }} transition={{ repeat: Infinity, duration: 3 }} className="text-9xl filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
               🦒
             </motion.div>
           </div>
@@ -149,7 +151,9 @@ function NewArrivalsInner() {
               key={cat}
               onClick={() => setSelectedCategory(cat)}
               className={`px-5 py-2.5 rounded-full text-xs font-black transition-all cursor-pointer ${
-                selectedCategory === cat ? 'bg-violet-600 text-white shadow-md' : 'bg-white text-slate-700 border border-slate-200 hover:border-violet-300 hover:text-violet-600'
+                selectedCategory === cat 
+                  ? 'bg-gradient-to-r from-[#7C3CFF] to-[#9147FF] text-white shadow-lg shadow-[#7C3CFF]/30 border border-[#9147FF]' 
+                  : 'bg-[#171936] text-[#D9DBF0] border border-[#3A3D70] hover:border-[#7C3CFF] hover:text-white'
               }`}
             >
               {cat}
@@ -161,12 +165,12 @@ function NewArrivalsInner() {
       {/* 🛍️ PRODUCT GRID 🛍️ */}
       <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6">
         {loading ? (
-          <div className="text-center py-20 font-bold text-slate-500">Loading New Arrivals...</div>
+          <div className="text-center py-20 font-bold text-[#A8ACCA]">Loading New Arrivals...</div>
         ) : filteredProducts.length === 0 ? (
-          <div className="bg-white rounded-3xl p-12 text-center border border-slate-200">
+          <div className="bg-[#20224A] rounded-3xl p-12 text-center border border-[#3A3D70]">
             <div className="text-6xl mb-4">✨</div>
-            <h3 className="text-xl font-black text-slate-800 mb-2">No New Toys in this Category</h3>
-            <button onClick={() => setSelectedCategory("All")} className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-2 rounded-full font-bold text-xs mt-4 cursor-pointer transition-all">
+            <h3 className="text-xl font-black text-white mb-2">No New Toys in this Category</h3>
+            <button onClick={() => setSelectedCategory("All")} className="bg-gradient-to-r from-[#7C3CFF] to-[#9147FF] hover:from-[#9147FF] hover:to-[#FF4FA3] text-white px-6 py-2.5 rounded-full font-bold text-xs mt-4 cursor-pointer transition-all shadow-md shadow-[#7C3CFF]/30">
               Show All New Arrivals
             </button>
           </div>
@@ -180,19 +184,21 @@ function NewArrivalsInner() {
                 <motion.div
                   whileHover={{ y: -5 }}
                   key={prod.id}
-                  className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between group relative"
+                  className="bg-[#20224A] hover:bg-[#282B59] rounded-2xl overflow-hidden border border-[#3A3D70] hover:border-[#7C3CFF] shadow-lg hover:shadow-[0_8px_30px_rgba(124,60,255,0.25)] transition-all flex flex-col justify-between group relative"
                 >
-                  <div className={`relative aspect-square overflow-hidden bg-gradient-to-br ${prod.pastelBg} p-3 flex items-center justify-center`}>
+                  <div className="relative aspect-square overflow-hidden bg-[#171936] p-3 flex items-center justify-center">
                     <img src={prod.img} alt={prod.name} className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500 shadow-sm" />
                     
-                    <span className="absolute top-3 left-3 bg-amber-500 text-white text-[9px] font-black uppercase px-2.5 py-0.5 rounded-full shadow-sm">
+                    <span className="absolute top-3 left-3 bg-gradient-to-r from-[#FF8A3D] to-[#FF4FA3] text-white text-[9px] font-black uppercase px-2.5 py-0.5 rounded-full shadow-md">
                       {prod.badge}
                     </span>
 
                     <button 
                       onClick={() => toggleWishlist(prod.id)}
-                      className={`absolute top-3 right-3 p-1.5 rounded-full shadow-sm transition-all z-10 ${
-                        isWishlisted ? 'bg-pink-500 text-white' : 'bg-white/80 text-slate-400 hover:text-pink-500'
+                      className={`absolute top-3 right-3 p-2 rounded-full shadow-md transition-all z-10 border ${
+                        isWishlisted 
+                          ? 'bg-[#FF4FA3] border-[#FF4FA3] text-white shadow-[#FF4FA3]/30' 
+                          : 'bg-[#171936]/80 backdrop-blur-sm border-[#3A3D70] text-[#A8ACCA] hover:text-[#FF4FA3] hover:border-[#FF4FA3]'
                       }`}
                     >
                       <Heart size={14} fill={isWishlisted ? "currentColor" : "none"} />
@@ -201,24 +207,24 @@ function NewArrivalsInner() {
 
                   <div className="p-4 flex-1 flex flex-col justify-between">
                     <div>
-                      <span className="text-[11px] font-bold text-amber-600 uppercase">{prod.category}</span>
-                      <h3 className="font-black text-slate-800 text-sm mb-1 line-clamp-1">{prod.name}</h3>
+                      <span className="text-[11px] font-bold text-[#28B8FF] uppercase tracking-wider">{prod.category}</span>
+                      <h3 className="font-black text-white text-sm mb-1 line-clamp-1 group-hover:text-[#FFD447] transition-colors">{prod.name}</h3>
 
-                      <div className="flex items-center gap-1 text-amber-400 font-black text-[11px] mb-3">
+                      <div className="flex items-center gap-1 text-[#FFD447] font-black text-[11px] mb-3">
                         <Star size={12} fill="currentColor" />
                         <span>{prod.rating}</span>
-                        <span className="text-slate-400 font-normal">({prod.reviews})</span>
+                        <span className="text-[#A8ACCA] font-normal">({prod.reviews})</span>
                       </div>
                     </div>
 
                     <div>
                       <div className="flex items-baseline justify-between mb-3">
                         <div>
-                          <span className="text-lg font-black text-slate-900">₹{prod.price}</span>
-                          <span className="text-xs text-slate-400 line-through ml-1">₹{prod.originalPrice}</span>
+                          <span className="text-lg font-black text-[#FFD447]">₹{prod.price}</span>
+                          <span className="text-xs text-[#A8ACCA] line-through ml-1">₹{prod.originalPrice}</span>
                         </div>
                         {discountPct > 0 && (
-                          <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+                          <span className="text-[10px] font-black text-[#48D597] bg-[#48D597]/15 border border-[#48D597]/30 px-2 py-0.5 rounded-md">
                             {discountPct}% OFF
                           </span>
                         )}
@@ -226,7 +232,7 @@ function NewArrivalsInner() {
 
                       <button 
                         onClick={() => addToCart(prod as any)}
-                        className="w-full bg-violet-600 hover:bg-violet-700 text-white py-2.5 rounded-xl font-bold text-xs shadow-md hover:shadow-violet-200/50 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                        className="w-full bg-gradient-to-r from-[#7C3CFF] to-[#9147FF] hover:from-[#9147FF] hover:to-[#FF4FA3] text-white py-2.5 rounded-xl font-bold text-xs shadow-md shadow-[#7C3CFF]/30 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                       >
                         <ShoppingBag size={14} /> Add to Cart
                       </button>

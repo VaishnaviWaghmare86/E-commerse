@@ -1,8 +1,29 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
+  --background: #0F1026;
+  --foreground: #FFFFFF;
+
+  /* TOYJOY DARK PLAYFUL PALETTE */
+  --bg-primary: #0F1026;
+  --bg-secondary: #171936;
+  --card-surface: #20224A;
+  --card-elevated: #282B59;
+  --border-color: #3A3D70;
+
+  /* VIBRANT PLAYFUL ACCENTS */
+  --purple-primary: #7C3CFF;
+  --purple-bright: #9147FF;
+  --pink-playful: #FF4FA3;
+  --blue-playful: #28B8FF;
+  --yellow-playful: #FFD447;
+  --orange-playful: #FF8A3D;
+  --green-playful: #48D597;
+
+  /* TEXT CONTRAST */
+  --text-primary: #FFFFFF;
+  --text-secondary: #D9DBF0;
+  --text-muted: #A8ACCA;
 }
 
 @theme inline {
@@ -28,3 +49,19 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Playful Glow Utilities */
+.toy-glow-purple {
+  box-shadow: 0 0 15px rgba(124, 60, 255, 0.45);
+}
+.toy-glow-pink {
+  box-shadow: 0 0 15px rgba(255, 79, 163, 0.45);
+}
+.toy-card-lift {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.toy-card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(124, 60, 255, 0.22);
+}
+

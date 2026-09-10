@@ -230,24 +230,24 @@ export default function WishlistPage() {
   // Prevent SSR Hydration Mismatch
   if (!mounted || !isMounted) {
     return (
-      <div className="w-full bg-[#FAF9F6] min-h-[70vh] py-12 px-4 flex items-center justify-center font-sans">
-        <div className="text-center font-bold text-slate-500">Loading Wishlist...</div>
+      <div className="w-full bg-[#0F1026] min-h-[70vh] py-12 px-4 flex items-center justify-center font-sans text-white">
+        <div className="text-center font-bold text-[#A8ACCA] animate-pulse">Loading Wishlist...</div>
       </div>
     );
   }
 
   return (
-    <div className="w-full bg-[#FAF9F6] min-h-screen py-10 px-4 sm:px-6 font-sans">
+    <div className="w-full bg-[#0F1026] min-h-screen py-10 px-4 sm:px-6 font-sans text-white">
       <div className="max-w-6xl mx-auto">
         
         {/* Header Title */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-3xl sm:text-4xl font-black text-slate-900 flex items-center gap-3">
-              My Wishlist <Heart size={30} className="text-pink-500 fill-pink-500" />
+            <h1 className="text-3xl sm:text-4xl font-black text-white flex items-center gap-3">
+              My Wishlist <Heart size={30} className="text-[#FF4FA3] fill-[#FF4FA3]" />
             </h1>
-            <p className="text-slate-500 text-sm font-semibold mt-1">
-              You have <span className="text-pink-500 font-extrabold">{wishlistedProducts.length}</span> saved toys in your wishlist.
+            <p className="text-[#D9DBF0] text-sm font-semibold mt-1">
+              You have <span className="text-[#FFD447] font-extrabold">{wishlistedProducts.length}</span> saved toys in your wishlist.
             </p>
           </div>
 
@@ -257,12 +257,12 @@ export default function WishlistPage() {
                 onClick={() => {
                   wishlistedProducts.forEach((prod) => addToCart(prod as any));
                 }}
-                className="bg-pink-100 hover:bg-pink-200 text-pink-700 font-extrabold text-xs px-4 py-2.5 rounded-full shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                className="bg-[#7C3CFF]/20 hover:bg-[#7C3CFF]/35 text-[#D9DBF0] hover:text-white border border-[#7C3CFF]/40 font-extrabold text-xs px-4 py-2.5 rounded-full transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
               >
                 <ShoppingBag size={14} /> Add All to Cart
               </button>
             )}
-            <Link href="/products" className="text-sm font-bold text-pink-500 hover:underline flex items-center gap-1">
+            <Link href="/products" className="text-sm font-bold text-[#28B8FF] hover:text-[#FFD447] flex items-center gap-1 transition-colors">
               Explore More Toys &rarr;
             </Link>
           </div>
@@ -270,15 +270,15 @@ export default function WishlistPage() {
 
         {/* Empty State */}
         {!loading && wishlistedProducts.length === 0 ? (
-          <div className="bg-white rounded-3xl p-12 text-center shadow-sm border border-slate-200/80">
+          <div className="bg-[#20224A] rounded-3xl p-12 text-center shadow-xl border border-[#3A3D70]">
             <div className="text-6xl mb-4">💔</div>
-            <h2 className="text-2xl font-black text-slate-800 mb-2">Your Wishlist is Empty</h2>
-            <p className="text-slate-500 text-sm mb-6 max-w-sm mx-auto">
+            <h2 className="text-2xl font-black text-white mb-2">Your Wishlist is Empty</h2>
+            <p className="text-[#D9DBF0] text-sm mb-6 max-w-sm mx-auto">
               Save your favorite toys by tapping the heart icon on any product card!
             </p>
             <Link
               href="/products"
-              className="bg-pink-500 text-white px-8 py-3 rounded-full font-black text-sm shadow-md hover:bg-pink-600 transition-colors inline-block"
+              className="bg-gradient-to-r from-[#7C3CFF] to-[#9147FF] hover:from-[#9147FF] hover:to-[#FF4FA3] text-white px-8 py-3 rounded-full font-black text-sm shadow-md shadow-[#7C3CFF]/30 transition-all inline-block"
             >
               Discover Toys Now &rarr;
             </Link>
@@ -298,29 +298,29 @@ export default function WishlistPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     key={prod.id}
-                    className="bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group relative"
+                    className="bg-[#20224A] hover:bg-[#282B59] rounded-2xl overflow-hidden border border-[#3A3D70] hover:border-[#7C3CFF] shadow-lg hover:shadow-[0_8px_30px_rgba(124,60,255,0.25)] transition-all flex flex-col justify-between group relative"
                   >
                     {/* Image Box */}
-                    <div className={`relative aspect-square overflow-hidden bg-gradient-to-br ${prod.pastelBg || "from-pink-50 to-rose-50"} p-3 flex items-center justify-center`}>
+                    <div className="relative aspect-square overflow-hidden bg-[#171936] p-3 flex items-center justify-center">
                       <Link href={`/products/${prod.id}`} className="w-full h-full flex items-center justify-center">
                         <img
                           src={prod.img}
                           alt={prod.name}
-                          className="w-full h-full object-contain rounded-xl group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-contain rounded-xl group-hover:scale-105 transition-transform duration-300 shadow-sm"
                         />
                       </Link>
                       
                       {/* Remove Button */}
                       <button 
                         onClick={() => toggleWishlist(prod.id)}
-                        className="absolute top-3 right-3 p-2 rounded-full bg-white/90 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-md cursor-pointer"
+                        className="absolute top-3 right-3 p-2 rounded-full bg-[#20224A]/90 border border-[#3A3D70] text-[#FF4FA3] hover:bg-[#FF4FA3] hover:text-white transition-all shadow-md cursor-pointer"
                         title="Remove from wishlist"
                       >
                         <Trash2 size={16} />
                       </button>
 
                       {discountPct > 0 && (
-                        <span className="absolute top-3 left-3 bg-rose-500 text-white text-[10px] font-black uppercase px-2 py-0.5 rounded-full shadow-xs">
+                        <span className="absolute top-3 left-3 bg-gradient-to-r from-[#FF8A3D] to-[#FF4FA3] text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full shadow-md">
                           {discountPct}% OFF
                         </span>
                       )}
@@ -329,30 +329,30 @@ export default function WishlistPage() {
                     {/* Product Details */}
                     <div className="p-4 flex-1 flex flex-col justify-between">
                       <div>
-                        <span className="text-[11px] font-bold text-pink-500 uppercase">{prod.category}</span>
+                        <span className="text-[11px] font-bold text-[#28B8FF] uppercase tracking-wider">{prod.category}</span>
                         <Link href={`/products/${prod.id}`}>
-                          <h3 className="font-black text-slate-800 text-base mb-1.5 line-clamp-1 hover:text-pink-600 transition-colors">
+                          <h3 className="font-black text-white text-base mb-1.5 line-clamp-1 group-hover:text-[#FFD447] transition-colors">
                             {prod.name}
                           </h3>
                         </Link>
 
-                        <div className="flex items-center gap-1 text-amber-400 font-black text-xs mb-3">
+                        <div className="flex items-center gap-1 text-[#FFD447] font-black text-xs mb-3">
                           <Star size={12} fill="currentColor" />
                           <span>{prod.rating}</span>
-                          <span className="text-slate-400 font-normal">({prod.reviews})</span>
+                          <span className="text-[#A8ACCA] font-normal">({prod.reviews})</span>
                         </div>
                       </div>
 
                       <div>
                         <div className="flex items-baseline justify-between mb-4">
                           <div>
-                            <span className="text-lg font-black text-slate-900">₹{prod.price}</span>
+                            <span className="text-lg font-black text-[#FFD447]">₹{prod.price}</span>
                             {orig > prod.price && (
-                              <span className="text-xs text-slate-400 line-through ml-1.5">₹{orig}</span>
+                              <span className="text-xs text-[#A8ACCA] line-through ml-1.5">₹{orig}</span>
                             )}
                           </div>
                           {discountPct > 0 && (
-                            <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+                            <span className="text-[10px] font-bold text-[#48D597] bg-[#48D597]/15 border border-[#48D597]/30 px-2 py-0.5 rounded">
                               Save ₹{orig - prod.price}
                             </span>
                           )}
@@ -360,7 +360,7 @@ export default function WishlistPage() {
 
                         <button 
                           onClick={() => addToCart(prod as any)}
-                          className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white py-2.5 rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                          className="w-full bg-gradient-to-r from-[#7C3CFF] to-[#9147FF] hover:from-[#9147FF] hover:to-[#FF4FA3] text-white py-2.5 rounded-xl font-bold text-xs shadow-md shadow-[#7C3CFF]/30 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                         >
                           <ShoppingBag size={14} /> Move to Cart
                         </button>

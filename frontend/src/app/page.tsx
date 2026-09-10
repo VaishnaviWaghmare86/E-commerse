@@ -104,18 +104,18 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="w-full font-sans bg-[#fbf9f5] pb-16 overflow-hidden">
+    <div className="w-full font-sans bg-[#0F1026] text-white pb-16 overflow-hidden">
       
-      {/* 🌟 FLOATING BACKGROUND PARTICLES (Crisp & Clean, No Blur) 🌟 */}
+      {/* 🌟 FLOATING BACKGROUND PARTICLES (Crisp & Playful) 🌟 */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none">
-        <motion.div style={{ y: y1 }} className="absolute top-[12%] left-[4%] text-5xl opacity-35 drop-shadow-sm">🎈</motion.div>
-        <motion.div style={{ y: y2 }} className="absolute top-[32%] right-[6%] text-6xl opacity-35 drop-shadow-sm">🧸</motion.div>
-        <motion.div style={{ y: y1 }} className="absolute bottom-[25%] left-[10%] text-6xl opacity-30 drop-shadow-sm">⭐</motion.div>
-        <motion.div style={{ y: y2 }} className="absolute bottom-[15%] right-[12%] text-5xl opacity-30 drop-shadow-sm">🎨</motion.div>
+        <motion.div style={{ y: y1 }} className="absolute top-[12%] left-[4%] text-5xl opacity-25 drop-shadow-sm">🎈</motion.div>
+        <motion.div style={{ y: y2 }} className="absolute top-[32%] right-[6%] text-6xl opacity-25 drop-shadow-sm">🧸</motion.div>
+        <motion.div style={{ y: y1 }} className="absolute bottom-[25%] left-[10%] text-6xl opacity-20 drop-shadow-sm">⭐</motion.div>
+        <motion.div style={{ y: y2 }} className="absolute bottom-[15%] right-[12%] text-5xl opacity-20 drop-shadow-sm">🎨</motion.div>
       </div>
 
-      {/* 🚀 FULL SCREEN ULTRA-CRISP HERO SLIDER (Zero Blur & Kid Lovable) 🚀 */}
-      <section className="w-full relative h-[60vh] sm:h-[68vh] md:h-[76vh] max-h-[760px] min-h-[460px] group cursor-pointer overflow-hidden select-none bg-slate-900">
+      {/* 🚀 FULL SCREEN HERO SLIDER (Dark Playful Toy World at Night) 🚀 */}
+      <section className="w-full relative h-[60vh] sm:h-[68vh] md:h-[76vh] max-h-[760px] min-h-[460px] group cursor-pointer overflow-hidden select-none bg-[#0F1026]">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide}
@@ -126,7 +126,7 @@ export default function Home() {
             className="absolute inset-0 w-full h-full overflow-hidden"
             onClick={() => router.push('/shop')}
           >
-            {/* 🎬 Beautiful Animated Cartoon Playground Background Video 🎬 */}
+            {/* 🎬 Beautiful Animated Cartoon Playground Background Video / Image 🎬 */}
             <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
               <video
                 key={slides[currentSlide].video}
@@ -154,7 +154,7 @@ export default function Home() {
                 />
               </video>
 
-              {/* Reduced motion fallback image (for users who prefer reduced motion) */}
+              {/* Reduced motion fallback image */}
               <img
                 src={slides[currentSlide].image}
                 alt="Hero Background"
@@ -162,9 +162,9 @@ export default function Home() {
               />
             </div>
 
-            {/* Soft Ambient Text Vignette (Keeps Characters 100% Bright & Text Crystal Clear!) */}
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/65 via-slate-950/20 to-transparent pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-black/10 pointer-events-none" />
+            {/* Dark Transparent Overlay over Hero (rgba(8, 9, 25, 0.55)) for Crystal Clear Text */}
+            <div className="absolute inset-0 bg-[#080919]/55 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0F1026]/80 via-[#0F1026]/40 to-transparent pointer-events-none" />
 
             {/* Content Container */}
             <div className="absolute inset-0 flex items-center">
@@ -173,22 +173,22 @@ export default function Home() {
                   initial={{ y: 30, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.2, duration: 0.6 }}
-                  className="max-w-xl backdrop-blur-xs bg-slate-950/25 p-6 sm:p-8 rounded-3xl border border-white/25 shadow-2xl"
+                  className="max-w-xl backdrop-blur-md bg-[#171936]/60 p-6 sm:p-8 rounded-3xl border border-[#3A3D70] shadow-2xl"
                 >
                   {/* Lovable Pill Badge */}
-                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 text-slate-800 text-xs font-black shadow-lg mb-3.5 tracking-wide">
-                    <Sparkles className="w-3.5 h-3.5 text-pink-500 animate-spin" style={{ animationDuration: '3s' }} />
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#20224A]/90 text-white text-xs font-black shadow-lg mb-3.5 tracking-wide border border-[#3A3D70]">
+                    <Sparkles className="w-3.5 h-3.5 text-[#FFD447] animate-spin" style={{ animationDuration: '3s' }} />
                     <span>{slides[currentSlide].badge}</span>
                   </div>
 
-                  <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-white leading-[1.1] mb-3 drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
+                  <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-white leading-[1.1] mb-3 drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
                     {slides[currentSlide].heading} <br/>
-                    <span className={`text-transparent bg-clip-text bg-gradient-to-r ${slides[currentSlide].color} drop-shadow-md`}>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFD447] via-[#FF4FA3] to-[#7C3CFF] drop-shadow-md">
                       {slides[currentSlide].highlight}
                     </span>
                   </h1>
 
-                  <p className="text-white text-sm sm:text-base md:text-lg font-semibold mb-6 drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)] leading-relaxed">
+                  <p className="text-[#D9DBF0] text-sm sm:text-base md:text-lg font-semibold mb-6 drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)] leading-relaxed">
                     {slides[currentSlide].subtitle}
                   </p>
 
@@ -196,7 +196,7 @@ export default function Home() {
                     <motion.button 
                       whileHover={{ scale: 1.06, y: -2 }}
                       whileTap={{ scale: 0.96 }}
-                      className={`${slides[currentSlide].btnBg} text-white px-8 py-3.5 rounded-full font-black text-sm sm:text-base shadow-2xl flex items-center gap-3 border-2 border-white/30 transition-all cursor-pointer`}
+                      className="bg-gradient-to-r from-[#7C3CFF] to-[#9147FF] hover:from-[#9147FF] hover:to-[#FF4FA3] text-white px-8 py-3.5 rounded-full font-black text-sm sm:text-base shadow-[0_0_25px_rgba(124,60,255,0.45)] flex items-center gap-3 border border-white/20 transition-all cursor-pointer"
                     >
                       {slides[currentSlide].cta} <ArrowRight size={18} />
                     </motion.button>
@@ -210,60 +210,60 @@ export default function Home() {
         {/* Carousel Left/Right Buttons */}
         <button 
           onClick={(e) => { e.stopPropagation(); prevSlide(); }} 
-          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/40 hover:bg-white text-slate-800 hover:text-pink-500 p-3.5 rounded-full backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 shadow-xl z-20 cursor-pointer hover:scale-110"
+          className="absolute left-4 top-1/2 -translate-y-1/2 bg-[#171936]/80 hover:bg-[#20224A] text-white hover:text-[#FF4FA3] p-3.5 rounded-full backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 shadow-xl z-20 cursor-pointer hover:scale-110 border border-[#3A3D70]"
           title="Previous Slide"
         >
           <ChevronLeft size={26} />
         </button>
         <button 
           onClick={(e) => { e.stopPropagation(); nextSlide(); }} 
-          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/40 hover:bg-white text-slate-800 hover:text-pink-500 p-3.5 rounded-full backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 shadow-xl z-20 cursor-pointer hover:scale-110"
+          className="absolute right-4 top-1/2 -translate-y-1/2 bg-[#171936]/80 hover:bg-[#20224A] text-white hover:text-[#FF4FA3] p-3.5 rounded-full backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 shadow-xl z-20 cursor-pointer hover:scale-110 border border-[#3A3D70]"
           title="Next Slide"
         >
           <ChevronRight size={26} />
         </button>
 
         {/* Carousel Pagination Dots */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20 bg-black/30 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-20 bg-[#171936]/80 backdrop-blur-md px-4 py-2 rounded-full border border-[#3A3D70]">
           {slides.map((_, idx) => (
             <button 
               key={idx}
               onClick={(e) => { e.stopPropagation(); setCurrentSlide(idx); }}
               className={`h-3 rounded-full transition-all duration-300 cursor-pointer shadow-md ${
-                currentSlide === idx ? 'w-10 bg-pink-500 ring-2 ring-white/60' : 'w-3 bg-white/70 hover:bg-white'
+                currentSlide === idx ? 'w-10 bg-[#FF4FA3] ring-2 ring-[#7C3CFF]' : 'w-3 bg-white/40 hover:bg-white'
               }`}
             />
           ))}
         </div>
       </section>
 
-      {/* 🌈 ADORABLE TICKER BAR (Attractive & Loved by Kids & Parents) 🌈 */}
-      <div className="bg-gradient-to-r from-purple-900 via-indigo-700 to-sky-600 text-white py-2.5 shadow-inner overflow-hidden">
+      {/* 🌈 PLAYFUL TICKER BAR 🌈 */}
+      <div className="bg-gradient-to-r from-[#171936] via-[#20224A] to-[#171936] border-y border-[#3A3D70] text-white py-3 shadow-inner overflow-hidden">
         <div className="w-full px-3 sm:px-4 md:px-5 lg:px-6 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm font-black tracking-wide">
           <div className="flex items-center gap-2">
             <span>🧸</span>
-            <span>100% Non-Toxic &amp; Child Safe Certified</span>
+            <span className="text-[#D9DBF0]">100% Non-Toxic &amp; Child Safe Certified</span>
           </div>
           <div className="flex items-center gap-2">
-            <span>⭐</span>
-            <span>Loved by 50,000+ Happy Kids</span>
+            <span className="text-[#FFD447]">⭐</span>
+            <span className="text-white">Loved by 50,000+ Happy Kids</span>
           </div>
           <div className="flex items-center gap-2">
-            <span>⚡</span>
-            <span>2-Day Express Delivery in Metros</span>
+            <span className="text-[#FFD447]">⚡</span>
+            <span className="text-[#28B8FF]">2-Day Express Delivery in Metros</span>
           </div>
           <div className="hidden md:flex items-center gap-2">
             <span>🎁</span>
-            <span>Surprise Gift with Every Order!</span>
+            <span className="text-[#FF4FA3]">Surprise Gift with Every Order!</span>
           </div>
         </div>
       </div>
 
-      {/* 🎪 SECTION 1: TOP CATEGORY CIRCLES BAR (Matching Reference Image 100%) 🎪 */}
+      {/* 🎪 SECTION 1: TOP CATEGORY CIRCLES BAR 🎪 */}
       <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-6 md:py-8 relative z-10">
         <div className="flex items-center gap-2">
           
-          <button className="hidden md:flex p-2.5 rounded-full bg-white shadow-md border border-slate-200 text-slate-600 hover:text-violet-600 hover:scale-105 transition-all cursor-pointer">
+          <button className="hidden md:flex p-2.5 rounded-full bg-[#20224A] shadow-md border border-[#3A3D70] text-white hover:text-[#FFD447] hover:scale-105 transition-all cursor-pointer">
             <ChevronLeft size={20} />
           </button>
 
@@ -272,42 +272,42 @@ export default function Home() {
               <Link href={`/products?category=${encodeURIComponent(cat.name)}`} key={idx} className="flex flex-col items-center min-w-[85px] group">
                 <motion.div 
                   whileHover={{ y: -6, scale: 1.08 }}
-                  className={`w-16 h-16 md:w-20 md:h-20 rounded-full p-1 shadow-md border-2 border-white group-hover:border-violet-400 transition-all ${cat.bg} flex items-center justify-center relative overflow-hidden`}
+                  className="w-16 h-16 md:w-20 md:h-20 rounded-full p-1 shadow-md border-2 border-[#3A3D70] group-hover:border-[#7C3CFF] group-hover:shadow-[0_0_15px_rgba(124,60,255,0.5)] transition-all bg-[#20224A] flex items-center justify-center relative overflow-hidden"
                 >
                   <img src={cat.img} alt={cat.name} className="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-300" />
                 </motion.div>
-                <span className="mt-2.5 text-xs font-extrabold text-slate-800 text-center group-hover:text-violet-600 transition-colors">{cat.name}</span>
+                <span className="mt-2.5 text-xs font-extrabold text-white text-center group-hover:text-[#FFD447] transition-colors">{cat.name}</span>
               </Link>
             ))}
           </div>
 
-          <button className="hidden md:flex p-2.5 rounded-full bg-white shadow-md border border-slate-200 text-slate-600 hover:text-violet-600 hover:scale-105 transition-all cursor-pointer">
+          <button className="hidden md:flex p-2.5 rounded-full bg-[#20224A] shadow-md border border-[#3A3D70] text-white hover:text-[#FFD447] hover:scale-105 transition-all cursor-pointer">
             <ChevronRight size={20} />
           </button>
 
         </div>
       </section>
 
-      {/* 🎯 SMARTIVITY-INSPIRED SECTION: SHOP BY PRICE / BUDGET 🎯 */}
+      {/* 🎯 SECTION: SHOP BY PRICE / BUDGET 🎯 */}
       <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-4 md:py-6 relative z-10">
         <div className="text-center mb-6">
-          <span className="text-[11px] font-black uppercase tracking-widest text-violet-700 bg-violet-100 px-3.5 py-1 rounded-full inline-block mb-1.5 shadow-2xs">
+          <span className="text-[11px] font-black uppercase tracking-widest text-[#FFD447] bg-[#20224A] border border-[#3A3D70] px-3.5 py-1 rounded-full inline-block mb-1.5 shadow-2xs">
             Pocket Friendly Play 🎈
           </span>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
             There&apos;s a toy for every child
           </h2>
-          <p className="text-slate-500 text-xs sm:text-sm font-medium mt-0.5">
+          <p className="text-[#D9DBF0] text-xs sm:text-sm font-medium mt-0.5">
             Discover developmentally tailored toys matching every budget
           </p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
           {[
-            { label: "UNDER", amount: "700", maxPrice: 700, bg: "from-sky-50 to-blue-100/70", border: "border-sky-200" },
-            { label: "UNDER", amount: "900", maxPrice: 900, bg: "from-indigo-50 to-purple-100/70", border: "border-indigo-200" },
-            { label: "UNDER", amount: "1200", maxPrice: 1200, bg: "from-rose-50 to-pink-100/70", border: "border-rose-200" },
-            { label: "ABOVE", amount: "1200", minPrice: 1200, bg: "from-amber-50 to-orange-100/70", border: "border-amber-200" },
+            { label: "UNDER", amount: "700", maxPrice: 700, border: "hover:border-[#28B8FF]" },
+            { label: "UNDER", amount: "900", maxPrice: 900, border: "hover:border-[#7C3CFF]" },
+            { label: "UNDER", amount: "1200", maxPrice: 1200, border: "hover:border-[#FF4FA3]" },
+            { label: "ABOVE", amount: "1200", minPrice: 1200, border: "hover:border-[#FFD447]" },
           ].map((tier, idx) => (
             <Link
               key={idx}
@@ -315,19 +315,19 @@ export default function Home() {
             >
               <motion.div
                 whileHover={{ y: -6, scale: 1.02 }}
-                className={`bg-gradient-to-b ${tier.bg} rounded-3xl p-6 sm:p-7 text-center border ${tier.border} shadow-sm hover:shadow-xl transition-all flex flex-col items-center justify-between min-h-[190px] sm:min-h-[220px] cursor-pointer group`}
+                className={`bg-[#20224A] hover:bg-[#282B59] rounded-3xl p-6 sm:p-7 text-center border border-[#3A3D70] ${tier.border} shadow-lg hover:shadow-[0_12px_30px_rgba(124,60,255,0.3)] transition-all flex flex-col items-center justify-between min-h-[190px] sm:min-h-[220px] cursor-pointer group`}
               >
                 <div className="space-y-1">
-                  <span className="text-xs sm:text-sm font-black tracking-widest text-rose-600 block">
+                  <span className="text-xs sm:text-sm font-black tracking-widest text-[#FF4FA3] block">
                     {tier.label}
                   </span>
-                  <div className="text-3xl sm:text-5xl font-black text-rose-600 tracking-tight">
-                    <span className="text-2xl sm:text-3xl align-top">₹</span>{tier.amount}
+                  <div className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+                    <span className="text-2xl sm:text-3xl align-top text-[#FFD447]">₹</span>{tier.amount}
                   </div>
                 </div>
 
                 <div className="mt-4">
-                  <span className="bg-[#3B145E] group-hover:bg-[#501c80] text-white px-6 py-2 rounded-xl text-xs font-black uppercase tracking-wider shadow-md inline-flex items-center gap-1 transition-all">
+                  <span className="bg-gradient-to-r from-[#7C3CFF] to-[#9147FF] group-hover:from-[#9147FF] group-hover:to-[#FF4FA3] text-white px-6 py-2 rounded-xl text-xs font-black uppercase tracking-wider shadow-[0_0_12px_rgba(124,60,255,0.4)] inline-flex items-center gap-1 transition-all">
                     SHOP NOW
                   </span>
                 </div>
@@ -337,7 +337,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 🎢 SECTION 2: 3 MIDDLE FEATURED BANNER CARDS (Matching Reference 1:1) 🎢 */}
+      {/* 🎢 SECTION 2: 3 MIDDLE FEATURED BANNER CARDS 🎢 */}
       <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-4 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
@@ -345,16 +345,16 @@ export default function Home() {
           <Link href="/shop">
             <motion.div 
               whileHover={{ y: -6, scale: 1.02 }}
-              className="bg-gradient-to-br from-sky-100 via-sky-50 to-blue-100 rounded-3xl h-[260px] relative overflow-hidden p-7 flex flex-col justify-between shadow-md border border-sky-200 group cursor-pointer"
+              className="bg-[#20224A] hover:bg-[#282B59] rounded-3xl h-[260px] relative overflow-hidden p-7 flex flex-col justify-between shadow-lg border border-[#3A3D70] hover:border-[#28B8FF] group cursor-pointer transition-all"
             >
               <div className="z-10 max-w-[65%]">
-                <h2 className="text-2xl md:text-3xl font-black text-sky-900 leading-tight mb-2 tracking-tight">
+                <h2 className="text-2xl md:text-3xl font-black text-white leading-tight mb-2 tracking-tight">
                   Let <br />
-                  <span className="text-violet-600">Imagination</span> <br />
+                  <span className="text-[#28B8FF]">Imagination</span> <br />
                   Take Flight!
                 </h2>
-                <p className="text-slate-500 text-xs font-bold mb-4">Toys for every little dreamer</p>
-                <span className="bg-violet-600 text-white px-5 py-2 rounded-full font-black text-xs shadow-md inline-flex items-center gap-1 group-hover:bg-violet-700 transition-colors">
+                <p className="text-[#D9DBF0] text-xs font-bold mb-4">Toys for every little dreamer</p>
+                <span className="bg-gradient-to-r from-[#7C3CFF] to-[#9147FF] hover:from-[#9147FF] hover:to-[#FF4FA3] text-white px-5 py-2 rounded-full font-black text-xs shadow-md inline-flex items-center gap-1 transition-colors">
                   Shop Now &rarr;
                 </span>
               </div>
@@ -370,20 +370,20 @@ export default function Home() {
           <Link href="/shop">
             <motion.div 
               whileHover={{ y: -6, scale: 1.02 }}
-              className="bg-gradient-to-br from-pink-100 via-pink-50 to-rose-100 rounded-3xl h-[260px] relative overflow-hidden p-7 flex flex-col justify-between shadow-md border border-pink-200 group cursor-pointer"
+              className="bg-[#20224A] hover:bg-[#282B59] rounded-3xl h-[260px] relative overflow-hidden p-7 flex flex-col justify-between shadow-lg border border-[#3A3D70] hover:border-[#FF4FA3] group cursor-pointer transition-all"
             >
               <div className="z-10 max-w-[65%]">
-                <span className="bg-emerald-600 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full shadow-sm mb-2 inline-block">
+                <span className="bg-[#FF4FA3] text-white text-[10px] font-black uppercase px-3 py-1 rounded-full shadow-sm mb-2 inline-block">
                   UPTO 50% OFF
                 </span>
-                <h2 className="text-xl md:text-2xl font-black text-purple-900 leading-tight mb-1">
+                <h2 className="text-xl md:text-2xl font-black text-[#FFD447] leading-tight mb-1">
                   SPECIAL OFFER
                 </h2>
-                <h3 className="text-3xl font-black text-rose-600 mb-1">
+                <h3 className="text-3xl font-black text-white mb-1">
                   Top Trending Toys
                 </h3>
-                <p className="text-slate-500 text-xs font-bold mb-4">On Selected Handpicked Toys</p>
-                <span className="bg-amber-400 text-slate-900 px-5 py-2 rounded-full font-black text-xs shadow-md inline-flex items-center gap-1 group-hover:bg-yellow-300 transition-colors">
+                <p className="text-[#D9DBF0] text-xs font-bold mb-4">On Selected Handpicked Toys</p>
+                <span className="bg-gradient-to-r from-[#FFD447] to-[#FF8A3D] text-slate-950 px-5 py-2 rounded-full font-black text-xs shadow-md inline-flex items-center gap-1 hover:brightness-110 transition-all">
                   Grab Deal &rarr;
                 </span>
               </div>
@@ -399,16 +399,16 @@ export default function Home() {
           <Link href="/shop">
             <motion.div 
               whileHover={{ y: -6, scale: 1.02 }}
-              className="bg-gradient-to-br from-emerald-100 via-teal-50 to-green-100 rounded-3xl h-[260px] relative overflow-hidden p-7 flex flex-col justify-between shadow-md border border-emerald-200 group cursor-pointer"
+              className="bg-[#20224A] hover:bg-[#282B59] rounded-3xl h-[260px] relative overflow-hidden p-7 flex flex-col justify-between shadow-lg border border-[#3A3D70] hover:border-[#48D597] group cursor-pointer transition-all"
             >
               <div className="z-10 max-w-[65%]">
-                <h2 className="text-2xl md:text-3xl font-black text-teal-900 leading-tight mb-2 tracking-tight">
+                <h2 className="text-2xl md:text-3xl font-black text-white leading-tight mb-2 tracking-tight">
                   Educational <br />
-                  <span className="text-emerald-600">Toys for a</span> <br />
+                  <span className="text-[#48D597]">Toys for a</span> <br />
                   Smarter Tomorrow!
                 </h2>
-                <p className="text-slate-500 text-xs font-bold mb-4">Fun Learning Bright Future</p>
-                <span className="bg-emerald-600 text-white px-5 py-2 rounded-full font-black text-xs shadow-md inline-flex items-center gap-1 group-hover:bg-emerald-700 transition-colors">
+                <p className="text-[#D9DBF0] text-xs font-bold mb-4">Fun Learning Bright Future</p>
+                <span className="bg-gradient-to-r from-[#48D597] to-[#28B8FF] text-slate-950 px-5 py-2 rounded-full font-black text-xs shadow-md inline-flex items-center gap-1 hover:brightness-110 transition-all">
                   Explore Now &rarr;
                 </span>
               </div>
@@ -423,76 +423,76 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 🛡️ SECTION 3: TRUST BADGES BAR (5 Cards in 1 Row - Matching Reference) 🛡️ */}
+      {/* 🛡️ SECTION 3: TRUST BADGES BAR 🛡️ */}
       <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-4 relative z-10">
-        <div className="bg-white rounded-3xl p-4 shadow-sm border border-slate-200 grid grid-cols-2 md:grid-cols-5 gap-4 items-center">
+        <div className="bg-[#20224A] rounded-3xl p-4 shadow-lg border border-[#3A3D70] grid grid-cols-2 md:grid-cols-5 gap-4 items-center">
           
-          <div className="flex items-center gap-3 p-2 border-r border-slate-100 last:border-none">
-            <div className="w-10 h-10 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center flex-shrink-0">
+          <div className="flex items-center gap-3 p-2 border-r border-[#3A3D70] last:border-none">
+            <div className="w-10 h-10 rounded-full bg-[#171936] border border-[#3A3D70] text-[#7C3CFF] flex items-center justify-center flex-shrink-0">
               <Truck size={20} />
             </div>
             <div>
-              <h4 className="font-black text-slate-800 text-xs">Free Shipping</h4>
-              <p className="text-[10px] text-slate-400 font-semibold">on orders above ₹999</p>
+              <h4 className="font-black text-white text-xs">Free Shipping</h4>
+              <p className="text-[10px] text-[#A8ACCA] font-semibold">on orders above ₹999</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 p-2 border-r border-slate-100 last:border-none">
-            <div className="w-10 h-10 rounded-full bg-sky-100 text-sky-500 flex items-center justify-center flex-shrink-0">
+          <div className="flex items-center gap-3 p-2 border-r border-[#3A3D70] last:border-none">
+            <div className="w-10 h-10 rounded-full bg-[#171936] border border-[#3A3D70] text-[#28B8FF] flex items-center justify-center flex-shrink-0">
               <ShieldCheck size={20} />
             </div>
             <div>
-              <h4 className="font-black text-slate-800 text-xs">Safe &amp; Secure Payments</h4>
-              <p className="text-[10px] text-slate-400 font-semibold">100% secure checkout</p>
+              <h4 className="font-black text-white text-xs">Safe &amp; Secure Payments</h4>
+              <p className="text-[10px] text-[#A8ACCA] font-semibold">100% secure checkout</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 p-2 border-r border-slate-100 last:border-none">
-            <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-500 flex items-center justify-center flex-shrink-0">
+          <div className="flex items-center gap-3 p-2 border-r border-[#3A3D70] last:border-none">
+            <div className="w-10 h-10 rounded-full bg-[#171936] border border-[#3A3D70] text-[#FFD447] flex items-center justify-center flex-shrink-0">
               <RefreshCcw size={20} />
             </div>
             <div>
-              <h4 className="font-black text-slate-800 text-xs">Easy Returns</h4>
-              <p className="text-[10px] text-slate-400 font-semibold">Hassle free returns</p>
+              <h4 className="font-black text-white text-xs">Easy Returns</h4>
+              <p className="text-[10px] text-[#A8ACCA] font-semibold">Hassle free returns</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 p-2 border-r border-slate-100 last:border-none">
-            <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-500 flex items-center justify-center flex-shrink-0">
+          <div className="flex items-center gap-3 p-2 border-r border-[#3A3D70] last:border-none">
+            <div className="w-10 h-10 rounded-full bg-[#171936] border border-[#3A3D70] text-[#48D597] flex items-center justify-center flex-shrink-0">
               <Headphones size={20} />
             </div>
             <div>
-              <h4 className="font-black text-slate-800 text-xs">24/7 Support</h4>
-              <p className="text-[10px] text-slate-400 font-semibold">We are here to help</p>
+              <h4 className="font-black text-white text-xs">24/7 Support</h4>
+              <p className="text-[10px] text-[#A8ACCA] font-semibold">We are here to help</p>
             </div>
           </div>
 
           <div className="flex items-center gap-3 p-2 col-span-2 md:col-span-1 justify-center md:justify-start">
-            <div className="w-10 h-10 rounded-full bg-purple-100 text-purple-500 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-[#171936] border border-[#3A3D70] text-[#FF4FA3] flex items-center justify-center flex-shrink-0">
               <Sun size={20} />
             </div>
             <div>
-              <h4 className="font-black text-purple-600 text-xs">Happy Playtime!</h4>
-              <p className="text-[10px] text-slate-400 font-semibold">Smiles guaranteed</p>
+              <h4 className="font-black text-[#FF4FA3] text-xs">Happy Playtime!</h4>
+              <p className="text-[10px] text-[#A8ACCA] font-semibold">Smiles guaranteed</p>
             </div>
           </div>
 
         </div>
       </section>
 
-      {/* 🎪 SECTION 4: 5 BOTTOM CATEGORY CALLOUT CARDS (Matching Reference 1:1) 🎪 */}
+      {/* 🎪 SECTION 4: 5 BOTTOM CATEGORY CALLOUT CARDS 🎪 */}
       <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-4 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           
-          {/* Card 1: Trending Toys (Red Car) */}
+          {/* Card 1: Trending Toys */}
           <Link href="/shop">
             <motion.div 
               whileHover={{ y: -5 }}
-              className="bg-gradient-to-br from-pink-100 to-rose-50 rounded-3xl p-4 h-[160px] relative overflow-hidden shadow-sm border border-pink-100 flex flex-col justify-between group cursor-pointer"
+              className="bg-[#20224A] hover:bg-[#282B59] rounded-3xl p-4 h-[160px] relative overflow-hidden shadow-md border border-[#3A3D70] hover:border-[#FF4FA3] flex flex-col justify-between group cursor-pointer transition-all"
             >
               <div>
-                <h4 className="font-black text-pink-600 text-sm">Trending Toys</h4>
-                <div className="w-7 h-7 rounded-full bg-pink-500 text-white flex items-center justify-center mt-2 group-hover:scale-110 transition-transform">
+                <h4 className="font-black text-white text-sm">Trending Toys</h4>
+                <div className="w-7 h-7 rounded-full bg-[#FF4FA3] text-white flex items-center justify-center mt-2 group-hover:scale-110 transition-transform shadow-xs">
                   <ArrowRight size={14} />
                 </div>
               </div>
@@ -504,15 +504,15 @@ export default function Home() {
             </motion.div>
           </Link>
 
-          {/* Card 2: New Arrivals (Dinosaur) */}
+          {/* Card 2: New Arrivals */}
           <Link href="/new">
             <motion.div 
               whileHover={{ y: -5 }}
-              className="bg-gradient-to-br from-sky-100 to-blue-50 rounded-3xl p-4 h-[160px] relative overflow-hidden shadow-sm border border-sky-100 flex flex-col justify-between group cursor-pointer"
+              className="bg-[#20224A] hover:bg-[#282B59] rounded-3xl p-4 h-[160px] relative overflow-hidden shadow-md border border-[#3A3D70] hover:border-[#28B8FF] flex flex-col justify-between group cursor-pointer transition-all"
             >
               <div>
-                <h4 className="font-black text-sky-600 text-sm">New Arrivals</h4>
-                <div className="w-7 h-7 rounded-full bg-sky-500 text-white flex items-center justify-center mt-2 group-hover:scale-110 transition-transform">
+                <h4 className="font-black text-white text-sm">New Arrivals</h4>
+                <div className="w-7 h-7 rounded-full bg-[#28B8FF] text-white flex items-center justify-center mt-2 group-hover:scale-110 transition-transform shadow-xs">
                   <ArrowRight size={14} />
                 </div>
               </div>
@@ -524,15 +524,15 @@ export default function Home() {
             </motion.div>
           </Link>
 
-          {/* Card 3: Best Sellers (Teddy) */}
+          {/* Card 3: Best Sellers */}
           <Link href="/best-sellers">
             <motion.div 
               whileHover={{ y: -5 }}
-              className="bg-gradient-to-br from-amber-100 to-yellow-50 rounded-3xl p-4 h-[160px] relative overflow-hidden shadow-sm border border-amber-100 flex flex-col justify-between group cursor-pointer"
+              className="bg-[#20224A] hover:bg-[#282B59] rounded-3xl p-4 h-[160px] relative overflow-hidden shadow-md border border-[#3A3D70] hover:border-[#FFD447] flex flex-col justify-between group cursor-pointer transition-all"
             >
               <div>
-                <h4 className="font-black text-amber-600 text-sm">Best Sellers</h4>
-                <div className="w-7 h-7 rounded-full bg-amber-500 text-white flex items-center justify-center mt-2 group-hover:scale-110 transition-transform">
+                <h4 className="font-black text-white text-sm">Best Sellers</h4>
+                <div className="w-7 h-7 rounded-full bg-[#FFD447] text-slate-950 flex items-center justify-center mt-2 group-hover:scale-110 transition-transform shadow-xs">
                   <ArrowRight size={14} />
                 </div>
               </div>
@@ -544,15 +544,15 @@ export default function Home() {
             </motion.div>
           </Link>
 
-          {/* Card 4: Outdoor Fun (Scooter) */}
+          {/* Card 4: Outdoor Fun */}
           <Link href="/shop">
             <motion.div 
               whileHover={{ y: -5 }}
-              className="bg-gradient-to-br from-purple-100 to-indigo-50 rounded-3xl p-4 h-[160px] relative overflow-hidden shadow-sm border border-purple-100 flex flex-col justify-between group cursor-pointer"
+              className="bg-[#20224A] hover:bg-[#282B59] rounded-3xl p-4 h-[160px] relative overflow-hidden shadow-md border border-[#3A3D70] hover:border-[#7C3CFF] flex flex-col justify-between group cursor-pointer transition-all"
             >
               <div>
-                <h4 className="font-black text-purple-600 text-sm">Outdoor Fun</h4>
-                <div className="w-7 h-7 rounded-full bg-purple-500 text-white flex items-center justify-center mt-2 group-hover:scale-110 transition-transform">
+                <h4 className="font-black text-white text-sm">Outdoor Fun</h4>
+                <div className="w-7 h-7 rounded-full bg-[#7C3CFF] text-white flex items-center justify-center mt-2 group-hover:scale-110 transition-transform shadow-xs">
                   <ArrowRight size={14} />
                 </div>
               </div>
@@ -564,15 +564,15 @@ export default function Home() {
             </motion.div>
           </Link>
 
-          {/* Card 5: Creative Play (Paint Palette) */}
+          {/* Card 5: Creative Play */}
           <Link href="/shop">
             <motion.div 
               whileHover={{ y: -5 }}
-              className="bg-gradient-to-br from-emerald-100 to-teal-50 rounded-3xl p-4 h-[160px] relative overflow-hidden shadow-sm border border-emerald-100 flex flex-col justify-between group cursor-pointer"
+              className="bg-[#20224A] hover:bg-[#282B59] rounded-3xl p-4 h-[160px] relative overflow-hidden shadow-md border border-[#3A3D70] hover:border-[#48D597] flex flex-col justify-between group cursor-pointer transition-all"
             >
               <div>
-                <h4 className="font-black text-emerald-600 text-sm">Creative Play</h4>
-                <div className="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center mt-2 group-hover:scale-110 transition-transform">
+                <h4 className="font-black text-white text-sm">Creative Play</h4>
+                <div className="w-7 h-7 rounded-full bg-[#48D597] text-slate-950 flex items-center justify-center mt-2 group-hover:scale-110 transition-transform shadow-xs">
                   <ArrowRight size={14} />
                 </div>
               </div>
@@ -587,11 +587,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 📜 FOOTER TAGLINE (Matching Reference Image) 📜 */}
-      <div className="mt-8 text-center text-xs font-bold text-slate-400 tracking-wider flex items-center justify-center gap-3">
-        <span className="w-12 h-[1px] bg-slate-200 inline-block"></span>
+      {/* 📜 FOOTER TAGLINE 📜 */}
+      <div className="mt-8 text-center text-xs font-bold text-[#A8ACCA] tracking-wider flex items-center justify-center gap-3">
+        <span className="w-12 h-[1px] bg-[#3A3D70] inline-block"></span>
         <span>Toys Today Brighter Tomorrows ❤️</span>
-        <span className="w-12 h-[1px] bg-slate-200 inline-block"></span>
+        <span className="w-12 h-[1px] bg-[#3A3D70] inline-block"></span>
       </div>
 
     </div>
