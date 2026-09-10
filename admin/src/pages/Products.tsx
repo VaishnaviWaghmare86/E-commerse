@@ -501,7 +501,15 @@ export const Products: React.FC = () => {
                             },
                           },
                           {
-                            label: 'Delete Product',
+                            label: product.isActive !== false ? 'Deactivate Product' : 'Activate Product',
+                              icon: <Power className="w-3.5 h-3.5 text-slate-500" />,
+                              onClick: () => {
+                                updateProduct(product.id, { isActive: product.isActive === false ? true : false });
+                                showToast(`Product ${product.isActive !== false ? 'deactivated' : 'activated'} successfully`, 'success');
+                              },
+                            },
+                            {
+                              label: 'Delete Product',
                             icon: <Trash2 className="w-3.5 h-3.5 text-rose-500" />,
                             danger: true,
                             onClick: () => setProductToDelete(product),

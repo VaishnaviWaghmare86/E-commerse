@@ -359,8 +359,7 @@ export const api = {
     } catch (err) {
       return [];
     }
-  }
-
+  },
   async getReviews(): Promise<any[]> {
     try {
       const res = await fetch(`${API_BASE}/reviews`, { cache: 'no-store' });
