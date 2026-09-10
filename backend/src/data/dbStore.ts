@@ -49,6 +49,21 @@ export interface Offer {
   category?: string;
 }
 
+
+export interface ReviewItem {
+  id: string;
+  productId: string;
+  productName: string;
+  productImage: string;
+  vendorId: string;
+  customerName: string;
+  customerEmail: string;
+  rating: number;
+  comment: string;
+  date: string;
+  status: 'Approved' | 'Pending' | 'Rejected' | 'Hidden';
+}
+
 export interface ProductItem {
   id: string;
   name: string;
@@ -155,6 +170,7 @@ interface StoreSchema {
   products: ProductItem[];
   categories: CategoryItem[];
   orders: OrderItem[];
+  reviews: ReviewItem[];
   banners: BannerItem[];
 }
 
@@ -588,6 +604,7 @@ class LocalDbStore {
     products: [],
     categories: [],
     orders: [],
+    reviews: [],
     banners: [],
   };
 
@@ -628,6 +645,7 @@ class LocalDbStore {
           products: defaultProducts,
           categories: defaultCategories,
           orders: [],
+    reviews: [],
           banners: defaultBanners,
         };
         this.saveData(this.data);
@@ -642,6 +660,7 @@ class LocalDbStore {
         products: defaultProducts,
         categories: defaultCategories,
         orders: [],
+    reviews: [],
         banners: defaultBanners,
       };
     }

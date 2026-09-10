@@ -37,6 +37,7 @@ import productRoutes from './routes/productRoutes';
 import orderRoutes from './routes/orderRoutes';
 import bannerRoutes from './routes/bannerRoutes';
 import vendorRoutes from './routes/vendorRoutes';
+import reviewRoutes from './routes/reviewRoutes';
 import { brandRouter, ageGroupRouter, offerRouter } from './routes/metaRoutes';
 
 // Root Status
@@ -68,9 +69,12 @@ app.get('/api/health', (req, res) => {
 });
 
 // API Routes
+import customerRoutes from './routes/customerRoutes';
+app.use('/api/customers', customerRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/vendors', vendorRoutes);
+app.use('/api/reviews', reviewRoutes);
 app.use('/api/brands', brandRouter);
 app.use('/api/age-groups', ageGroupRouter);
 app.use('/api/offers', offerRouter);

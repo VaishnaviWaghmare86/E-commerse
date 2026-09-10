@@ -27,6 +27,7 @@ export interface Product {
   featured: boolean;
   isBestSeller?: boolean;
   isNewArrival?: boolean;
+  isActive?: boolean;
   image: string;
   galleryImages: string[];
   shortDescription: string;

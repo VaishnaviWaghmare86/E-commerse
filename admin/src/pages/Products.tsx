@@ -10,7 +10,7 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { ConfirmModal } from '../components/ui/Modal';
 import { useAdmin } from '../context/AdminContext';
 import { useToast } from '../context/ToastContext';
-import { Plus, Search, Filter, ArrowUpDown, MoreVertical, Eye, Edit2, Trash2, Flame, Sparkles, Package } from 'lucide-react';
+import { Plus, Search, Filter, ArrowUpDown, MoreVertical, Eye, Edit2, Trash2, Flame, Sparkles, Package, Power } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import type { Product } from '../types';
 
@@ -509,7 +509,15 @@ export const Products: React.FC = () => {
                             },
                           },
                           {
-                            label: 'Delete Product',
+                            label: product.isActive !== false ? 'Deactivate Product' : 'Activate Product',
+                              icon: <Power className="w-3.5 h-3.5 text-slate-500" />,
+                              onClick: () => {
+                                updateProduct(product.id, { isActive: product.isActive === false ? true : false });
+                                showToast(`Product ${product.isActive !== false ? 'deactivated' : 'activated'} successfully`, 'success');
+                              },
+                            },
+                            {
+                              label: 'Delete Product',
                             icon: <Trash2 className="w-3.5 h-3.5 text-rose-500" />,
                             danger: true,
                             onClick: () => setProductToDelete(product),

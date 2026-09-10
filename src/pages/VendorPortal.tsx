@@ -1,0 +1,808 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
+import {
+  Store,
+  PackagePlus,
+  Package,
+  ShoppingBag,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  RefreshCw,
+  UserCheck,
+  UploadCloud,
+  Image as ImageIcon,
+  Trash2,
+  Link as LinkIcon,
+  ShieldCheck,
+  Phone,
+  MapPin,
+  User,
+} from 'lucide-react';
+import { useAuth, PRESET_VENDORS } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
+
+export const VendorPortal: React.FC = () => {
+  const location = useLocation();
+  const { user, switchVendor } = useAuth();
+  const { showToast } = useToast();
+
+  const isVendor = user?.role === 'VENDOR';
+  const currentVendorId = user?.vendorId || 'vendor-1';
+  const currentShopName = user?.shopName || 'ABC Toys Wonderland';
+
+  const [activeTab, setActiveTab] = useState<'products' | 'add' | 'orders' | 'profile'>('products');
+  const [vendorProducts, setVendorProducts] = useState<any[]>([]);
+  const [vendorOrders, setVendorOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Sync tab with URL search parameter
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tabParam = params.get('tab');
+    if (tabParam === 'products' || tabParam === 'add' || tabParam === 'orders' || tabParam === 'profile') {
+      setActiveTab(tabParam);
+    }
+  }, [location.search]);
+
+  // Drag & Drop Image State
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [imageFileName, setImageFileName] = useState('');
+  const [imageFileSize, setImageFileSize] = useState('');
+  const [useUrlInput, setUseUrlInput] = useState(false);
+
+  // Form State
+  const [formData, setFormData] = useState({
+    name: '',
+    category: 'STEM & Robotics',
+    categoryId: 'cat-3',
+    brand: 'LEGO',
+    ageGroup: '6 - 8 Years',
+    basePrice: 1999,
+    salePrice: 1599,
+    stock: 25,
+    image: '',
+    shortDescription: '',
+    description: '',
+  });
+
+  const [submitting, setSubmitting] = useState(false);
+
+  const fetchVendorData = async () => {
+    setLoading(true);
+    try {
+      const [prodsRes, ordersRes] = await Promise.all([
+        fetch(`http://localhost:5000/api/vendors/${currentVendorId}/products`),
+        fetch(`http://localhost:5000/api/vendors/${currentVendorId}/orders`),
+      ]);
+      if (prodsRes.ok) {
+        const prods = await prodsRes.json();
+        setVendorProducts(prods);
+      }
+      if (ordersRes.ok) {
+        const ords = await ordersRes.json();
+        setVendorOrders(ords);
+      }
+    } catch (err) {
+      console.error('Failed to load vendor data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchVendorData();
+  }, [currentVendorId]);
+
+  // Image Processing Helpers
+  const processImageFile = (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      showToast('Please upload a valid image file (PNG, JPG, WEBP).', 'error');
+      return;
+    }
+    if (file.size > 25 * 1024 * 1024) {
+      showToast('Image size exceeds 25MB limit. Please choose a smaller photo.', 'error');
+      return;
+    }
+
+    const formattedSize =
+      file.size > 1024 * 1024
+        ? `${(file.size / (1024 * 1024)).toFixed(2)} MB`
+        : `${Math.round(file.size / 1024)} KB`;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+      setFormData((prev) => ({ ...prev, image: dataUrl }));
+      setImageFileName(file.name);
+      setImageFileSize(formattedSize);
+      showToast(`Photo "${file.name}" ready! 📸`, 'success');
+    };
+    reader.onerror = () => {
+      showToast('Failed to read image file.', 'error');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      processImageFile(file);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      processImageFile(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setFormData((prev) => ({ ...prev, image: '' }));
+    setImageFileName('');
+    setImageFileSize('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleCreateProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.image.trim()) {
+      showToast('Please upload a product photo using the drag-and-drop box.', 'error');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const res = await fetch(`http://localhost:5000/api/vendors/${currentVendorId}/products`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          basePrice: Number(formData.basePrice),
+          salePrice: formData.salePrice ? Number(formData.salePrice) : null,
+          price: formData.salePrice ? Number(formData.salePrice) : Number(formData.basePrice),
+          stock: Number(formData.stock),
+        }),
+      });
+
+      if (res.ok) {
+        showToast('Product submitted for approval! ⏳', 'success', 'It is now in the Admin Approval Queue.');
+        // Reset form
+        setFormData({
+          name: '',
+          category: 'STEM & Robotics',
+          categoryId: 'cat-3',
+          brand: 'LEGO',
+          ageGroup: '6 - 8 Years',
+          basePrice: 1999,
+          salePrice: 1599,
+          stock: 25,
+          image: '',
+          shortDescription: '',
+          description: '',
+        });
+        setImageFileName('');
+        setImageFileSize('');
+        setActiveTab('products');
+        fetchVendorData();
+      } else {
+        throw new Error('Failed to submit product');
+      }
+    } catch (err) {
+      showToast('Could not submit product. Please verify API is running.', 'error');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto space-y-6">
+      
+      {/* Header Banner */}
+      <div className={`p-6 rounded-3xl shadow-md flex flex-col md:flex-row md:items-center justify-between gap-6 text-white ${
+        isVendor
+          ? 'bg-gradient-to-r from-amber-600 via-orange-600 to-rose-600'
+          : 'bg-gradient-to-r from-slate-900 to-indigo-950'
+      }`}>
+        <div>
+          <div className="flex items-center gap-2 mb-1 text-amber-200 text-xs font-black uppercase tracking-wider">
+            <Store size={16} /> {isVendor ? 'Shopkeeper Partner Dashboard' : 'Admin Preview: Vendor Dashboard'}
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black">{currentShopName}</h1>
+          <p className="text-amber-100 text-xs mt-1">
+            Shop Owner: <span className="font-bold text-white">{user?.name || 'Vendor'}</span> • Email: <span className="font-semibold text-white">{user?.email || 'vendor@example.com'}</span>
+          </p>
+        </div>
+
+        {/* If Super Admin is previewing, allow quick vendor switching; if Shopkeeper is logged in, hide switch completely! */}
+        {!isVendor && (
+          <div className="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/10 space-y-2">
+            <div className="text-[11px] font-bold text-amber-300 flex items-center gap-1.5">
+              <UserCheck size={13} className="text-amber-400" /> Admin Preview (Switch Shopkeeper):
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {PRESET_VENDORS.map((ven) => (
+                <button
+                  key={ven.id}
+                  onClick={() => switchVendor(ven.id)}
+                  className={`text-[11px] font-bold px-2.5 py-1 rounded-lg transition-all ${
+                    currentVendorId === ven.id
+                      ? 'bg-sky-500 text-white shadow-sm'
+                      : 'bg-white/20 text-slate-200 hover:bg-white/30'
+                  }`}
+                >
+                  {ven.shopName.split(' ')[0]} ({ven.id})
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {isVendor && (
+          <div className="bg-white/15 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/20 text-center">
+            <div className="text-[10px] uppercase tracking-wider text-amber-200 font-black">Account Status</div>
+            <div className="text-sm font-black text-white flex items-center justify-center gap-1.5 mt-0.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" /> Verified Shopkeeper
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Tabs */}
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 overflow-x-auto">
+        <button
+          onClick={() => setActiveTab('products')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+            activeTab === 'products'
+              ? 'bg-slate-900 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          <Package size={14} /> My Products ({vendorProducts.length})
+        </button>
+
+        <button
+          onClick={() => setActiveTab('add')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+            activeTab === 'add'
+              ? 'bg-rose-600 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          <PackagePlus size={14} /> + Add New Toy Product
+        </button>
+
+        <button
+          onClick={() => setActiveTab('orders')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+            activeTab === 'orders'
+              ? 'bg-slate-900 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          <ShoppingBag size={14} /> My Orders & Customers ({vendorOrders.length})
+        </button>
+
+        <button
+          onClick={() => setActiveTab('profile')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+            activeTab === 'profile'
+              ? 'bg-amber-600 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          <Store size={14} /> Shop Profile
+        </button>
+      </div>
+
+      {/* TAB 1: MY PRODUCTS */}
+      {activeTab === 'products' && (
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Your Catalog Inventory</h2>
+              <p className="text-xs text-slate-500">Only toys listed under your shopkeeper account appear here.</p>
+            </div>
+            <button
+              onClick={fetchVendorData}
+              className="flex items-center gap-1.5 text-xs text-slate-600 hover:text-slate-900 font-bold bg-white px-3 py-1.5 rounded-lg border border-slate-200"
+            >
+              <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
+            </button>
+          </div>
+
+          {loading ? (
+            <div className="bg-white rounded-2xl p-12 text-center text-slate-500 font-bold border border-slate-200">
+              Loading your products...
+            </div>
+          ) : vendorProducts.length === 0 ? (
+            <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
+              <div className="text-4xl mb-2">📦</div>
+              <h3 className="font-bold text-slate-800">No Products Listed Yet</h3>
+              <p className="text-xs text-slate-500 mt-1 mb-4">Click "Add New Toy Product" to list your first toy with high-res photos.</p>
+              <button
+                onClick={() => setActiveTab('add')}
+                className="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-4 py-2 rounded-xl"
+              >
+                + List First Toy
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {vendorProducts.map((p) => {
+                const isApproved = p.status === 'APPROVED';
+                const isPending = p.status === 'PENDING';
+                const isRejected = p.status === 'REJECTED';
+
+                return (
+                  <div key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition-shadow">
+                    <div className="relative aspect-video bg-slate-100">
+                      <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                      <div className="absolute top-2 right-2">
+                        {isApproved && (
+                          <span className="bg-emerald-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
+                            <CheckCircle2 size={12} /> Live on Storefront
+                          </span>
+                        )}
+                        {isPending && (
+                          <span className="bg-amber-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
+                            <Clock size={12} /> Under Admin Review
+                          </span>
+                        )}
+                        {isRejected && (
+                          <span className="bg-rose-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1">
+                            <XCircle size={12} /> Rejected by Admin
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="p-4 space-y-2">
+                      <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                        {p.brand || 'KidsPlay'} • {p.ageGroup || 'All Ages'}
+                      </div>
+                      <h3 className="font-bold text-slate-900 text-sm line-clamp-1">{p.name}</h3>
+                      <p className="text-xs text-slate-500 line-clamp-2">{p.shortDescription || p.description}</p>
+
+                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                          <div className="text-base font-black text-slate-900">₹{p.salePrice || p.price}</div>
+                          {p.basePrice && p.basePrice > (p.salePrice || p.price) && (
+                            <div className="text-[11px] text-slate-400 line-through">₹{p.basePrice}</div>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <div className="text-xs font-bold text-slate-700">{p.stock} units</div>
+                          <div className="text-[10px] text-slate-400">Available Stock</div>
+                        </div>
+                      </div>
+
+                      {p.rejectionReason && (
+                        <div className="mt-2 p-2 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-xs">
+                          <strong>Admin Feedback:</strong> {p.rejectionReason}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* TAB 2: ADD NEW PRODUCT */}
+      {activeTab === 'add' && (
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 max-w-3xl space-y-6">
+          <div>
+            <h2 className="text-xl font-black text-slate-900">Add New Toy Product</h2>
+            <p className="text-xs text-slate-500">Upload your product photo using drag-and-drop. Newly submitted toys are sent to the Admin queue for quick review.</p>
+          </div>
+
+          <form onSubmit={handleCreateProduct} className="space-y-4">
+            <div>
+              <label className="text-xs font-bold text-slate-700 block mb-1">Toy Product Name *</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. Speedster RC Remote Control Monster Truck"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">Category *</label>
+                <select
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white"
+                >
+                  <option value="Action Figures & Playsets">Action Figures</option>
+                  <option value="Building & Construction Sets">Building Sets</option>
+                  <option value="STEM & Robotics">STEM & Robotics</option>
+                  <option value="Arts, Crafts & DIY">Arts & Crafts</option>
+                  <option value="Plush & Soft Toys">Plush & Soft Toys</option>
+                  <option value="Vehicles, Trains & RC">Vehicles & RC</option>
+                  <option value="Outdoor & Sports Play">Outdoor Play</option>
+                  <option value="Board Games & Puzzles">Board Games</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">Age Group *</label>
+                <select
+                  value={formData.ageGroup}
+                  onChange={(e) => setFormData({ ...formData, ageGroup: e.target.value })}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white"
+                >
+                  <option value="0 - 2 Years">0 - 2 Years (Infants)</option>
+                  <option value="3 - 5 Years">3 - 5 Years (Pre-School)</option>
+                  <option value="6 - 8 Years">6 - 8 Years (Explorers)</option>
+                  <option value="9 - 12 Years">9 - 12 Years (Innovators)</option>
+                  <option value="13+ Years">13+ Years (Teens)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">Brand Name *</label>
+                <select
+                  value={formData.brand}
+                  onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500 bg-white"
+                >
+                  <option value="LEGO">LEGO</option>
+                  <option value="Hot Wheels">Hot Wheels</option>
+                  <option value="Barbie">Barbie</option>
+                  <option value="Fisher-Price">Fisher-Price</option>
+                  <option value="Nerf">Nerf</option>
+                  <option value="Melissa & Doug">Melissa & Doug</option>
+                  <option value="ToyJoy Originals">ToyJoy Originals</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">MRP Price (₹) *</label>
+                <input
+                  type="number"
+                  required
+                  value={formData.basePrice}
+                  onChange={(e) => setFormData({ ...formData, basePrice: Number(e.target.value) })}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">Selling / Offer Price (₹)</label>
+                <input
+                  type="number"
+                  value={formData.salePrice}
+                  onChange={(e) => setFormData({ ...formData, salePrice: Number(e.target.value) })}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">Stock Units *</label>
+                <input
+                  type="number"
+                  required
+                  value={formData.stock}
+                  onChange={(e) => setFormData({ ...formData, stock: Number(e.target.value) })}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500"
+                />
+              </div>
+            </div>
+
+            {/* DRAG & DROP PHOTO UPLOADER */}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-black text-slate-800 flex items-center gap-1.5">
+                  <ImageIcon size={14} className="text-rose-500" />
+                  <span>Product Image (Drag & Drop or Browse) *</span>
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setUseUrlInput(!useUrlInput)}
+                  className="text-[11px] text-rose-600 hover:text-rose-700 font-bold underline flex items-center gap-1"
+                >
+                  <LinkIcon size={12} />
+                  {useUrlInput ? 'Switch to Drag & Drop File Upload' : 'Enter Web Image URL Instead'}
+                </button>
+              </div>
+
+              {!useUrlInput ? (
+                <div
+                  onDragEnter={handleDragEnter}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all cursor-pointer relative ${
+                    isDragging
+                      ? 'border-rose-500 bg-rose-50 scale-[1.01]'
+                      : formData.image
+                      ? 'border-emerald-400 bg-emerald-50/40'
+                      : 'border-slate-300 bg-slate-50 hover:bg-slate-100 hover:border-slate-400'
+                  }`}
+                  onClick={() => {
+                    if (!formData.image && fileInputRef.current) {
+                      fileInputRef.current.click();
+                    }
+                  }}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                  />
+
+                  {formData.image ? (
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="relative w-36 h-36 rounded-2xl overflow-hidden shadow-md border-2 border-white">
+                        <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemoveImage();
+                          }}
+                          className="absolute top-1 right-1 bg-rose-600 text-white p-1 rounded-full shadow hover:bg-rose-700"
+                          title="Remove image"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                      <div className="text-xs font-bold text-slate-800">
+                        {imageFileName || 'Selected Product Photo'}
+                        {imageFileSize && <span className="text-slate-500 ml-1.5">({imageFileSize})</span>}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (fileInputRef.current) fileInputRef.current.click();
+                        }}
+                        className="text-[11px] font-bold text-rose-600 hover:underline"
+                      >
+                        Click to change photo
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-2 py-4">
+                      <div className="w-14 h-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-rose-500 shadow-sm">
+                        <UploadCloud size={28} />
+                      </div>
+                      <div className="font-bold text-sm text-slate-800">
+                        Drag and drop your toy photo here
+                      </div>
+                      <div className="text-xs text-slate-500">
+                        or <span className="text-rose-600 font-bold underline">browse from your computer</span> (PNG, JPG, WEBP)
+                      </div>
+                      <div className="text-[10px] text-slate-400 mt-1">
+                        High-resolution photos supported (up to 25MB)
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <input
+                  type="url"
+                  placeholder="https://example.com/toy-photo.jpg"
+                  value={formData.image}
+                  onChange={(e) => {
+                    setFormData({ ...formData, image: e.target.value });
+                    setImageFileName(e.target.value.split('/').pop() || 'Web Photo');
+                    setImageFileSize('');
+                  }}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500"
+                />
+              )}
+            </div>
+
+            <div>
+              <label className="text-xs font-bold text-slate-700 block mb-1">Short Summary</label>
+              <input
+                type="text"
+                placeholder="e.g. Beautiful fashion doll with styling accessories"
+                value={formData.shortDescription}
+                onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
+                className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-bold text-slate-700 block mb-1">Full Description</label>
+              <textarea
+                rows={3}
+                placeholder="Detailed description of features, materials, and safe play instructions..."
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="w-full p-3 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-rose-500"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full bg-rose-600 hover:bg-rose-700 text-white py-3.5 rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50 active:scale-95"
+            >
+              {submitting ? 'Submitting to Admin Queue...' : 'Submit Toy for Admin Approval 🚀'}
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* TAB 3: VENDOR ORDERS & CUSTOMERS */}
+      {activeTab === 'orders' && (
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Your Toy Orders & Customers</h2>
+              <p className="text-xs text-slate-500">Shows orders and customer delivery info for toys sold by your shop.</p>
+            </div>
+            <button
+              onClick={fetchVendorData}
+              className="flex items-center gap-1.5 text-xs text-slate-600 hover:text-slate-900 font-bold bg-white px-3 py-1.5 rounded-lg border border-slate-200"
+            >
+              <RefreshCw size={13} className={loading ? 'animate-spin' : ''} /> Refresh
+            </button>
+          </div>
+
+          {loading ? (
+            <div className="bg-white rounded-2xl p-12 text-center text-slate-500 font-bold border border-slate-200">
+              Loading Orders...
+            </div>
+          ) : vendorOrders.length === 0 ? (
+            <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
+              <div className="text-4xl mb-2">🛍️</div>
+              <h3 className="font-bold text-slate-800">No Orders Received Yet</h3>
+              <p className="text-xs text-slate-500 mt-1">When customers order toys sold by your store, they will appear here with customer contact and delivery details.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {vendorOrders.map((ord) => (
+                <div key={ord.id} className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-slate-100">
+                    <div>
+                      <div className="font-bold text-slate-900 text-sm">{ord.orderNumber}</div>
+                      <div className="text-xs text-slate-400">Date: {new Date(ord.createdAt || Date.now()).toLocaleDateString()}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-base font-black text-slate-900">Your Earnings: ₹{ord.totalAmount}</div>
+                      <div className="text-xs font-bold text-emerald-600">{ord.status}</div>
+                    </div>
+                  </div>
+
+                  {/* Customer Information Card */}
+                  <div className="p-3.5 bg-amber-50/70 border border-amber-200 rounded-xl flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2">
+                      <User size={15} className="text-amber-600" />
+                      <span className="font-bold text-slate-700">Customer:</span>
+                      <span className="font-black text-slate-900">{ord.customerName}</span>
+                      {ord.customerEmail && <span className="text-slate-500 font-normal">({ord.customerEmail})</span>}
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-4 text-slate-600">
+                      {ord.shippingAddress?.phone && (
+                        <div className="flex items-center gap-1">
+                          <Phone size={13} className="text-amber-600" />
+                          <span className="font-bold text-slate-800">{ord.shippingAddress.phone}</span>
+                        </div>
+                      )}
+                      {ord.shippingAddress?.city && (
+                        <div className="flex items-center gap-1">
+                          <MapPin size={13} className="text-amber-600" />
+                          <span>{ord.shippingAddress.city}, {ord.shippingAddress.state}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Items list */}
+                  <div className="space-y-2">
+                    {ord.items.map((it: any, i: number) => (
+                      <div key={i} className="flex items-center justify-between text-xs bg-slate-50 p-3 rounded-xl border border-slate-100">
+                        <div className="flex items-center gap-3">
+                          <img src={it.image} alt="" className="w-11 h-11 object-cover rounded-lg bg-white border border-slate-200" />
+                          <div>
+                            <div className="font-bold text-slate-900">{it.name}</div>
+                            <div className="text-slate-400 text-[10px]">Quantity: {it.quantity} unit(s)</div>
+                          </div>
+                        </div>
+                        <div className="font-black text-slate-900 text-sm">₹{it.price * it.quantity}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* TAB 4: SHOP PROFILE */}
+      {activeTab === 'profile' && (
+        <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-6 max-w-3xl">
+          <div className="flex items-center gap-4 pb-6 border-b border-slate-100">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-500 flex items-center justify-center text-white font-black text-2xl shadow-md">
+              <Store size={32} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl font-black text-slate-900">{currentShopName}</h2>
+                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase">
+                  Verified Toy Merchant
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Vendor ID: <code className="font-mono text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded font-bold">{currentVendorId}</code>
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Owner Name</div>
+              <div className="text-sm font-black text-slate-800 mt-1">{user?.name || 'Shopkeeper'}</div>
+            </div>
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Business Email</div>
+              <div className="text-sm font-black text-slate-800 mt-1">{user?.email || 'vendor@example.com'}</div>
+            </div>
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Catalog Size</div>
+              <div className="text-sm font-black text-slate-800 mt-1">{vendorProducts.length} Toys Listed</div>
+            </div>
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Customer Orders</div>
+              <div className="text-sm font-black text-slate-800 mt-1">{vendorOrders.length} Orders Received</div>
+            </div>
+          </div>
+
+          <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200">
+            <div className="text-xs font-black text-amber-900 mb-1 flex items-center gap-1.5">
+              <ShieldCheck size={16} className="text-amber-700" />
+              <span>Shopkeeper Partner Guidelines</span>
+            </div>
+            <p className="text-xs text-amber-800 leading-relaxed">
+              Toys listed through your portal are evaluated by the platform Super Administrator to ensure kid safety and genuine brand standards. Once approved, they go live on the storefront with your shopkeeper badge!
+            </p>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+};

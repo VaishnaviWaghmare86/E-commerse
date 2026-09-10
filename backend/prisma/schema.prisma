@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,28 +8,22 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
+  id        String    @id @default(uuid())
+  email     String    @unique
   password  String
   name      String?
-  role      Role     @default(CUSTOMER)
+  role      Role      @default(CUSTOMER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   addresses Address[]
   orders    Order[]
   reviews   Review[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-enum Role {
-  ADMIN
-  CUSTOMER
 }
 
 model Address {
   id        String   @id @default(uuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  title     String   // e.g., Home, Work
+  title     String
   street    String
   city      String
   state     String
@@ -41,6 +32,7 @@ model Address {
   isDefault Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Category {
@@ -50,85 +42,79 @@ model Category {
   description String?
   isActive    Boolean    @default(true)
   parentId    String?
-  parent      Category?  @relation("SubCategories", fields: [parentId], references: [id])
-  children    Category[] @relation("SubCategories")
-  products    Product[]
-  images      Media[]    @relation("CategoryMedia")
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+  parent      Category?  @relation("SubCategories", fields: [parentId], references: [id])
+  children    Category[] @relation("SubCategories")
+  images      Media[]    @relation("CategoryMedia")
+  products    Product[]
 }
 
 model Product {
-  id               String            @id @default(uuid())
+  id               String             @id @default(uuid())
   name             String
-  slug             String            @unique
+  slug             String             @unique
   description      String?
   shortDescription String?
   categoryId       String
-  category         Category          @relation(fields: [categoryId], references: [id])
   brand            String?
-  basePrice        Decimal           @db.Decimal(10, 2)
-  salePrice        Decimal?          @db.Decimal(10, 2)
-  isFeatured       Boolean           @default(false)
-  isNewArrival     Boolean           @default(false)
-  isBestseller     Boolean           @default(false)
-  status           ProductStatus     @default(ACTIVE)
-  images           Media[]           @relation("ProductMedia")
-  attributes       ProductAttribute[]
-  variants         Variant[]
-  reviews          Review[]
+  basePrice        Decimal            @db.Decimal(10, 2)
+  salePrice        Decimal?           @db.Decimal(10, 2)
+  isFeatured       Boolean            @default(false)
+  isNewArrival     Boolean            @default(false)
+  isBestseller     Boolean            @default(false)
+  status           ProductStatus      @default(ACTIVE)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  images           Media[]            @relation("ProductMedia")
   orderItems       OrderItem[]
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-}
-
-enum ProductStatus {
-  ACTIVE
-  INACTIVE
-  DRAFT
+  category         Category           @relation(fields: [categoryId], references: [id])
+  attributes       ProductAttribute[]
+  reviews          Review[]
+  variants         Variant[]
 }
 
 model Attribute {
-  id               String             @id @default(uuid())
-  name             String             // e.g., Color, Size, Material
+  id                String             @id @default(uuid())
+  name              String
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
   productAttributes ProductAttribute[]
-  variantValues    VariantValue[]
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
+  variantValues     VariantValue[]
 }
 
 model ProductAttribute {
   id          String    @id @default(uuid())
   productId   String
-  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
   attributeId String
+  value       String
   attribute   Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
-  value       String    // e.g., Red, Cotton
-  
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
   @@unique([productId, attributeId, value])
 }
 
 model Variant {
   id        String         @id @default(uuid())
   productId String
-  product   Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
   sku       String         @unique
   price     Decimal        @db.Decimal(10, 2)
   salePrice Decimal?       @db.Decimal(10, 2)
   stock     Int            @default(0)
-  images    Media[]        @relation("VariantMedia")
-  values    VariantValue[]
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
+  images    Media[]        @relation("VariantMedia")
+  product   Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  values    VariantValue[]
 }
 
 model VariantValue {
   id          String    @id @default(uuid())
   variantId   String
-  variant     Variant   @relation(fields: [variantId], references: [id], onDelete: Cascade)
   attributeId String
+  value       String
   attribute   Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
-  value       String    // e.g., Red, L
+  variant     Variant   @relation(fields: [variantId], references: [id], onDelete: Cascade)
 
   @@unique([variantId, attributeId])
 }
@@ -138,35 +124,65 @@ model Media {
   url        String
   alt        String?
   type       MediaType @default(IMAGE)
-  
   categoryId String?
-  category   Category? @relation("CategoryMedia", fields: [categoryId], references: [id], onDelete: SetNull)
-  
   productId  String?
-  product    Product?  @relation("ProductMedia", fields: [productId], references: [id], onDelete: SetNull)
-  
   variantId  String?
-  variant    Variant?  @relation("VariantMedia", fields: [variantId], references: [id], onDelete: SetNull)
-
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-}
-
-enum MediaType {
-  IMAGE
-  VIDEO
+  category   Category? @relation("CategoryMedia", fields: [categoryId], references: [id])
+  product    Product?  @relation("ProductMedia", fields: [productId], references: [id])
+  variant    Variant?  @relation("VariantMedia", fields: [variantId], references: [id])
 }
 
 model Order {
   id            String      @id @default(uuid())
   userId        String
-  user          User        @relation(fields: [userId], references: [id])
   status        OrderStatus @default(PENDING)
   totalAmount   Decimal     @db.Decimal(10, 2)
   shippingTotal Decimal     @default(0) @db.Decimal(10, 2)
-  items         OrderItem[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+  user          User        @relation(fields: [userId], references: [id])
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  productId String
+  variantId String?
+  quantity  Int
+  price     Decimal @db.Decimal(10, 2)
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+  DRAFT
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
 }
 
 enum OrderStatus {
@@ -178,27 +194,4 @@ enum OrderStatus {
   CANCELLED
   RETURNED
   REFUNDED
-}
-
-model OrderItem {
-  id        String   @id @default(uuid())
-  orderId   String
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
-  variantId String?
-  quantity  Int
-  price     Decimal  @db.Decimal(10, 2)
-}
-
-model Review {
-  id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  rating    Int
-  comment   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }

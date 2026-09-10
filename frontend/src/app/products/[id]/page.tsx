@@ -22,6 +22,12 @@ export default function ProductDetailPage() {
   const [activeImage, setActiveImage] = useState<string>("");
   const [quantity, setQuantity] = useState(1);
   const [copied, setCopied] = useState(false);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviewName, setReviewName] = useState('');
+  const [reviewEmail, setReviewEmail] = useState('');
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   useEffect(() => {
     async function loadProduct() {
@@ -40,6 +46,31 @@ export default function ProductDetailPage() {
     }
     if (id) loadProduct();
   }, [id]);
+
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmittingReview(true);
+    try {
+      const newReview = await api.submitReview({
+        productId: product?.id,
+        customerName: reviewName,
+        customerEmail: reviewEmail,
+        rating: reviewRating,
+        comment: reviewComment
+      });
+      setReviews(prev => [newReview, ...prev]);
+      setReviewName('');
+      setReviewEmail('');
+      setReviewRating(5);
+      setReviewComment('');
+      alert('Thank you! Your review has been published.');
+    } catch (err) {
+      alert('Failed to submit review. Please try again later.');
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
 
   if (loading) {
     return (
