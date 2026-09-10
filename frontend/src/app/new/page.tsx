@@ -148,8 +148,8 @@ function NewArrivalsInner() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-5 py-2.5 rounded-full text-xs font-black transition-all ${
-                selectedCategory === cat ? 'bg-amber-500 text-white shadow-md' : 'bg-white text-slate-700 border border-slate-200 hover:border-amber-300'
+              className={`px-5 py-2.5 rounded-full text-xs font-black transition-all cursor-pointer ${
+                selectedCategory === cat ? 'bg-violet-600 text-white shadow-md' : 'bg-white text-slate-700 border border-slate-200 hover:border-violet-300 hover:text-violet-600'
               }`}
             >
               {cat}
@@ -166,7 +166,7 @@ function NewArrivalsInner() {
           <div className="bg-white rounded-3xl p-12 text-center border border-slate-200">
             <div className="text-6xl mb-4">✨</div>
             <h3 className="text-xl font-black text-slate-800 mb-2">No New Toys in this Category</h3>
-            <button onClick={() => setSelectedCategory("All")} className="bg-amber-500 text-white px-6 py-2 rounded-full font-bold text-xs mt-4">
+            <button onClick={() => setSelectedCategory("All")} className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-2 rounded-full font-bold text-xs mt-4 cursor-pointer transition-all">
               Show All New Arrivals
             </button>
           </div>
@@ -226,7 +226,7 @@ function NewArrivalsInner() {
 
                       <button 
                         onClick={() => addToCart(prod as any)}
-                        className="w-full bg-amber-500 hover:bg-amber-600 text-white py-2.5 rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2"
+                        className="w-full bg-violet-600 hover:bg-violet-700 text-white py-2.5 rounded-xl font-bold text-xs shadow-md hover:shadow-violet-200/50 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                       >
                         <ShoppingBag size={14} /> Add to Cart
                       </button>

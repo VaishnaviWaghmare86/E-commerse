@@ -32,7 +32,7 @@ export const TopProductsWidget: React.FC<TopProductsWidgetProps> = ({ activeDate
         </div>
         <Link
           to="/admin/products"
-          className="text-xs font-semibold text-[#ff91db] hover:text-[#eb70c3] flex items-center gap-0.5"
+          className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 flex items-center gap-0.5"
         >
           View all <ChevronRight className="w-3.5 h-3.5" />
         </Link>
@@ -56,7 +56,7 @@ export const TopProductsWidget: React.FC<TopProductsWidgetProps> = ({ activeDate
                 />
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5 flex-wrap">
-                    <h4 className="text-xs font-semibold text-slate-900 truncate group-hover:text-[#ff91db] transition-colors">
+                    <h4 className="text-xs font-semibold text-slate-900 truncate group-hover:text-indigo-600 transition-colors">
                       {product.name}
                     </h4>
                     {product.isBestSeller && (

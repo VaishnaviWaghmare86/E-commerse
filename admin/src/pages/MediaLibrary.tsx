@@ -62,7 +62,7 @@ export const MediaLibrary: React.FC = () => {
         description="Centralized asset repository for product imagery, campaign videos, and banner graphics"
         breadcrumbs={[{ label: 'Content', href: '/admin/homepage' }, { label: 'Media Library' }]}
         actions={
-          <label className="inline-flex items-center justify-center font-medium rounded-lg bg-[#ff91db] hover:bg-[#eb70c3] text-white px-3.5 py-2 text-sm gap-2 shadow-xs cursor-pointer transition-colors">
+          <label className="inline-flex items-center justify-center font-medium rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white px-3.5 py-2 text-sm gap-2 shadow-xs cursor-pointer transition-colors">
             <UploadCloud className="w-4 h-4" />
             <span>Upload Media</span>
             <input
@@ -85,7 +85,7 @@ export const MediaLibrary: React.FC = () => {
               placeholder="Search assets by file name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-4 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#ff91db] focus:bg-white"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-4 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white"
             />
           </div>
 
@@ -117,7 +117,7 @@ export const MediaLibrary: React.FC = () => {
               {filteredMedia.map((media) => (
                 <div
                   key={media.id}
-                  className="group rounded-xl border border-slate-200 overflow-hidden bg-white hover:border-[#ff91db]/50 hover:shadow-md transition-all flex flex-col justify-between"
+                  className="group rounded-xl border border-slate-200 overflow-hidden bg-white hover:border-indigo-500/50 hover:shadow-md transition-all flex flex-col justify-between"
                 >
                   {/* Thumbnail / Video */}
                   <div className="relative aspect-square w-full bg-slate-100 overflow-hidden">

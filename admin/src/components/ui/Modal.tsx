@@ -132,7 +132,7 @@ export const ConfirmModal: React.FC<{
             className={`px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors cursor-pointer ${
               isDanger
                 ? 'bg-rose-600 hover:bg-rose-700'
-                : 'bg-[#ff91db] hover:bg-[#eb70c3]'
+                : 'bg-indigo-600 hover:bg-indigo-700'
             }`}
           >
             {confirmText}

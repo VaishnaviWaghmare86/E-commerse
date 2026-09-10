@@ -83,7 +83,7 @@ export const Dashboard: React.FC = () => {
                   onClick={() => setActiveDateFilter(item.id)}
                   className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
                     activeDateFilter === item.id
-                      ? 'bg-[#ff91db] text-white shadow-2xs'
+                      ? 'bg-indigo-600 text-white shadow-2xs'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                   }`}
                 >

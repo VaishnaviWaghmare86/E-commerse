@@ -163,8 +163,8 @@ function BestSellersInner() {
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 cursor-pointer ${
                   selectedCategory === cat
-                    ? "bg-slate-900 text-white shadow-md scale-105"
-                    : "bg-white text-slate-600 hover:bg-amber-100 hover:text-amber-900 border border-slate-200"
+                    ? "bg-violet-600 text-white shadow-md scale-105"
+                    : "bg-white text-slate-700 hover:bg-violet-50 hover:text-violet-700 border border-slate-200"
                 }`}
               >
                 {cat}
@@ -255,7 +255,7 @@ function BestSellersInner() {
 
                       <button
                         onClick={() => addToCart(p)}
-                        className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl text-xs font-black shadow-md flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                        className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl text-xs font-black shadow-md hover:shadow-violet-200/50 hover:shadow-lg flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
                       >
                         <ShoppingBag size={14} />
                         <span>Add</span>
@@ -288,23 +288,28 @@ function BestSellersInner() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2">
                 <div className="bg-amber-50 p-6 flex items-center justify-center">
-                  <img src={quickViewProduct.img} alt={quickViewProduct.name} className="max-h-56 object-contain" />
+                  <img
+                    src={quickViewProduct.img}
+                    alt={quickViewProduct.name}
+                    className="max-h-56 object-contain mix-blend-multiply"
+                  />
                 </div>
                 <div className="p-6 flex flex-col justify-between">
                   <div>
-                    <span className="text-[10px] font-black uppercase text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full">
-                      {quickViewProduct.badge}
-                    </span>
-                    <h2 className="text-lg font-bold text-slate-900 mt-2 mb-1">{quickViewProduct.name}</h2>
-                    <div className="text-amber-500 font-bold text-xs mb-3">★ {quickViewProduct.rating} / 5.0</div>
+                    <span className="text-xs font-bold text-amber-600 uppercase tracking-wider">{quickViewProduct.category}</span>
+                    <h3 className="text-xl font-black text-slate-900 mt-1 mb-2">{quickViewProduct.name}</h3>
                     <div className="text-2xl font-black text-slate-900 mb-4">₹{quickViewProduct.price}</div>
+                    <p className="text-slate-500 text-xs leading-relaxed mb-6">
+                      Top-tier verified toy loved by kids across India. Tested for safety and boundless playful learning.
+                    </p>
                   </div>
+
                   <button
                     onClick={() => {
                       addToCart(quickViewProduct);
                       setQuickViewProduct(null);
                     }}
-                    className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 rounded-xl shadow-md flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <ShoppingBag size={16} /> Add to Cart
                   </button>

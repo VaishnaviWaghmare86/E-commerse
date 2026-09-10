@@ -370,13 +370,13 @@ function ProductsContent() {
                 {/* Sidebar Header with Filter count and Reset */}
                 <div className="hidden lg:flex items-center justify-between pb-3 border-b border-slate-100">
                   <div className="flex items-center gap-2">
-                    <SlidersHorizontal size={16} className="text-pink-500" />
+                    <SlidersHorizontal size={16} className="text-violet-600" />
                     <h3 className="font-black text-slate-900 text-sm tracking-wide">Filters &amp; Sort</h3>
                   </div>
                   {activeFiltersCount > 0 && (
                     <button
                       onClick={clearAllFilters}
-                      className="text-[11px] font-bold text-pink-500 hover:text-pink-600 hover:underline cursor-pointer"
+                      className="text-[11px] font-bold text-violet-600 hover:text-violet-700 hover:underline cursor-pointer"
                     >
                       Reset All
                     </button>
@@ -401,7 +401,7 @@ function ProductsContent() {
                         onClick={() => setSortBy(s.id)}
                         className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all ${
                           sortBy === s.id
-                            ? "bg-purple-600 text-white shadow-xs"
+                            ? "bg-violet-600 text-white shadow-xs"
                             : "text-slate-600 hover:bg-slate-50"
                         }`}
                       >
@@ -421,7 +421,7 @@ function ProductsContent() {
                     <button
                       onClick={() => setSelectedCategory("all")}
                       className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${
-                        selectedCategory === "all" ? "bg-pink-500 text-white shadow-xs" : "text-slate-600 hover:bg-slate-50"
+                        selectedCategory === "all" ? "bg-violet-600 text-white shadow-xs" : "text-slate-600 hover:bg-slate-50"
                       }`}
                     >
                       <span>All Categories</span>
@@ -445,7 +445,7 @@ function ProductsContent() {
                           key={`cat-btn-${cat.id}-${idx}`}
                           onClick={() => setSelectedCategory(cat.name)}
                           className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer group ${
-                            isSelected ? "bg-pink-500 text-white shadow-xs" : "text-slate-600 hover:bg-slate-50"
+                            isSelected ? "bg-violet-600 text-white shadow-xs" : "text-slate-600 hover:bg-slate-50"
                           }`}
                         >
                           <span className="truncate mr-2">{cat.name}</span>
@@ -664,12 +664,12 @@ function ProductsContent() {
                       {/* Top Badges */}
                       <div className="absolute top-6 left-6 z-10 flex flex-col gap-1.5">
                         {hasDiscount && (
-                          <span className="bg-rose-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-md">
+                          <span className="bg-emerald-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-md uppercase tracking-wider">
                             {p.discount ? `${p.discount}% OFF` : 'SALE'}
                           </span>
                         )}
                         {p.isBestSeller && (
-                          <span className="bg-amber-400 text-amber-950 text-[10px] font-black px-2.5 py-1 rounded-full shadow-md">
+                          <span className="bg-gradient-to-r from-amber-400 to-orange-400 text-slate-950 text-[10px] font-black px-2.5 py-1 rounded-full shadow-md">
                             BEST SELLER
                           </span>
                         )}
@@ -678,7 +678,7 @@ function ProductsContent() {
                       {/* Wishlist Button */}
                       <button
                         onClick={() => toggleWishlist(p.id)}
-                        className="absolute top-6 right-6 z-10 w-9 h-9 rounded-full bg-white/90 backdrop-blur-md shadow-md flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors"
+                        className="absolute top-6 right-6 z-10 w-9 h-9 rounded-full bg-white/90 backdrop-blur-md shadow-md flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
                       >
                         <Heart size={18} className={wishlisted ? "fill-rose-500 text-rose-500" : ""} />
                       </button>
@@ -702,19 +702,19 @@ function ProductsContent() {
 
                         {/* Title */}
                         <Link href={`/products/${p.id}`}>
-                          <h3 className="font-extrabold text-slate-800 text-sm line-clamp-2 hover:text-pink-500 transition-colors mb-1.5">
+                          <h3 className="font-extrabold text-slate-800 text-sm line-clamp-2 hover:text-violet-600 transition-colors mb-1.5">
                             {p.name}
                           </h3>
                         </Link>
 
                         {/* Meta: Category Badge, Brand & Age */}
                         <div className="flex flex-wrap items-center gap-1.5 text-[10px] font-bold text-slate-400 mb-2">
-                          <span className="bg-pink-50 text-pink-700 border border-pink-200/60 px-2 py-0.5 rounded-md font-extrabold">
+                          <span className="bg-violet-50 text-violet-700 border border-violet-200/70 px-2 py-0.5 rounded-md font-extrabold">
                             {typeof p.category === "string" ? p.category : p.category?.name || "Toys"}
                           </span>
-                          <span className="bg-slate-100 px-2 py-0.5 rounded-md text-slate-600">{p.brand}</span>
+                          <span className="bg-slate-100 px-2 py-0.5 rounded-md text-slate-600 font-semibold">{p.brand}</span>
                           <span>•</span>
-                          <span>{p.ageGroup}</span>
+                          <span className="font-semibold text-slate-500">{p.ageGroup}</span>
                         </div>
 
                         {/* Rating */}
@@ -750,7 +750,7 @@ function ProductsContent() {
                             vendorName: p.vendorName,
                             sku: p.sku
                           })}
-                          className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-2xl font-black text-xs shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 active:scale-95"
+                          className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-2xl font-black text-xs shadow-md hover:shadow-violet-200/50 hover:shadow-lg transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer"
                         >
                           <ShoppingBag size={14} /> Add
                         </button>

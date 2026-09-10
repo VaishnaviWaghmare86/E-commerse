@@ -11,7 +11,7 @@ export const ActivityTimeline: React.FC = () => {
       case 'product':
         return <Package className="w-3.5 h-3.5 text-amber-600" />;
       case 'customer':
-        return <User className="w-3.5 h-3.5 text-[#ff91db]" />;
+        return <User className="w-3.5 h-3.5 text-indigo-600" />;
       default:
         return <Clock className="w-3.5 h-3.5 text-slate-500" />;
     }

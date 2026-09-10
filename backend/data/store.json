@@ -251,7 +251,7 @@
       "status": "APPROVED",
       "isActive": true,
       "isFeatured": true,
-      "isBestSeller": true,
+      "isBestSeller": false,
       "isNewArrival": false,
       "rating": 4.9,
       "salesCount": 142,
@@ -278,7 +278,8 @@
         "Shock-resistant bumpers",
         "USB fast charging"
       ],
-      "createdAt": "2026-02-01T10:00:00.000Z"
+      "createdAt": "2026-02-01T10:00:00.000Z",
+      "updatedAt": "2026-09-10T11:18:25.496Z"
     },
     {
       "id": "prod-2",
@@ -300,7 +301,7 @@
       "status": "APPROVED",
       "isActive": true,
       "isFeatured": true,
-      "isBestSeller": true,
+      "isBestSeller": false,
       "isNewArrival": true,
       "rating": 5,
       "salesCount": 88,
@@ -327,7 +328,8 @@
         "30+ coding learning missions",
         "Scratch visual programming"
       ],
-      "createdAt": "2026-02-10T11:30:00.000Z"
+      "createdAt": "2026-02-10T11:30:00.000Z",
+      "updatedAt": "2026-09-10T11:31:57.552Z"
     },
     {
       "id": "prod-3",

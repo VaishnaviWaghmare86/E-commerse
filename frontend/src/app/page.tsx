@@ -26,8 +26,8 @@ export default function Home() {
       highlight: "Play & Fun!",
       subtitle: "Outdoor adventures, joyful cartoon friends, and educational toys for bright growing minds.",
       cta: "Discover More",
-      color: "from-pink-400 via-yellow-300 to-emerald-400",
-      btnBg: "bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600",
+      color: "from-amber-300 via-pink-300 to-sky-300",
+      btnBg: "bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700",
     },
     {
       id: 2,
@@ -50,8 +50,8 @@ export default function Home() {
       highlight: "Magical Dinosaur!",
       subtitle: "Unwrap pure joy with magical eggs, robot friends, and cuddly buddies with up to 50% OFF.",
       cta: "Grab Offers",
-      color: "from-amber-300 via-pink-400 to-yellow-300",
-      btnBg: "bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600",
+      color: "from-amber-300 via-rose-300 to-yellow-300",
+      btnBg: "bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700",
     },
   ];
 
@@ -238,19 +238,19 @@ export default function Home() {
       </section>
 
       {/* 🌈 ADORABLE TICKER BAR (Attractive & Loved by Kids & Parents) 🌈 */}
-      <div className="bg-gradient-to-r from-pink-500 via-purple-500 to-sky-500 text-white py-3 shadow-inner overflow-hidden">
-        <div className="w-full px-3 sm:px-4 md:px-5 lg:px-6 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm font-extrabold tracking-wide">
+      <div className="bg-gradient-to-r from-purple-900 via-indigo-700 to-sky-600 text-white py-2.5 shadow-inner overflow-hidden">
+        <div className="w-full px-3 sm:px-4 md:px-5 lg:px-6 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm font-black tracking-wide">
           <div className="flex items-center gap-2">
             <span>🧸</span>
-            <span>100% Non-Toxic &amp; Child Safe</span>
+            <span>100% Non-Toxic &amp; Child Safe Certified</span>
           </div>
           <div className="flex items-center gap-2">
             <span>⭐</span>
             <span>Loved by 50,000+ Happy Kids</span>
           </div>
           <div className="flex items-center gap-2">
-            <span>🚀</span>
-            <span>Super Fast Express Delivery</span>
+            <span>⚡</span>
+            <span>2-Day Express Delivery in Metros</span>
           </div>
           <div className="hidden md:flex items-center gap-2">
             <span>🎁</span>
@@ -263,7 +263,7 @@ export default function Home() {
       <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-6 md:py-8 relative z-10">
         <div className="flex items-center gap-2">
           
-          <button className="hidden md:flex p-2.5 rounded-full bg-white shadow-md border border-slate-200 text-slate-600 hover:text-pink-500 hover:scale-105 transition-all">
+          <button className="hidden md:flex p-2.5 rounded-full bg-white shadow-md border border-slate-200 text-slate-600 hover:text-violet-600 hover:scale-105 transition-all cursor-pointer">
             <ChevronLeft size={20} />
           </button>
 
@@ -272,19 +272,68 @@ export default function Home() {
               <Link href={`/products?category=${encodeURIComponent(cat.name)}`} key={idx} className="flex flex-col items-center min-w-[85px] group">
                 <motion.div 
                   whileHover={{ y: -6, scale: 1.08 }}
-                  className={`w-16 h-16 md:w-20 md:h-20 rounded-full p-1 shadow-md border-2 border-white group-hover:border-pink-400 transition-all ${cat.bg} flex items-center justify-center relative overflow-hidden`}
+                  className={`w-16 h-16 md:w-20 md:h-20 rounded-full p-1 shadow-md border-2 border-white group-hover:border-violet-400 transition-all ${cat.bg} flex items-center justify-center relative overflow-hidden`}
                 >
                   <img src={cat.img} alt={cat.name} className="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-300" />
                 </motion.div>
-                <span className="mt-2.5 text-xs font-extrabold text-slate-800 text-center group-hover:text-pink-500 transition-colors">{cat.name}</span>
+                <span className="mt-2.5 text-xs font-extrabold text-slate-800 text-center group-hover:text-violet-600 transition-colors">{cat.name}</span>
               </Link>
             ))}
           </div>
 
-          <button className="hidden md:flex p-2.5 rounded-full bg-white shadow-md border border-slate-200 text-slate-600 hover:text-pink-500 hover:scale-105 transition-all">
+          <button className="hidden md:flex p-2.5 rounded-full bg-white shadow-md border border-slate-200 text-slate-600 hover:text-violet-600 hover:scale-105 transition-all cursor-pointer">
             <ChevronRight size={20} />
           </button>
 
+        </div>
+      </section>
+
+      {/* 🎯 SMARTIVITY-INSPIRED SECTION: SHOP BY PRICE / BUDGET 🎯 */}
+      <section className="w-full px-3 sm:px-4 md:px-5 lg:px-6 py-4 md:py-6 relative z-10">
+        <div className="text-center mb-6">
+          <span className="text-[11px] font-black uppercase tracking-widest text-violet-700 bg-violet-100 px-3.5 py-1 rounded-full inline-block mb-1.5 shadow-2xs">
+            Pocket Friendly Play 🎈
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            There&apos;s a toy for every child
+          </h2>
+          <p className="text-slate-500 text-xs sm:text-sm font-medium mt-0.5">
+            Discover developmentally tailored toys matching every budget
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          {[
+            { label: "UNDER", amount: "700", maxPrice: 700, bg: "from-sky-50 to-blue-100/70", border: "border-sky-200" },
+            { label: "UNDER", amount: "900", maxPrice: 900, bg: "from-indigo-50 to-purple-100/70", border: "border-indigo-200" },
+            { label: "UNDER", amount: "1200", maxPrice: 1200, bg: "from-rose-50 to-pink-100/70", border: "border-rose-200" },
+            { label: "ABOVE", amount: "1200", minPrice: 1200, bg: "from-amber-50 to-orange-100/70", border: "border-amber-200" },
+          ].map((tier, idx) => (
+            <Link
+              key={idx}
+              href={tier.maxPrice ? `/products?maxPrice=${tier.maxPrice}` : `/products?minPrice=${tier.minPrice}`}
+            >
+              <motion.div
+                whileHover={{ y: -6, scale: 1.02 }}
+                className={`bg-gradient-to-b ${tier.bg} rounded-3xl p-6 sm:p-7 text-center border ${tier.border} shadow-sm hover:shadow-xl transition-all flex flex-col items-center justify-between min-h-[190px] sm:min-h-[220px] cursor-pointer group`}
+              >
+                <div className="space-y-1">
+                  <span className="text-xs sm:text-sm font-black tracking-widest text-rose-600 block">
+                    {tier.label}
+                  </span>
+                  <div className="text-3xl sm:text-5xl font-black text-rose-600 tracking-tight">
+                    <span className="text-2xl sm:text-3xl align-top">₹</span>{tier.amount}
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <span className="bg-[#3B145E] group-hover:bg-[#501c80] text-white px-6 py-2 rounded-xl text-xs font-black uppercase tracking-wider shadow-md inline-flex items-center gap-1 transition-all">
+                    SHOP NOW
+                  </span>
+                </div>
+              </motion.div>
+            </Link>
+          ))}
         </div>
       </section>
 
@@ -301,11 +350,11 @@ export default function Home() {
               <div className="z-10 max-w-[65%]">
                 <h2 className="text-2xl md:text-3xl font-black text-sky-900 leading-tight mb-2 tracking-tight">
                   Let <br />
-                  <span className="text-pink-500">Imagination</span> <br />
+                  <span className="text-violet-600">Imagination</span> <br />
                   Take Flight!
                 </h2>
                 <p className="text-slate-500 text-xs font-bold mb-4">Toys for every little dreamer</p>
-                <span className="bg-pink-500 text-white px-5 py-2 rounded-full font-black text-xs shadow-md inline-flex items-center gap-1 group-hover:bg-pink-600 transition-colors">
+                <span className="bg-violet-600 text-white px-5 py-2 rounded-full font-black text-xs shadow-md inline-flex items-center gap-1 group-hover:bg-violet-700 transition-colors">
                   Shop Now &rarr;
                 </span>
               </div>
@@ -324,17 +373,17 @@ export default function Home() {
               className="bg-gradient-to-br from-pink-100 via-pink-50 to-rose-100 rounded-3xl h-[260px] relative overflow-hidden p-7 flex flex-col justify-between shadow-md border border-pink-200 group cursor-pointer"
             >
               <div className="z-10 max-w-[65%]">
-                <span className="bg-pink-500 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full shadow-sm mb-2 inline-block">
-                  BIG FUN BIG SAVINGS
+                <span className="bg-emerald-600 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full shadow-sm mb-2 inline-block">
+                  UPTO 50% OFF
                 </span>
                 <h2 className="text-xl md:text-2xl font-black text-purple-900 leading-tight mb-1">
                   SPECIAL OFFER
                 </h2>
-                <h3 className="text-3xl font-black text-pink-600 mb-1">
-                  Up to 50% OFF
+                <h3 className="text-3xl font-black text-rose-600 mb-1">
+                  Top Trending Toys
                 </h3>
-                <p className="text-slate-500 text-xs font-bold mb-4">On Selected Toys</p>
-                <span className="bg-yellow-400 text-slate-900 px-5 py-2 rounded-full font-black text-xs shadow-md inline-flex items-center gap-1 group-hover:bg-yellow-300 transition-colors">
+                <p className="text-slate-500 text-xs font-bold mb-4">On Selected Handpicked Toys</p>
+                <span className="bg-amber-400 text-slate-900 px-5 py-2 rounded-full font-black text-xs shadow-md inline-flex items-center gap-1 group-hover:bg-yellow-300 transition-colors">
                   Grab Deal &rarr;
                 </span>
               </div>
@@ -379,7 +428,7 @@ export default function Home() {
         <div className="bg-white rounded-3xl p-4 shadow-sm border border-slate-200 grid grid-cols-2 md:grid-cols-5 gap-4 items-center">
           
           <div className="flex items-center gap-3 p-2 border-r border-slate-100 last:border-none">
-            <div className="w-10 h-10 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center flex-shrink-0">
               <Truck size={20} />
             </div>
             <div>

@@ -142,7 +142,7 @@ export const Variants: React.FC = () => {
       <Card>
         <CardHeader className="flex-row items-center justify-between pb-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-pink-50 text-[#ff91db] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-pink-50 text-indigo-600 flex items-center justify-center">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
@@ -184,7 +184,7 @@ export const Variants: React.FC = () => {
                       }}
                       className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
                         isChecked
-                          ? 'bg-[#ff91db] text-white border-[#ff91db]'
+                          ? 'bg-indigo-600 text-white border-indigo-500'
                           : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
                       }`}
                     >
@@ -216,7 +216,7 @@ export const Variants: React.FC = () => {
                       }}
                       className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
                         isChecked
-                          ? 'bg-[#ff91db] text-white border-[#ff91db]'
+                          ? 'bg-indigo-600 text-white border-indigo-500'
                           : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
                       }`}
                     >
@@ -234,7 +234,7 @@ export const Variants: React.FC = () => {
       <Card>
         <CardHeader className="flex-row items-center justify-between pb-3">
           <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-[#ff91db]" />
+            <Layers className="w-4 h-4 text-indigo-600" />
             <CardTitle>Active Variants ({variants.length})</CardTitle>
           </div>
           <Button size="xs" variant="secondary" onClick={addNewCustomVariant} leftIcon={<Plus className="w-3 h-3" />}>
@@ -262,7 +262,7 @@ export const Variants: React.FC = () => {
                       type="text"
                       value={v.color || ''}
                       onChange={(e) => updateVariantRow(v.id, 'color', e.target.value)}
-                      className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs w-28 font-medium focus:bg-white focus:outline-none focus:border-[#ff91db]"
+                      className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs w-28 font-medium focus:bg-white focus:outline-none focus:border-indigo-500"
                     />
                   </TableCell>
                   <TableCell>
@@ -270,7 +270,7 @@ export const Variants: React.FC = () => {
                       type="text"
                       value={v.size || ''}
                       onChange={(e) => updateVariantRow(v.id, 'size', e.target.value)}
-                      className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs w-20 font-medium focus:bg-white focus:outline-none focus:border-[#ff91db]"
+                      className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs w-20 font-medium focus:bg-white focus:outline-none focus:border-indigo-500"
                     />
                   </TableCell>
                   <TableCell>
@@ -278,7 +278,7 @@ export const Variants: React.FC = () => {
                       type="text"
                       value={v.sku}
                       onChange={(e) => updateVariantRow(v.id, 'sku', e.target.value)}
-                      className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs w-36 font-mono focus:bg-white focus:outline-none focus:border-[#ff91db]"
+                      className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs w-36 font-mono focus:bg-white focus:outline-none focus:border-indigo-500"
                     />
                   </TableCell>
                   <TableCell>
@@ -286,7 +286,7 @@ export const Variants: React.FC = () => {
                       type="number"
                       value={v.price}
                       onChange={(e) => updateVariantRow(v.id, 'price', Number(e.target.value))}
-                      className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs w-28 font-bold text-slate-800 focus:bg-white focus:outline-none focus:border-[#ff91db]"
+                      className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs w-28 font-bold text-slate-800 focus:bg-white focus:outline-none focus:border-indigo-500"
                     />
                   </TableCell>
                   <TableCell>
@@ -294,7 +294,7 @@ export const Variants: React.FC = () => {
                       type="number"
                       value={v.stock}
                       onChange={(e) => updateVariantRow(v.id, 'stock', Number(e.target.value))}
-                      className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs w-24 font-bold text-slate-800 focus:bg-white focus:outline-none focus:border-[#ff91db]"
+                      className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs w-24 font-bold text-slate-800 focus:bg-white focus:outline-none focus:border-indigo-500"
                     />
                   </TableCell>
                   <TableCell className="text-right">

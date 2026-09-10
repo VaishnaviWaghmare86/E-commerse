@@ -53,18 +53,19 @@ function HeaderNav() {
       )}
 
       {/* TOP STICKY HEADER WRAPPER */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${pathname === '/' ? 'bg-white/70 backdrop-blur-md border-b border-white/20' : 'bg-white border-b border-slate-100 shadow-sm'}`}>
+      {/* TOP STICKY HEADER WRAPPER */}
+      <header className={`sticky top-0 z-50 transition-all duration-300 ${pathname === '/' ? 'bg-white/90 backdrop-blur-md border-b border-slate-200/60' : 'bg-white border-b border-slate-100 shadow-xs'}`}>
         
-        {/* 1. TOP DARK INFO BAR */}
-        <div className="bg-[#1e293b] text-slate-300 text-xs py-2">
+        {/* 1. TOP SMARTIVITY-INSPIRED ROYAL PURPLE INFO BAR */}
+        <div className="bg-[#3B145E] text-purple-100 text-xs py-2 shadow-xs">
           <div className="w-full px-3 sm:px-4 md:px-5 lg:px-6 flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <Truck size={14} className="text-pink-400" />
-              <span className="font-medium tracking-wide">Free Shipping on Orders Above ₹999</span>
+            <div className="flex items-center gap-2 font-semibold">
+              <Truck size={14} className="text-amber-400 shrink-0" />
+              <span className="tracking-wide">⚡ 2 DAYS EXPRESS DELIVERY IN METROS • Free Shipping Above ₹999</span>
             </div>
-            <div className="hidden md:flex items-center gap-4 lg:gap-6 font-medium text-slate-300">
-              <div className="flex items-center gap-1.5"><ShieldCheck size={14} className="text-sky-400"/> Safe Payments</div>
-              <div className="flex items-center gap-1.5"><RefreshCcw size={14} className="text-sky-400"/> Easy Returns</div>
+            <div className="hidden md:flex items-center gap-4 lg:gap-6 font-semibold text-purple-200 text-xs">
+              <div className="flex items-center gap-1.5"><ShieldCheck size={14} className="text-emerald-400"/> Safe &amp; Secure Checkout</div>
+              <div className="flex items-center gap-1.5"><RefreshCcw size={14} className="text-sky-300"/> Easy Returns</div>
             </div>
           </div>
         </div>
@@ -99,11 +100,11 @@ function HeaderNav() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search for toys, games, brands..." 
-                      className="w-full bg-slate-100 border border-slate-200 rounded-full py-2.5 pl-11 pr-12 outline-none focus:ring-2 focus:ring-pink-500 focus:bg-white transition-all text-sm font-medium text-slate-700"
+                      className="w-full bg-slate-100/90 border border-slate-200 rounded-full py-2.5 pl-11 pr-12 outline-none focus:ring-2 focus:ring-violet-600 focus:bg-white transition-all text-sm font-medium text-slate-800"
                     />
                     <button 
                       type="submit" 
-                      className="absolute right-1 top-1 bottom-1 bg-pink-500 hover:bg-pink-600 transition-colors text-white px-5 rounded-full font-semibold flex items-center justify-center cursor-pointer shadow-xs"
+                      className="absolute right-1 top-1 bottom-1 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 transition-all text-white px-5 rounded-full font-semibold flex items-center justify-center cursor-pointer shadow-xs"
                     >
                       <Search size={16} />
                     </button>
@@ -114,11 +115,11 @@ function HeaderNav() {
 
             {/* Column 3 (Right Corner): Wishlist, Orders, Cart */}
             <div className="flex items-center justify-end z-10 shrink-0 space-x-3 sm:space-x-4 md:space-x-5 lg:space-x-6">
-              <Link href="/wishlist" className="flex items-center gap-1.5 text-slate-700 hover:text-pink-500 transition-colors font-semibold text-sm relative cursor-pointer shrink-0">
+              <Link href="/wishlist" className="flex items-center gap-1.5 text-slate-700 hover:text-violet-600 transition-colors font-semibold text-sm relative cursor-pointer shrink-0">
                 <div className="relative">
                   <Heart size={22} />
                   {displayWishlistCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-pink-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center shadow-sm">
+                    <span className="absolute -top-2 -right-2 bg-rose-500 text-white text-[10px] font-black rounded-full h-4 w-4 flex items-center justify-center shadow-xs">
                       {displayWishlistCount}
                     </span>
                   )}
@@ -247,9 +248,9 @@ function HeaderNav() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search toys..." 
-                className="w-full bg-slate-100 border border-slate-200 rounded-full py-2 pl-9 pr-10 outline-none focus:ring-2 focus:ring-pink-500 text-xs font-medium"
+                className="w-full bg-slate-100 border border-slate-200 rounded-full py-2 pl-9 pr-10 outline-none focus:ring-2 focus:ring-violet-600 text-xs font-medium"
               />
-              <button type="submit" className="absolute right-1 top-1 bottom-1 bg-pink-500 text-white px-3 rounded-full flex items-center justify-center">
+              <button type="submit" className="absolute right-1 top-1 bottom-1 bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-3 rounded-full flex items-center justify-center">
                 <Search size={14} />
               </button>
             </div>
@@ -263,10 +264,10 @@ function HeaderNav() {
                 <Link 
                   key={link.name} 
                   href={link.href} 
-                  className={`text-sm font-bold transition-all px-5 py-1.5 rounded-full ${
+                  className={`text-sm font-extrabold transition-all px-5 py-1.5 rounded-full ${
                     isActive 
-                      ? 'bg-pink-100 text-pink-600 shadow-sm shadow-pink-200/50' 
-                      : 'text-slate-600 hover:text-pink-500 hover:bg-slate-50'
+                      ? 'bg-violet-100 text-violet-800 shadow-xs ring-1 ring-violet-200' 
+                      : 'text-slate-700 hover:text-violet-600 hover:bg-violet-50/60'
                   }`}
                 >
                   {link.name}
@@ -286,8 +287,8 @@ function HeaderNav() {
                   key={link.name} 
                   href={link.href} 
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`block px-4 py-2.5 rounded-xl text-sm font-bold transition-colors ${
-                    isActive ? 'bg-pink-100 text-pink-600' : 'text-slate-600 hover:bg-slate-50 hover:text-pink-500'
+                  className={`block px-4 py-2.5 rounded-xl text-sm font-extrabold transition-colors ${
+                    isActive ? 'bg-violet-100 text-violet-800' : 'text-slate-700 hover:bg-violet-50 hover:text-violet-600'
                   }`}
                 >
                   {link.name}
@@ -309,7 +310,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased bg-white font-sans text-slate-800 selection:bg-pink-500 selection:text-white">
+      <body className="antialiased bg-white font-sans text-slate-800 selection:bg-violet-600 selection:text-white">
         <AuthProvider>
           <CartProvider>
             <HeaderNav />
@@ -317,8 +318,8 @@ export default function RootLayout({
               {children}
             </main>
 
-          {/* 🌙 SLEEK DARK BLUE FOOTER (#0f172b) 🌙 */}
-          <footer className="bg-[#0f172b] text-slate-300 border-t border-slate-800/80 pt-16 pb-8">
+          {/* 🌙 SLEEK MIDNIGHT INDIGO FOOTER (#0b0f19) 🌙 */}
+          <footer className="bg-[#0b0f19] text-slate-300 border-t border-slate-800/80 pt-16 pb-8">
             <div className="w-full px-3 sm:px-4 md:px-5 lg:px-6 grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
               
               {/* Brand Column */}

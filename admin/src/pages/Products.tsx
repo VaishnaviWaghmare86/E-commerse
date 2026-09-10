@@ -161,7 +161,7 @@ export const Products: React.FC = () => {
           onClick={() => handleTabChange('All')}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             selectedBadge === 'All'
-              ? 'bg-[#ff91db] text-white shadow-xs'
+              ? 'bg-indigo-600 text-white shadow-xs'
               : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
           }`}
         >
@@ -229,7 +229,7 @@ export const Products: React.FC = () => {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-4 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#ff91db] focus:ring-1 focus:ring-[#ff91db]/30 focus:bg-white transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-4 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 focus:bg-white transition-all"
             />
           </div>
 
@@ -354,7 +354,7 @@ export const Products: React.FC = () => {
                     </TableCell>
                     <TableCell className="max-w-[220px]">
                       <div className="flex flex-col">
-                        <span className="font-semibold text-slate-900 text-xs truncate hover:text-[#ff91db]">
+                        <span className="font-semibold text-slate-900 text-xs truncate hover:text-indigo-600">
                           {product.name}
                         </span>
                         <span className="text-[11px] text-slate-400 truncate mt-0.5">

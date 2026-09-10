@@ -247,7 +247,7 @@ export const Banners: React.FC = () => {
                 onClick={() => setPreviewDevice('desktop')}
                 className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
                   previewDevice === 'desktop'
-                    ? 'bg-white text-[#ff91db] font-bold shadow-2xs'
+                    ? 'bg-white text-indigo-600 font-bold shadow-2xs'
                     : 'text-slate-500 hover:text-slate-800'
                 }`}
                 title="Desktop Hero Banner View"
@@ -260,7 +260,7 @@ export const Banners: React.FC = () => {
                 onClick={() => setPreviewDevice('mobile')}
                 className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all cursor-pointer ${
                   previewDevice === 'mobile'
-                    ? 'bg-white text-[#ff91db] font-bold shadow-2xs'
+                    ? 'bg-white text-indigo-600 font-bold shadow-2xs'
                     : 'text-slate-500 hover:text-slate-800'
                 }`}
                 title="Mobile Responsive Banner View"
@@ -276,7 +276,7 @@ export const Banners: React.FC = () => {
               onClick={() => setIsAutoPlay(!isAutoPlay)}
               className={`p-2 rounded-xl border text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
                 isAutoPlay
-                  ? 'bg-pink-50 text-[#ff91db] border-pink-200'
+                  ? 'bg-pink-50 text-indigo-600 border-pink-200'
                   : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
               }`}
               title={isAutoPlay ? 'Pause Auto Slider' : 'Play Auto Slider'}
@@ -380,7 +380,7 @@ export const Banners: React.FC = () => {
                           'info'
                         )
                       }
-                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-[#ff91db] hover:from-pink-600 hover:to-pink-600 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-[#4f46e5] hover:from-pink-600 hover:to-pink-600 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer"
                     >
                       <span>{currentBanner.ctaText}</span>
                       <ExternalLink className="w-3.5 h-3.5" />
@@ -439,7 +439,7 @@ export const Banners: React.FC = () => {
             </div>
           ) : (
             <div className="py-16 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-pink-50 text-[#ff91db] mx-auto flex items-center justify-center mb-3">
+              <div className="w-16 h-16 rounded-2xl bg-pink-50 text-indigo-600 mx-auto flex items-center justify-center mb-3">
                 <ImageIcon className="w-8 h-8" />
               </div>
               <h3 className="text-base font-bold text-slate-800">No Banners Published</h3>
@@ -457,7 +457,7 @@ export const Banners: React.FC = () => {
         {banners.length > 0 && (
           <div className="p-3 bg-white border-t border-slate-100 flex items-center gap-3 overflow-x-auto">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider px-2 shrink-0 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-[#ff91db]" />
+              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
               Slides:
             </span>
             {banners.map((b, idx) => (
@@ -467,7 +467,7 @@ export const Banners: React.FC = () => {
                 onClick={() => setActiveSlideIndex(idx)}
                 className={`relative flex items-center gap-2.5 p-1.5 rounded-xl border transition-all shrink-0 cursor-pointer text-left ${
                   activeSlideIndex === idx
-                    ? 'border-[#ff91db] bg-pink-50/60 shadow-xs ring-2 ring-[#ff91db]/20'
+                    ? 'border-indigo-500 bg-pink-50/60 shadow-xs ring-2 ring-indigo-500/20'
                     : 'border-slate-200 hover:border-slate-300 bg-white'
                 }`}
               >
@@ -530,7 +530,7 @@ export const Banners: React.FC = () => {
                         alt={banner.title}
                         className={`w-28 h-14 rounded-lg object-cover border shadow-2xs transition-transform group-hover:scale-105 ${
                           activeSlideIndex === idx
-                            ? 'border-[#ff91db] ring-2 ring-[#ff91db]/30'
+                            ? 'border-indigo-500 ring-2 ring-indigo-500/30'
                             : 'border-slate-200'
                         }`}
                       />
@@ -548,7 +548,7 @@ export const Banners: React.FC = () => {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-1 text-xs text-[#ff91db] font-medium">
+                    <div className="flex items-center gap-1 text-xs text-indigo-600 font-medium">
                       <span>{banner.ctaText}</span>
                       <ExternalLink className="w-3 h-3 text-slate-400" />
                     </div>
@@ -661,7 +661,7 @@ export const Banners: React.FC = () => {
                   onClick={() => setDesktopImageMode('upload')}
                   className={`px-2.5 py-0.5 rounded-md cursor-pointer ${
                     desktopImageMode === 'upload'
-                      ? 'bg-white text-[#ff91db] font-bold shadow-2xs'
+                      ? 'bg-white text-indigo-600 font-bold shadow-2xs'
                       : 'text-slate-500'
                   }`}
                 >
@@ -672,7 +672,7 @@ export const Banners: React.FC = () => {
                   onClick={() => setDesktopImageMode('url')}
                   className={`px-2.5 py-0.5 rounded-md cursor-pointer ${
                     desktopImageMode === 'url'
-                      ? 'bg-white text-[#ff91db] font-bold shadow-2xs'
+                      ? 'bg-white text-indigo-600 font-bold shadow-2xs'
                       : 'text-slate-500'
                   }`}
                 >
@@ -732,7 +732,7 @@ export const Banners: React.FC = () => {
                     onClick={() => desktopFileInputRef.current?.click()}
                     className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all ${
                       isDesktopDragging
-                        ? 'border-[#ff91db] bg-pink-50/50'
+                        ? 'border-indigo-500 bg-pink-50/50'
                         : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                     }`}
                   >
@@ -751,10 +751,10 @@ export const Banners: React.FC = () => {
                         }
                       }}
                     />
-                    <UploadCloud className="w-6 h-6 text-[#ff91db] mx-auto mb-1" />
+                    <UploadCloud className="w-6 h-6 text-indigo-600 mx-auto mb-1" />
                     <p className="text-xs font-semibold text-slate-700">
                       Drag & drop desktop banner image here, or{' '}
-                      <span className="text-[#ff91db] underline">browse</span>
+                      <span className="text-indigo-600 underline">browse</span>
                     </p>
                     <p className="text-[10px] text-slate-400 mt-0.5">
                       PNG, JPG, or WebP recommended (1200x500px)
@@ -783,7 +783,7 @@ export const Banners: React.FC = () => {
                   onClick={() => setMobileImageMode('upload')}
                   className={`px-2.5 py-0.5 rounded-md cursor-pointer ${
                     mobileImageMode === 'upload'
-                      ? 'bg-white text-[#ff91db] font-bold shadow-2xs'
+                      ? 'bg-white text-indigo-600 font-bold shadow-2xs'
                       : 'text-slate-500'
                   }`}
                 >
@@ -794,7 +794,7 @@ export const Banners: React.FC = () => {
                   onClick={() => setMobileImageMode('url')}
                   className={`px-2.5 py-0.5 rounded-md cursor-pointer ${
                     mobileImageMode === 'url'
-                      ? 'bg-white text-[#ff91db] font-bold shadow-2xs'
+                      ? 'bg-white text-indigo-600 font-bold shadow-2xs'
                       : 'text-slate-500'
                   }`}
                 >
@@ -854,7 +854,7 @@ export const Banners: React.FC = () => {
                     onClick={() => mobileFileInputRef.current?.click()}
                     className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all ${
                       isMobileDragging
-                        ? 'border-[#ff91db] bg-pink-50/50'
+                        ? 'border-indigo-500 bg-pink-50/50'
                         : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                     }`}
                   >
@@ -873,10 +873,10 @@ export const Banners: React.FC = () => {
                         }
                       }}
                     />
-                    <UploadCloud className="w-6 h-6 text-[#ff91db] mx-auto mb-1" />
+                    <UploadCloud className="w-6 h-6 text-indigo-600 mx-auto mb-1" />
                     <p className="text-xs font-semibold text-slate-700">
                       Drag & drop mobile banner image here, or{' '}
-                      <span className="text-[#ff91db] underline">browse</span>
+                      <span className="text-indigo-600 underline">browse</span>
                     </p>
                     <p className="text-[10px] text-slate-400 mt-0.5">
                       PNG, JPG, or WebP (600x800px recommended)

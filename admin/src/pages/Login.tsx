@@ -57,11 +57,11 @@ export const Login: React.FC = () => {
 
         {/* Brand Header */}
         <div className="flex flex-col items-center text-center mb-6">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#ff91db] to-[#ffa3e4] flex items-center justify-center text-white font-extrabold text-2xl shadow-md mb-3">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white font-extrabold text-2xl shadow-md mb-3">
             K
           </div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight">KidsPlay Admin</h2>
-          <span className="text-xs font-semibold text-[#ff91db] tracking-widest uppercase mt-0.5">
+          <span className="text-xs font-semibold text-indigo-600 tracking-widest uppercase mt-0.5">
             Admin Panel Login
           </span>
           <p className="text-xs text-slate-500 mt-2">

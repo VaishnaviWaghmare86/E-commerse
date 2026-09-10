@@ -96,14 +96,14 @@ export const Header: React.FC = () => {
 
   return (
     <header className={`h-16 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs border-b ${
-      isVendor ? 'bg-[#fffaf0] border-amber-200' : 'bg-[#fff0f7] border-[#ffd4ea]'
+      isVendor ? 'bg-amber-50/80 border-amber-200' : 'bg-white border-slate-200'
     }`}>
       {/* Left section: Hamburger / Page Title */}
       <div className="flex items-center gap-3 sm:gap-4">
         {/* Mobile toggle */}
         <button
           onClick={() => setMobileSidebarOpen(true)}
-          className="lg:hidden p-2 text-[#733557] hover:text-[#451630] hover:bg-slate-200/50 rounded-lg transition-colors cursor-pointer"
+          className="lg:hidden p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
           aria-label="Open Sidebar"
         >
           <Menu className="w-5 h-5" />
@@ -112,7 +112,7 @@ export const Header: React.FC = () => {
         {/* Desktop collapse indicator button */}
         <button
           onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-          className="hidden lg:flex p-2 text-[#733557] hover:text-[#451630] hover:bg-slate-200/50 rounded-lg transition-colors cursor-pointer"
+          className="hidden lg:flex p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
           title="Toggle Sidebar"
         >
           <Menu className="w-5 h-5" />
@@ -150,7 +150,7 @@ export const Header: React.FC = () => {
           href="https://playpetal.technobuzzsystems.com"
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-pink-600 bg-white border border-pink-200 hover:bg-pink-50 transition-all shadow-2xs"
+          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-600 bg-white border border-indigo-200 hover:bg-indigo-50 transition-all shadow-2xs"
           title="Open Live Customer Storefront"
         >
           <ExternalLink className="w-3.5 h-3.5" />
@@ -162,7 +162,7 @@ export const Header: React.FC = () => {
           <div className="relative" ref={notifRef}>
             <button
               onClick={() => setNotificationsOpen(!notificationsOpen)}
-              className="p-2 rounded-lg text-[#733557] hover:text-[#451630] hover:bg-[#ffe0f1] relative transition-colors cursor-pointer"
+              className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 relative transition-colors cursor-pointer"
               aria-label="Notifications"
             >
               <Bell className="w-5 h-5" />
@@ -183,7 +183,7 @@ export const Header: React.FC = () => {
                       Notifications
                     </span>
                     {unreadNotificationsCount > 0 && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-pink-100 text-pink-700">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700">
                         {unreadNotificationsCount} new
                       </span>
                     )}
@@ -193,7 +193,7 @@ export const Header: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => markAllNotificationsAsRead()}
-                        className="text-[11px] font-semibold text-pink-600 hover:text-pink-700 hover:underline cursor-pointer flex items-center gap-1"
+                        className="text-[11px] font-semibold text-indigo-600 hover:text-indigo-700 hover:underline cursor-pointer flex items-center gap-1"
                         title="Mark all as read"
                       >
                         <CheckCheck className="w-3.5 h-3.5 text-emerald-600" />
@@ -243,7 +243,7 @@ export const Header: React.FC = () => {
                           <div className="flex items-center gap-1.5 mb-1">
                             {n.unread ? (
                               <span
-                                className="w-2 h-2 rounded-full bg-[#ff91db] shrink-0"
+                                className="w-2 h-2 rounded-full bg-indigo-600 shrink-0"
                                 title="Unread"
                               />
                             ) : (
@@ -319,7 +319,7 @@ export const Header: React.FC = () => {
             className="flex items-center gap-2.5 p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl hover:bg-slate-200/50 transition-colors cursor-pointer"
           >
             <div className={`w-8 h-8 rounded-full text-white flex items-center justify-center font-black text-xs shadow-xs uppercase ${
-              isVendor ? 'bg-gradient-to-tr from-amber-500 to-rose-500' : 'bg-gradient-to-tr from-[#ff91db] to-[#ffa3e4]'
+              isVendor ? 'bg-gradient-to-tr from-amber-500 to-rose-500' : 'bg-gradient-to-tr from-indigo-600 to-violet-600'
             }`}>
               {user?.name ? user.name.charAt(0) : (isVendor ? 'S' : 'A')}
             </div>
@@ -328,7 +328,7 @@ export const Header: React.FC = () => {
                 {user?.name || (isVendor ? 'Shopkeeper' : 'Admin')}
               </span>
               <span className={`text-[10px] font-bold leading-tight ${
-                isVendor ? 'text-amber-700' : 'text-[#9c537b]'
+                isVendor ? 'text-amber-700' : 'text-slate-400'
               }`}>
                 {isVendor ? (user?.shopName || 'Shopkeeper') : 'Administrator'}
               </span>
@@ -342,7 +342,7 @@ export const Header: React.FC = () => {
                 <div className="flex items-center justify-between mb-1">
                   <p className="text-xs font-black text-slate-900 truncate">{user?.name || (isVendor ? 'Shopkeeper' : 'Admin')}</p>
                   <span className={`text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider ${
-                    isVendor ? 'bg-amber-100 text-amber-800' : 'bg-[#ffe3f5] text-[#ff91db]'
+                    isVendor ? 'bg-amber-100 text-amber-800' : 'bg-indigo-50 text-indigo-600'
                   }`}>
                     {isVendor ? 'SHOPKEEPER' : 'SUPER ADMIN'}
                   </span>

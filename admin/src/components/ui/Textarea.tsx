@@ -21,7 +21,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           id={textareaId}
           ref={ref}
           rows={rows}
-          className={`w-full rounded-lg border bg-white px-3 py-2 text-sm text-slate-900 transition-colors placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#ff91db]/20 focus:border-[#ff91db] disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500 resize-y ${
+          className={`w-full rounded-lg border bg-white px-3 py-2 text-sm text-slate-900 transition-colors placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-500 resize-y ${
             error ? 'border-rose-400 focus:border-rose-500' : 'border-slate-200 hover:border-slate-300'
           } ${className}`}
           {...props}
@@ -61,8 +61,8 @@ export const Switch: React.FC<SwitchProps> = ({
         aria-checked={checked}
         disabled={disabled}
         onClick={() => !disabled && onChange(!checked)}
-        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#ff91db]/30 ${
-          checked ? 'bg-[#ff91db]' : 'bg-slate-200'
+        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500/30 ${
+          checked ? 'bg-indigo-600' : 'bg-slate-200'
         }`}
       >
         <span

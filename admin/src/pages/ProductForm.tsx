@@ -73,10 +73,10 @@ export const ProductForm: React.FC = () => {
 
   const getAttrIcon = (name: string) => {
     const lower = name.toLowerCase();
-    if (lower.includes('brand')) return <Tag className="w-3.5 h-3.5 text-[#ff91db]" />;
-    if (lower.includes('material') || lower.includes('fabric')) return <Layers className="w-3.5 h-3.5 text-[#ff91db]" />;
-    if (lower.includes('pattern') || lower.includes('print')) return <Palette className="w-3.5 h-3.5 text-[#ff91db]" />;
-    return <SlidersHorizontal className="w-3.5 h-3.5 text-[#ff91db]" />;
+    if (lower.includes('brand')) return <Tag className="w-3.5 h-3.5 text-indigo-600" />;
+    if (lower.includes('material') || lower.includes('fabric')) return <Layers className="w-3.5 h-3.5 text-indigo-600" />;
+    if (lower.includes('pattern') || lower.includes('print')) return <Palette className="w-3.5 h-3.5 text-indigo-600" />;
+    return <SlidersHorizontal className="w-3.5 h-3.5 text-indigo-600" />;
   };
 
   // Form State with lazy initialization
@@ -424,10 +424,10 @@ export const ProductForm: React.FC = () => {
 
                 <div className="p-4 bg-pink-50/60 border border-pink-100 rounded-xl flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-bold text-[#ff91db]">Calculated Discount</span>
+                    <span className="text-xs font-bold text-indigo-600">Calculated Discount</span>
                     <p className="text-xs text-slate-500">Customer savings percentage shown as badge</p>
                   </div>
-                  <span className="text-base font-extrabold text-[#ff91db]">
+                  <span className="text-base font-extrabold text-indigo-600">
                     {formData.discount}% OFF
                   </span>
                 </div>
@@ -481,8 +481,8 @@ export const ProductForm: React.FC = () => {
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5">
                     Upload Additional Gallery Images
                   </label>
-                  <label className="border-2 border-dashed border-slate-200 hover:border-[#ff91db] bg-slate-50 hover:bg-pink-50/20 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors group">
-                    <UploadCloud className="w-8 h-8 text-slate-400 group-hover:text-[#ff91db] mb-2 transition-colors" />
+                  <label className="border-2 border-dashed border-slate-200 hover:border-indigo-500 bg-slate-50 hover:bg-pink-50/20 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors group">
+                    <UploadCloud className="w-8 h-8 text-slate-400 group-hover:text-indigo-600 mb-2 transition-colors" />
                     <span className="text-xs font-semibold text-slate-700">
                       Click to upload or drag and drop images
                     </span>
@@ -570,7 +570,7 @@ export const ProductForm: React.FC = () => {
                               }}
                               className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
                                 isChecked
-                                  ? 'bg-[#ff91db] text-white border-[#ff91db]'
+                                  ? 'bg-indigo-600 text-white border-indigo-500'
                                   : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
                               }`}
                             >
@@ -581,7 +581,7 @@ export const ProductForm: React.FC = () => {
 
                         {/* Inline Quick Add button / input for this attribute */}
                         {openInlineInputId === attr.id ? (
-                          <div className="inline-flex items-center gap-1 bg-white border border-[#ffd0ef] rounded-lg p-0.5 shadow-2xs">
+                          <div className="inline-flex items-center gap-1 bg-white border border-indigo-100 rounded-lg p-0.5 shadow-2xs">
                             <input
                               type="text"
                               autoFocus
@@ -606,7 +606,7 @@ export const ProductForm: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => handleAddInlineValue(attr.id, attr.name)}
-                              className="px-2 py-1 text-[11px] font-bold bg-[#ff91db] text-white rounded-md hover:bg-[#eb70c3] cursor-pointer"
+                              className="px-2 py-1 text-[11px] font-bold bg-indigo-600 text-white rounded-md hover:bg-indigo-700 cursor-pointer"
                             >
                               Add
                             </button>
@@ -622,7 +622,7 @@ export const ProductForm: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => setOpenInlineInputId(attr.id)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-[#ff91db] bg-[#ffe3f5]/60 hover:bg-[#ffe3f5] border border-dashed border-[#ffd0ef] transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-indigo-600 bg-indigo-50/60 hover:bg-indigo-50 border border-dashed border-indigo-100 transition-colors cursor-pointer"
                           >
                             <Plus className="w-3 h-3" />
                             Add {attr.name}
@@ -696,7 +696,7 @@ export const ProductForm: React.FC = () => {
                                 'success'
                               );
                             }}
-                            className="px-2.5 py-1 text-xs font-semibold bg-white text-[#ff91db] hover:bg-[#ff91db] hover:text-white border border-[#ffd0ef] rounded-lg shadow-2xs transition-colors cursor-pointer flex items-center gap-1"
+                            className="px-2.5 py-1 text-xs font-semibold bg-white text-indigo-600 hover:bg-indigo-600 hover:text-white border border-indigo-100 rounded-lg shadow-2xs transition-colors cursor-pointer flex items-center gap-1"
                           >
                             <Plus className="w-3 h-3" />
                             {preset.name}

@@ -27,7 +27,7 @@ export const LowStockWidget: React.FC = () => {
         </div>
         <Link
           to="/admin/inventory"
-          className="text-xs font-semibold text-[#ff91db] hover:text-[#eb70c3] flex items-center gap-0.5"
+          className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 flex items-center gap-0.5"
         >
           Manage inventory <ChevronRight className="w-3.5 h-3.5" />
         </Link>

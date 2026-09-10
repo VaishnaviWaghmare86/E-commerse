@@ -210,7 +210,7 @@ export const Categories: React.FC = () => {
                 <button
                   onClick={() => openAddModal(cat.id)}
                   title="Add Subcategory"
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-[#ff91db] hover:bg-pink-50 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-pink-50 transition-colors cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
@@ -266,7 +266,7 @@ export const Categories: React.FC = () => {
               placeholder="Search categories..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-4 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-[#ff91db] focus:ring-1 focus:ring-[#ff91db]/30 focus:bg-white transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-4 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 focus:bg-white transition-all"
             />
           </div>
 

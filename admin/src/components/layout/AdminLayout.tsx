@@ -9,7 +9,7 @@ export const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({ children
   const { sidebarCollapsed } = useAdmin();
 
   return (
-    <div className="min-h-screen bg-[#fff5fc] font-sans text-slate-900 flex flex-col antialiased">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col antialiased">
       {/* Fixed Sidebar */}
       <Sidebar />
 
