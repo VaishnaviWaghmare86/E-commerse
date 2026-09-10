@@ -360,4 +360,23 @@ export const api = {
       return [];
     }
   }
+
+  async getReviews(): Promise<any[]> {
+    try {
+      const res = await fetch(`${API_BASE}/reviews`, { cache: 'no-store' });
+      if (!res.ok) return [];
+      return await res.json();
+    } catch {
+      return [];
+    }
+  },
+  async submitReview(data: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/reviews`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('Failed to submit review');
+    return await res.json();
+  },
 };

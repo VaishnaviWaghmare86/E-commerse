@@ -34,6 +34,9 @@ export const VendorPortal: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'products' | 'add' | 'orders' | 'profile'>('products');
   const [vendorProducts, setVendorProducts] = useState<any[]>([]);
   const [vendorOrders, setVendorOrders] = useState<any[]>([]);
+  const [vendorReviews, setVendorReviews] = useState<any[]>([]);
+  const [editingStockId, setEditingStockId] = useState<string | null>(null);
+  const [newStock, setNewStock] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   // Sync tab with URL search parameter
@@ -72,9 +75,10 @@ export const VendorPortal: React.FC = () => {
   const fetchVendorData = async () => {
     setLoading(true);
     try {
-      const [prodsRes, ordersRes] = await Promise.all([
+      const [prodsRes, ordersRes, reviewsRes] = await Promise.all([
         fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/vendors/${currentVendorId}/products`),
         fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/vendors/${currentVendorId}/orders`),
+        fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/reviews`),
       ]);
       if (prodsRes.ok) {
         const prods = await prodsRes.json();

@@ -10,7 +10,7 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { ConfirmModal } from '../components/ui/Modal';
 import { useAdmin } from '../context/AdminContext';
 import { useToast } from '../context/ToastContext';
-import { Plus, Search, Filter, ArrowUpDown, MoreVertical, Eye, Edit2, Trash2, Flame, Sparkles, Package } from 'lucide-react';
+import { Plus, Search, Filter, ArrowUpDown, MoreVertical, Eye, Edit2, Trash2, Flame, Sparkles, Package, Power } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import type { Product } from '../types';
 

@@ -49,6 +49,21 @@ export interface Offer {
   category?: string;
 }
 
+
+export interface ReviewItem {
+  id: string;
+  productId: string;
+  productName: string;
+  productImage: string;
+  vendorId: string;
+  customerName: string;
+  customerEmail: string;
+  rating: number;
+  comment: string;
+  date: string;
+  status: 'Approved' | 'Pending' | 'Rejected' | 'Hidden';
+}
+
 export interface ProductItem {
   id: string;
   name: string;
@@ -155,6 +170,7 @@ interface StoreSchema {
   products: ProductItem[];
   categories: CategoryItem[];
   orders: OrderItem[];
+  reviews: ReviewItem[];
   banners: BannerItem[];
 }
 
@@ -723,7 +739,7 @@ export const defaultProducts: ProductItem[] = [
       { url: 'https://images.unsplash.com/photo-1585366119957-e9730b6d0f60?w=600&h=600&fit=crop' }
     ],
     shortDescription: 'Advanced authentic mechanical buggy building kit featuring working V6 engine with pistons.',
-    description: 'True-to-life mechanics with front and back independent suspension, working steering wheel, opening hood, and realistic differential gearbox.',
+    description: 'true-to-life mechanics with front and back independent suspension, working steering wheel, opening hood, and realistic differential gearbox.',
     specifications: {
       'Piece Count': '1,178 building elements',
       'Dimensions': '38cm length x 21cm width',
@@ -1008,6 +1024,7 @@ class LocalDbStore {
     products: [],
     categories: [],
     orders: [],
+    reviews: [],
     banners: [],
   };
 
@@ -1048,6 +1065,7 @@ class LocalDbStore {
           products: defaultProducts,
           categories: defaultCategories,
           orders: [],
+    reviews: [],
           banners: defaultBanners,
         };
         this.saveData(this.data);
@@ -1062,6 +1080,7 @@ class LocalDbStore {
         products: defaultProducts,
         categories: defaultCategories,
         orders: [],
+    reviews: [],
         banners: defaultBanners,
       };
     }

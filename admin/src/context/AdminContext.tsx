@@ -28,7 +28,7 @@ import { initialCustomers } from '../data/customers';
 import { initialBanners, initialCollections, initialCoupons } from '../data/marketing';
 import { initialCMSSections } from '../data/cms';
 import { initialMedia } from '../data/media';
-import { initialReviews } from '../data/reviews';
+
 import { initialSettings } from '../data/settings';
 import { initialNotifications } from '../data/notifications';
 
@@ -135,7 +135,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [coupons, setCoupons] = useState<Coupon[]>(initialCoupons);
   const [cmsSections, setCMSSections] = useState<CMSSection[]>(initialCMSSections);
   const [mediaItems, setMediaItems] = useState<MediaItem[]>(initialMedia);
-  const [reviews, setReviews] = useState<Review[]>(initialReviews);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [settings, setSettings] = useState<StoreSettings>(initialSettings);
   const [notifications, setNotifications] = useState<NotificationItem[]>(initialNotifications);
 
